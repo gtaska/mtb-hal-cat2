@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,7 +54,7 @@ CTBM_Type *const _cyhal_ctb_base[] =
     CTBM0,
 #endif
 
-/* All current PSoC 6 devices have only one CTB block */
+/* All current CAT1/CAT2 devices have only one CTB block */
 #if (CY_IP_MXS40PASS_CTB_INSTANCES > 1)
     #error "Unhandled CTB instance count"
 #endif

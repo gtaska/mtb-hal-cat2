@@ -8,7 +8,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,8 @@
 *******************************************************************************/
 
 #include "cyhal_hwmgr.h"
+#include "cyhal_hwmgr_impl.h"
+#include "cyhal_interconnect.h"
 #include "cyhal_system.h"
 #include "cmsis_compiler.h"
 #include "cyhal_scb_common.h"
@@ -272,10 +274,16 @@ extern "C"
     #define CY_BLOCK_COUNT_USB      (0)
 #endif
 
+#if defined(CY_IP_MXUSBPD_INSTANCES)
+    #define CY_BLOCK_COUNT_USBPD    CY_IP_MXUSBPD_INSTANCES
+#else
+    #define CY_BLOCK_COUNT_USBPD    (0)
+#endif
+
 #if defined(CY_IP_MXS40SRSS_MCWDT_INSTANCES)
     #define CY_BLOCK_COUNT_MCWDT    CY_IP_MXS40SRSS_MCWDT_INSTANCES
-#elif defined(CY_IP_S8SRSSLT_INSTANCES)
-    #define CY_BLOCK_COUNT_MCWDT    CY_IP_S8SRSSLT_INSTANCES
+#elif (defined(CY_IP_S8SRSSLT_INSTANCES) && defined(CY_IP_M0S8WCO))
+    #define CY_BLOCK_COUNT_MCWDT    CY_IP_M0S8WCO_INSTANCES
 #else
     #define CY_BLOCK_COUNT_MCWDT    (0)
 #endif
@@ -336,8 +344,10 @@ extern "C"
 #define CY_SIZE_UDB        CY_BLOCK_COUNT_UDB
 #define CY_OFFSET_USB      (CY_OFFSET_UDB + CY_SIZE_UDB)
 #define CY_SIZE_USB        CY_BLOCK_COUNT_USB
+#define CY_OFFSET_USBPD    (CY_OFFSET_USB + CY_SIZE_USB)
+#define CY_SIZE_USBPD      CY_BLOCK_COUNT_USBPD
 
-#define CY_TOTAL_ALLOCATABLE_ITEMS     (CY_OFFSET_USB + CY_SIZE_USB)
+#define CY_TOTAL_ALLOCATABLE_ITEMS     (CY_OFFSET_USBPD + CY_SIZE_USBPD)
 
 #define CY_BYTE_NUM_SHIFT (3)
 #define CY_BIT_NUM_MASK (0x07)
@@ -581,6 +591,8 @@ static const uint16_t cyhal_resource_offsets[] =
     CY_OFFSET_OPAMP,
     CY_OFFSET_SCB,
     CY_OFFSET_TCPWM,
+    CY_OFFSET_USB,
+    CY_OFFSET_USBPD,
 #endif
 };
 
@@ -807,7 +819,8 @@ void cyhal_hwmgr_free(const cyhal_resource_inst_t* obj)
     cyhal_system_critical_section_exit(state);
 }
 
-cy_rslt_t cyhal_hwmgr_allocate(cyhal_resource_t type, cyhal_resource_inst_t* obj)
+cy_rslt_t _cyhal_hwmgr_allocate_with_connection(cyhal_resource_t type, const cyhal_source_t *src, const cyhal_dest_t *dest,
+    _cyhal_hwmgr_get_output_source_t get_src, _cyhal_hwmgr_get_input_dest_t get_dest, cyhal_resource_inst_t *obj)
 {
     uint16_t offsetStartOfRsc = cyhal_get_resource_offset(type);
     uint16_t offsetEndOfRsc = ((1u + type) < sizeof(cyhal_resource_offsets)/sizeof(cyhal_resource_offsets[0]))
@@ -820,42 +833,60 @@ cy_rslt_t cyhal_hwmgr_allocate(cyhal_resource_t type, cyhal_resource_inst_t* obj
     uint8_t channel = 0;
     for (uint16_t i = 0; i < count; i++)
     {
-        cyhal_resource_inst_t res = { type, block, channel };
-        if (CY_RSLT_SUCCESS == cyhal_hwmgr_reserve(&res))
+        bool valid = true;
+        if (NULL != src)
         {
-            obj->type = type;
-            obj->block_num = block;
-            obj->channel_num = channel;
-            return CY_RSLT_SUCCESS;
+            cyhal_dest_t destination = get_dest(block, channel);
+            valid = _cyhal_can_connect_signal(*src, destination);
         }
-        else
+        if (valid && NULL != dest)
         {
-            if (usesChannels)
+            cyhal_source_t source = get_src(block, channel);
+            valid = _cyhal_can_connect_signal(source, *dest);
+        }
+
+        if (valid)
+        {
+            cyhal_resource_inst_t rsc = { type, block, channel };
+            if (CY_RSLT_SUCCESS == cyhal_hwmgr_reserve(&rsc))
             {
-                const uint8_t* blockOffsets = cyhal_get_block_offsets(type);
-                uint16_t blocks = cyhal_get_block_offset_length(type);
-                if ((block + 1) < blocks && blockOffsets[block + 1] <= (i + 1))
+                obj->type = type;
+                obj->block_num = block;
+                obj->channel_num = channel;
+                return CY_RSLT_SUCCESS;
+            }
+        }
+
+        if (usesChannels)
+        {
+            const uint8_t* blockOffsets = cyhal_get_block_offsets(type);
+            uint16_t blocks = cyhal_get_block_offset_length(type);
+            if ((block + 1) < blocks && blockOffsets[block + 1] <= (i + 1))
+            {
+                channel = 0;
+                do
                 {
-                    channel = 0;
-                    do
-                    {
-                        block++;
-                    }
-                    while (block < blocks && blockOffsets[block] < (i + 1));
+                    block++;
                 }
-                else
-                {
-                    channel++;
-                }
+                while (block < blocks && blockOffsets[block] < (i + 1));
             }
             else
             {
-                block++;
+                channel++;
             }
+        }
+        else
+        {
+            block++;
         }
     }
 
     return CYHAL_HWMGR_RSLT_ERR_NONE_FREE;
+}
+
+cy_rslt_t cyhal_hwmgr_allocate(cyhal_resource_t type, cyhal_resource_inst_t* obj)
+{
+    return _cyhal_hwmgr_allocate_with_connection(type, NULL, NULL, NULL, NULL, obj);
 }
 
 #if defined(__cplusplus)

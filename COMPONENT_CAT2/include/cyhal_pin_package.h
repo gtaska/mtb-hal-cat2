@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -116,6 +116,16 @@ typedef enum {
 #include "pin_packages/cyhal_psoc4100smax_64_tqfp.h"
 #elif defined(_GPIO_PSOC4100SMAX_100_TQFP_H_)
 #include "pin_packages/cyhal_psoc4100smax_100_tqfp.h"
+#elif defined(_GPIO_PMG1S0_24_QFN_PMG1_S0_H_)
+#include "pin_packages/cyhal_pmg1s0_24_qfn_pmg1_s0.h"
+#elif defined(_GPIO_PMG1S1_40_QFN_PMG1_S1_H_)
+#include "pin_packages/cyhal_pmg1s1_40_qfn_pmg1_s1.h"
+#elif defined(_GPIO_PMG1S2_40_QFN_PMG1_S2_H_)
+#include "pin_packages/cyhal_pmg1s2_40_qfn_pmg1_s2.h"
+#elif defined(_GPIO_PMG1S3_48_QFN_H_)
+#include "pin_packages/cyhal_pmg1s3_48_qfn.h"
+#elif defined(_GPIO_PMG1S3_97_BGA_H_)
+#include "pin_packages/cyhal_pmg1s3_97_bga.h"
 #else
 #error "Unhandled Device/PinPackage combination"
 #endif

@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,13 +58,13 @@
  * \ref cyhal_dma_configure and then the transfer is started with \ref cyhal_dma_start_transfer.<br>
  * If the DMA channel is not needed anymore, it can be released by calling \ref cyhal_dma_free
  *
- * \snippet dma.c snippet_cyhal_dma_simple_init
+ * \snippet hal_dma.c snippet_cyhal_dma_simple_init
  *
  *
  * \subsection subsection_dma_snippet_2 Snippet 2: Configuring the DMA channel based on memory requirements
  * \ref cyhal_dma_configure can be used after DMA initialization to handle a variety of memory layouts.
  *
- * \snippet dma.c snippet_cyhal_dma_configure
+ * \snippet hal_dma.c snippet_cyhal_dma_configure
  *
  *
  * \subsection subsection_dma_snippet_3 Snippet 3: Interrupts and retriggering DMA transfers
@@ -74,7 +74,7 @@
  * in progress. It then uses \ref cyhal_dma_enable_event() to enable the transfer complete event to
  * trigger the callback function registered by \ref cyhal_dma_register_callback().
  *
- * \snippet dma.c snippet_cyhal_dma_events
+ * \snippet hal_dma.c snippet_cyhal_dma_events
  */
 
 #pragma once
@@ -191,6 +191,45 @@ typedef struct
 /** Event handler for DMA interrupts */
 typedef void (*cyhal_dma_event_callback_t)(void *callback_arg, cyhal_dma_event_t event);
 
+/** DMA input connection information to setup while initializing the driver. */
+typedef struct
+{
+    cyhal_source_t      source; //!< Source of signal to DMA; obtained from another driver's cyhal_<PERIPH>_enable_output
+    cyhal_dma_input_t   input;  //!< DMA input signal to be driven
+} cyhal_dma_src_t;
+
+/** DMA output connection information to setup while initializing the driver. */
+typedef struct
+{
+    cyhal_dma_output_t  output; //!< Output signal of DMA
+    cyhal_dest_t        dest;   //!< Destination of DMA signal
+} cyhal_dma_dest_t;
+
+/** Initialize the DMA peripheral.
+ *
+ * If a source signal is provided for \p src, this will connect the provided signal to the DMA
+ * just as would be done by calling \ref cyhal_dma_connect_digital. Similarly, if a destination
+ * target is provided for \p dest this will enable the specified output just as would be done
+ * by calling \ref cyhal_dma_enable_output.
+ * @param[out] obj  Pointer to a DMA object. The caller must allocate the memory
+ *  for this object but the init function will initialize its contents.
+ * @param[in]  src          An optional source signal to connect to the DMA
+ * @param[in]  dest         An optional destination singal to drive from the DMA
+ * @param[out] dest_source  An optional pointer to user-allocated source signal object which
+ * will be initialized by enable_output. If \p dest is non-null, this must also be non-null.
+ * \p dest_source should be passed to (dis)connect_digital functions to (dis)connect the
+ * associated endpoints.
+ * @param[in]  priority     The priority of this DMA operation relative to others. The number of
+ * priority levels which are supported is hardware dependent. All implementations define a
+ * #CYHAL_DMA_PRIORITY_DEFAULT constant which is always valid. If supported, implementations will
+ * also define #CYHAL_DMA_PRIORITY_HIGH, #CYHAL_DMA_PRIORITY_MEDIUM, and #CYHAL_DMA_PRIORITY_LOW.
+ * The behavior of any other value is implementation defined. See the implementation-specific DMA
+ * documentation for more details.
+ * @param[in]  direction    The direction memory is copied
+ * @return The status of the init request
+ */
+cy_rslt_t cyhal_dma_init_adv(cyhal_dma_t *obj, cyhal_dma_src_t *src, cyhal_dma_dest_t *dest, cyhal_source_t *dest_source, uint8_t priority, cyhal_dma_direction_t direction);
+
 /** Initialize the DMA peripheral.
  *
  * @param[out] obj  Pointer to a DMA object. The caller must allocate the memory
@@ -199,7 +238,7 @@ typedef void (*cyhal_dma_event_callback_t)(void *callback_arg, cyhal_dma_event_t
  * @param[in]  direction    The direction memory is copied
  * @return The status of the init request
  */
-cy_rslt_t cyhal_dma_init(cyhal_dma_t *obj, uint8_t priority, cyhal_dma_direction_t direction);
+#define cyhal_dma_init(obj, priority, direction)    (cyhal_dma_init_adv(obj, NULL, NULL, NULL, priority, direction))
 
 /** Free the DMA object. Freeing a DMA object while a transfer is in
     progress (see @ref cyhal_dma_is_busy) is invalid.
@@ -255,7 +294,7 @@ void cyhal_dma_enable_event(cyhal_dma_t *obj, cyhal_dma_event_t event, uint8_t i
  * channel
  *
  * @param[in] obj         The DMA object
- * @param[in] source      Source signal
+ * @param[in] source      Source signal obtained from another driver's cyhal_<PERIPH>_enable_output
  * @param[in] input       Which input to enable
  * @return The status of the connection
  * */
@@ -266,7 +305,7 @@ cy_rslt_t cyhal_dma_connect_digital(cyhal_dma_t *obj, cyhal_source_t source, cyh
  * @param[in]  obj         The DMA object
  * @param[in]  output      Which event triggers the output
  * @param[out] source      Pointer to user-allocated source signal object which
- * will be initialized by enable_output. source should be passed to
+ * will be initialized by enable_output. \p source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
  * @return The status of the output enable
  * */
@@ -275,7 +314,7 @@ cy_rslt_t cyhal_dma_enable_output(cyhal_dma_t *obj, cyhal_dma_output_t output, c
 /** Disconnects a source signal and disables the specified input to the DMA channel
  *
  * @param[in] obj         The DMA object
- * @param[in] source      Source signal
+ * @param[in] source      Source signal from cyhal_<PERIPH>_enable_output to disable
  * @param[in] input       Which input to disable
  * @return The status of the disconnect
  * */

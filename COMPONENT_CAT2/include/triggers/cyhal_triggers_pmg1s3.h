@@ -5,11 +5,11 @@
 * PMG1S3 family HAL triggers header
 *
 * \note
-* Generator version: 1.6.0.379
+* Generator version: 1.6.0.464
 *
 ********************************************************************************
 * \copyright
-* Copyright 2016-2020 Cypress Semiconductor Corporation
+* Copyright 2016-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,23 +42,23 @@ extern "C" {
 /** @brief Name of each input trigger. */
 typedef enum
 {
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 = 0, //!< cpuss.dmac_tr_out[0]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT1 = 1, //!< cpuss.dmac_tr_out[1]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT2 = 2, //!< cpuss.dmac_tr_out[2]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT3 = 3, //!< cpuss.dmac_tr_out[3]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT4 = 4, //!< cpuss.dmac_tr_out[4]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT5 = 5, //!< cpuss.dmac_tr_out[5]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT6 = 6, //!< cpuss.dmac_tr_out[6]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT7 = 7, //!< cpuss.dmac_tr_out[7]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT8 = 8, //!< cpuss.dmac_tr_out[8]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT9 = 9, //!< cpuss.dmac_tr_out[9]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT10 = 10, //!< cpuss.dmac_tr_out[10]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT11 = 11, //!< cpuss.dmac_tr_out[11]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT12 = 12, //!< cpuss.dmac_tr_out[12]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT13 = 13, //!< cpuss.dmac_tr_out[13]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT14 = 14, //!< cpuss.dmac_tr_out[14]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT15 = 15, //!< cpuss.dmac_tr_out[15]
-    CYHAL_TRIGGER_CPUSS_ZERO = 16, //!< cpuss.zero
+    CYHAL_TRIGGER_CPUSS_ZERO = 0, //!< cpuss.zero
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 = 1, //!< cpuss.dmac_tr_out[0]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT1 = 2, //!< cpuss.dmac_tr_out[1]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT2 = 3, //!< cpuss.dmac_tr_out[2]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT3 = 4, //!< cpuss.dmac_tr_out[3]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT4 = 5, //!< cpuss.dmac_tr_out[4]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT5 = 6, //!< cpuss.dmac_tr_out[5]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT6 = 7, //!< cpuss.dmac_tr_out[6]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT7 = 8, //!< cpuss.dmac_tr_out[7]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT8 = 9, //!< cpuss.dmac_tr_out[8]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT9 = 10, //!< cpuss.dmac_tr_out[9]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT10 = 11, //!< cpuss.dmac_tr_out[10]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT11 = 12, //!< cpuss.dmac_tr_out[11]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT12 = 13, //!< cpuss.dmac_tr_out[12]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT13 = 14, //!< cpuss.dmac_tr_out[13]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT14 = 15, //!< cpuss.dmac_tr_out[14]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT15 = 16, //!< cpuss.dmac_tr_out[15]
     CYHAL_TRIGGER_LPCOMP_COMP_OUT0 = 17, //!< lpcomp.comp_out[0]
     CYHAL_TRIGGER_LPCOMP_COMP_OUT1 = 18, //!< lpcomp.comp_out[1]
     CYHAL_TRIGGER_PASS0_DSI_CTB_CMP0 = 19, //!< pass[0].dsi_ctb_cmp0
@@ -121,6 +121,20 @@ typedef enum
     CYHAL_TRIGGER_USB_DMA_REQ5 = 76, //!< usb.dma_req[5]
     CYHAL_TRIGGER_USB_DMA_REQ6 = 77, //!< usb.dma_req[6]
     CYHAL_TRIGGER_USB_DMA_REQ7 = 78, //!< usb.dma_req[7]
+    CYHAL_TRIGGER_USBPD0_TR_OUT_0 = 79, //!< usbpd[0].tr_out_0
+    CYHAL_TRIGGER_USBPD1_TR_OUT_0 = 80, //!< usbpd[1].tr_out_0
+    CYHAL_TRIGGER_USBPD0_TR_OUT_1 = 81, //!< usbpd[0].tr_out_1
+    CYHAL_TRIGGER_USBPD1_TR_OUT_1 = 82, //!< usbpd[1].tr_out_1
+    CYHAL_TRIGGER_USBPD0_TR_OUT_2 = 83, //!< usbpd[0].tr_out_2
+    CYHAL_TRIGGER_USBPD1_TR_OUT_2 = 84, //!< usbpd[1].tr_out_2
+    CYHAL_TRIGGER_USBPD0_TR_OUT_3 = 85, //!< usbpd[0].tr_out_3
+    CYHAL_TRIGGER_USBPD1_TR_OUT_3 = 86, //!< usbpd[1].tr_out_3
+    CYHAL_TRIGGER_USBPD0_TR_OUT_4 = 87, //!< usbpd[0].tr_out_4
+    CYHAL_TRIGGER_USBPD1_TR_OUT_4 = 88, //!< usbpd[1].tr_out_4
+    CYHAL_TRIGGER_USBPD0_TR_OUT_5 = 89, //!< usbpd[0].tr_out_5
+    CYHAL_TRIGGER_USBPD1_TR_OUT_5 = 90, //!< usbpd[1].tr_out_5
+    CYHAL_TRIGGER_USBPD0_TR_OUT_6 = 91, //!< usbpd[0].tr_out_6
+    CYHAL_TRIGGER_USBPD1_TR_OUT_6 = 92, //!< usbpd[1].tr_out_6
 } cyhal_trigger_source_pmg1s3_t;
 
 /** Typedef from device family specific trigger source to generic trigger source */
@@ -146,21 +160,20 @@ typedef enum
     CYHAL_TRIGGER_CPUSS_DMAC_TR_IN14 = 14, //!< USB_DMA_Requests - cpuss.dmac_tr_in[14]
     CYHAL_TRIGGER_CPUSS_DMAC_TR_IN15 = 15, //!< USB_DMA_Requests - cpuss.dmac_tr_in[15]
     CYHAL_TRIGGER_PASS0_TR_SAR_IN = 16, //!< PASS Triggers - pass[0].tr_sar_in
-    CYHAL_TRIGGER_TCPWM_TR_IN7 = 17, //!< TCPWM Triggers - tcpwm.tr_in[7]
-    CYHAL_TRIGGER_TCPWM_TR_IN8 = 18, //!< TCPWM Triggers - tcpwm.tr_in[8]
-    CYHAL_TRIGGER_TCPWM_TR_IN9 = 19, //!< TCPWM Triggers - tcpwm.tr_in[9]
-    CYHAL_TRIGGER_TCPWM_TR_IN10 = 20, //!< TCPWM Triggers - tcpwm.tr_in[10]
-    CYHAL_TRIGGER_TCPWM_TR_IN11 = 21, //!< TCPWM Triggers - tcpwm.tr_in[11]
-    CYHAL_TRIGGER_TCPWM_TR_IN12 = 22, //!< TCPWM Triggers - tcpwm.tr_in[12]
-    CYHAL_TRIGGER_TCPWM_TR_IN13 = 23, //!< TCPWM Triggers - tcpwm.tr_in[13]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND0 = 24, //!< USB_BurstEnd - usb.dma_burstend[0]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND1 = 25, //!< USB_BurstEnd - usb.dma_burstend[1]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND2 = 26, //!< USB_BurstEnd - usb.dma_burstend[2]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND3 = 27, //!< USB_BurstEnd - usb.dma_burstend[3]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND4 = 28, //!< USB_BurstEnd - usb.dma_burstend[4]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND5 = 29, //!< USB_BurstEnd - usb.dma_burstend[5]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND6 = 30, //!< USB_BurstEnd - usb.dma_burstend[6]
-    CYHAL_TRIGGER_USB_DMA_BURSTEND7 = 31, //!< USB_BurstEnd - usb.dma_burstend[7]
+    CYHAL_TRIGGER_TCPWM_TR_IN8 = 17, //!< TCPWM Triggers - tcpwm.tr_in[8]
+    CYHAL_TRIGGER_TCPWM_TR_IN9 = 18, //!< TCPWM Triggers - tcpwm.tr_in[9]
+    CYHAL_TRIGGER_TCPWM_TR_IN10 = 19, //!< TCPWM Triggers - tcpwm.tr_in[10]
+    CYHAL_TRIGGER_TCPWM_TR_IN11 = 20, //!< TCPWM Triggers - tcpwm.tr_in[11]
+    CYHAL_TRIGGER_TCPWM_TR_IN12 = 21, //!< TCPWM Triggers - tcpwm.tr_in[12]
+    CYHAL_TRIGGER_TCPWM_TR_IN13 = 22, //!< TCPWM Triggers - tcpwm.tr_in[13]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND0 = 23, //!< USB_BurstEnd - usb.dma_burstend[0]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND1 = 24, //!< USB_BurstEnd - usb.dma_burstend[1]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND2 = 25, //!< USB_BurstEnd - usb.dma_burstend[2]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND3 = 26, //!< USB_BurstEnd - usb.dma_burstend[3]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND4 = 27, //!< USB_BurstEnd - usb.dma_burstend[4]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND5 = 28, //!< USB_BurstEnd - usb.dma_burstend[5]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND6 = 29, //!< USB_BurstEnd - usb.dma_burstend[6]
+    CYHAL_TRIGGER_USB_DMA_BURSTEND7 = 30, //!< USB_BurstEnd - usb.dma_burstend[7]
 } cyhal_trigger_dest_pmg1s3_t;
 
 /** Typedef from device family specific trigger dest to generic trigger dest */
@@ -180,10 +193,10 @@ extern const cyhal_source_t* cyhal_mux_to_sources [5];
  * If bit 8 of the mux index is set, this denotes that the trigger is a
  * one to one trigger.
  */
-extern const uint8_t cyhal_dest_to_mux[32];
+extern const uint8_t cyhal_dest_to_mux[31];
 
 /* Maps each cyhal_destination_t to a specific output in its mux */
-extern const uint8_t cyhal_mux_dest_index[32];
+extern const uint8_t cyhal_mux_dest_index[31];
 /** \endcond */
 
 #if defined(__cplusplus)

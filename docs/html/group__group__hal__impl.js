@@ -3,7 +3,7 @@ var group__group__hal__impl =
     [ "Clocks", "group__group__hal__impl__clock.html", "group__group__hal__impl__clock" ],
     [ "DMA (Direct Memory Access)", "group__group__hal__impl__dma.html", "group__group__hal__impl__dma" ],
     [ "GPIO", "group__group__hal__impl__gpio.html", null ],
-    [ "PSoC 4 Specific Hardware Types", "group__group__hal__impl__hw__types.html", "group__group__hal__impl__hw__types" ],
+    [ "PMG/PSoC 4 Specific Hardware Types", "group__group__hal__impl__hw__types.html", "group__group__hal__impl__hw__types" ],
     [ "Interconnect (Internal Digital Routing)", "group__group__hal__impl__interconnect.html", "group__group__hal__impl__interconnect" ],
     [ "Pins", "group__group__hal__impl__pin__package.html", "group__group__hal__impl__pin__package" ],
     [ "System Power Management", "group__group__hal__impl__syspm.html", null ],

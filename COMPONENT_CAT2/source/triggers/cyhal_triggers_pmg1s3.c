@@ -5,11 +5,11 @@
 * PMG1S3 family HAL triggers header
 *
 * \note
-* Generator version: 1.6.0.379
+* Generator version: 1.6.0.464
 *
 ********************************************************************************
 * \copyright
-* Copyright 2016-2020 Cypress Semiconductor Corporation
+* Copyright 2016-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +33,7 @@
 
 const uint16_t cyhal_sources_per_mux[5] =
 {
-    55, 17, 9, 31, 39, 
+    55, 17, 9, 45, 39, 
 };
 
 const bool cyhal_is_mux_1to1[5] =
@@ -134,7 +134,7 @@ const cyhal_source_t cyhal_mux2_sources[9] =
     CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT15,
 };
 
-const cyhal_source_t cyhal_mux3_sources[31] =
+const cyhal_source_t cyhal_mux3_sources[45] =
 {
     CYHAL_TRIGGER_CPUSS_ZERO,
     CYHAL_TRIGGER_TCPWM_TR_OVERFLOW0,
@@ -167,6 +167,20 @@ const cyhal_source_t cyhal_mux3_sources[31] =
     CYHAL_TRIGGER_PASS0_DSI_CTB_CMP1,
     CYHAL_TRIGGER_LPCOMP_COMP_OUT0,
     CYHAL_TRIGGER_LPCOMP_COMP_OUT1,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_0,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_1,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_2,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_3,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_4,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_5,
+    CYHAL_TRIGGER_USBPD0_TR_OUT_6,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_0,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_1,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_2,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_3,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_4,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_5,
+    CYHAL_TRIGGER_USBPD1_TR_OUT_6,
 };
 
 const cyhal_source_t cyhal_mux4_sources[39] =
@@ -221,7 +235,7 @@ const cyhal_source_t* cyhal_mux_to_sources[5] =
     cyhal_mux4_sources, 
 };
 
-const uint8_t cyhal_dest_to_mux[32] =
+const uint8_t cyhal_dest_to_mux[31] =
 {
     0, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN0 */
     0, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN1 */
@@ -240,7 +254,6 @@ const uint8_t cyhal_dest_to_mux[32] =
     1, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN14 */
     1, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN15 */
     4, /* CYHAL_TRIGGER_PASS0_TR_SAR_IN */
-    3, /* CYHAL_TRIGGER_TCPWM_TR_IN7 */
     3, /* CYHAL_TRIGGER_TCPWM_TR_IN8 */
     3, /* CYHAL_TRIGGER_TCPWM_TR_IN9 */
     3, /* CYHAL_TRIGGER_TCPWM_TR_IN10 */
@@ -257,7 +270,7 @@ const uint8_t cyhal_dest_to_mux[32] =
     2, /* CYHAL_TRIGGER_USB_DMA_BURSTEND7 */
 };
 
-const uint8_t cyhal_mux_dest_index[32] =
+const uint8_t cyhal_mux_dest_index[31] =
 {
     0, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN0 */
     1, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN1 */
@@ -276,13 +289,12 @@ const uint8_t cyhal_mux_dest_index[32] =
     6, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN14 */
     7, /* CYHAL_TRIGGER_CPUSS_DMAC_TR_IN15 */
     0, /* CYHAL_TRIGGER_PASS0_TR_SAR_IN */
-    0, /* CYHAL_TRIGGER_TCPWM_TR_IN7 */
-    1, /* CYHAL_TRIGGER_TCPWM_TR_IN8 */
-    2, /* CYHAL_TRIGGER_TCPWM_TR_IN9 */
-    3, /* CYHAL_TRIGGER_TCPWM_TR_IN10 */
-    4, /* CYHAL_TRIGGER_TCPWM_TR_IN11 */
-    5, /* CYHAL_TRIGGER_TCPWM_TR_IN12 */
-    6, /* CYHAL_TRIGGER_TCPWM_TR_IN13 */
+    0, /* CYHAL_TRIGGER_TCPWM_TR_IN8 */
+    1, /* CYHAL_TRIGGER_TCPWM_TR_IN9 */
+    2, /* CYHAL_TRIGGER_TCPWM_TR_IN10 */
+    3, /* CYHAL_TRIGGER_TCPWM_TR_IN11 */
+    4, /* CYHAL_TRIGGER_TCPWM_TR_IN12 */
+    5, /* CYHAL_TRIGGER_TCPWM_TR_IN13 */
     0, /* CYHAL_TRIGGER_USB_DMA_BURSTEND0 */
     1, /* CYHAL_TRIGGER_USB_DMA_BURSTEND1 */
     2, /* CYHAL_TRIGGER_USB_DMA_BURSTEND2 */

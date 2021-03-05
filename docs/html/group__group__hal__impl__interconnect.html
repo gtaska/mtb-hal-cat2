@@ -87,73 +87,29 @@ $(document).ready(function(){initNavTree('group__group__hal__impl__interconnect.
 
 <div class="header">
   <div class="summary">
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">Interconnect (Internal Digital Routing)<div class="ingroups"><a class="el" href="group__group__hal__impl.html">PSoC 4 Implementation Specific</a></div></div>  </div>
+<div class="title">Interconnect (Internal Digital Routing)<div class="ingroups"><a class="el" href="group__group__hal__impl.html">CAT2 (PMG/PSoC 4) Implementation Specific</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p>The interconnect system connects the various PSoC 4 peripherals using trigger signals. </p>
+<p>The interconnect system connects the various hardware peripherals using trigger signals. </p>
 <p>Triggers are output when a particular event occurs or condition is met by one of the peripherals. These triggers can be routed to other peripherals using the interconnect system in order to initiate an action at the destination peripheral.</p>
 <p>Peripherals must be configured to produce/accept trigger signals. Therefore in practice, there is no need to call <a class="el" href="group__group__hal__impl__interconnect.html#ga2f9c57eb63bc389ac1da2f1735300f2b">_cyhal_connect_signal</a> manually. Instead, use the per-peripheral cyhal_&lt;PERI&gt;_connect_digital or cyhal_&lt;PERI&gt;_enable_output which will handle configuring the peripheral and making the connections internally.</p>
-<p>Trigger routing is implemented using trigger multiplexers. A single source trigger can be routed to multiple destinations but a single destination can only be connected to a single source. There are different trigger layouts depending on device architecture.</p>
-<p><b>PSoC 4000S Triggers:</b> </p><div class="image">
-<img src="psoc4000s_trigger_layout.png" alt="psoc4000s_trigger_layout.png" width="540px"/>
-</div>
-<p> <b>PSoC 4100S Triggers:</b> </p><div class="image">
-<img src="psoc4100s_trigger_layout.png" alt="psoc4100s_trigger_layout.png" width="540px"/>
-</div>
-<p> <b>PSoC 4100S Plus Triggers:</b> </p><div class="image">
-<img src="psoc4100sp_trigger_layout.png" alt="psoc4100sp_trigger_layout.png" width="540px"/>
-</div>
-<p> <b>PSoC 4100S Plus 256k Triggers:</b> </p><div class="image">
-<img src="psoc4100sp256k_trigger_layout.png" alt="psoc4100sp256k_trigger_layout.png" width="540px"/>
-</div>
- <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:ga801c21c8f1d529c8d189990ce6825080"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">cyhal_signal_type_t</a> { <br />
-&#160;&#160;<a class="el" href="group__group__hal__impl__interconnect.html#gga801c21c8f1d529c8d189990ce6825080aa9353d53eb66a3c2e9ebdddf5d0a2592">CYHAL_SIGNAL_TYPE_LEVEL</a> = 0, 
-<br />
-&#160;&#160;<a class="el" href="group__group__hal__impl__interconnect.html#gga801c21c8f1d529c8d189990ce6825080a58d09b40c703bb1d09ac9d635c096cd9">CYHAL_SIGNAL_TYPE_EDGE</a> = 1
-<br />
- }</td></tr>
-<tr class="memdesc:ga801c21c8f1d529c8d189990ce6825080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger type.  <a href="group__group__hal__impl__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">More...</a><br /></td></tr>
-<tr class="separator:ga801c21c8f1d529c8d189990ce6825080"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
+<p>Trigger routing is implemented using trigger multiplexers. A single source trigger can be routed to multiple destinations but a single destination can only be connected to a single source. There are different trigger layouts depending on device architecture. </p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga2f9c57eb63bc389ac1da2f1735300f2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html#ga2f9c57eb63bc389ac1da2f1735300f2b">_cyhal_connect_signal</a> (<a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga9f1b9789bf38e1c6a4cd386ed5c0bc38">cyhal_source_t</a> source, <a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga0b2d716ce1c5d6d971265d6ceda55bda">cyhal_dest_t</a> dest, <a class="el" href="group__group__hal__impl__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">cyhal_signal_type_t</a> type)</td></tr>
+<tr class="memitem:ga2f9c57eb63bc389ac1da2f1735300f2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html#ga2f9c57eb63bc389ac1da2f1735300f2b">_cyhal_connect_signal</a> (<a class="el" href="group__group__hal__impl__triggers.html#gae6e4ea4100036d96d2efc006a3f69c9b">cyhal_source_t</a> source, <a class="el" href="group__group__hal__impl__triggers.html#ga8cc68fc0f23a2de010228ae5188598f0">cyhal_dest_t</a> dest, <a class="el" href="group__group__hal__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">cyhal_signal_type_t</a> type)</td></tr>
 <tr class="memdesc:ga2f9c57eb63bc389ac1da2f1735300f2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connects two digital signals on the device using the internal interconnect.  <a href="#ga2f9c57eb63bc389ac1da2f1735300f2b">More...</a><br /></td></tr>
 <tr class="separator:ga2f9c57eb63bc389ac1da2f1735300f2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabf43f8f45582c42a17ea04ba5f015bf4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html#gabf43f8f45582c42a17ea04ba5f015bf4">_cyhal_disconnect_signal</a> (<a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga9f1b9789bf38e1c6a4cd386ed5c0bc38">cyhal_source_t</a> source, <a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga0b2d716ce1c5d6d971265d6ceda55bda">cyhal_dest_t</a> dest)</td></tr>
+<tr class="memitem:gabf43f8f45582c42a17ea04ba5f015bf4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html#gabf43f8f45582c42a17ea04ba5f015bf4">_cyhal_disconnect_signal</a> (<a class="el" href="group__group__hal__impl__triggers.html#gae6e4ea4100036d96d2efc006a3f69c9b">cyhal_source_t</a> source, <a class="el" href="group__group__hal__impl__triggers.html#ga8cc68fc0f23a2de010228ae5188598f0">cyhal_dest_t</a> dest)</td></tr>
 <tr class="memdesc:gabf43f8f45582c42a17ea04ba5f015bf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disconnects two digital signals on the device that were previously connected using the internal interconnect.  <a href="#gabf43f8f45582c42a17ea04ba5f015bf4">More...</a><br /></td></tr>
 <tr class="separator:gabf43f8f45582c42a17ea04ba5f015bf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0681e91ab0d3792eff85a723a60ed301"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html#ga0681e91ab0d3792eff85a723a60ed301">_cyhal_can_connect_signal</a> (<a class="el" href="group__group__hal__impl__triggers.html#gae6e4ea4100036d96d2efc006a3f69c9b">cyhal_source_t</a> source, <a class="el" href="group__group__hal__impl__triggers.html#ga8cc68fc0f23a2de010228ae5188598f0">cyhal_dest_t</a> dest)</td></tr>
+<tr class="memdesc:ga0681e91ab0d3792eff85a723a60ed301"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks to see if a signal can be connected between the provided source and dest.  <a href="#ga0681e91ab0d3792eff85a723a60ed301">More...</a><br /></td></tr>
+<tr class="separator:ga0681e91ab0d3792eff85a723a60ed301"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="ga801c21c8f1d529c8d189990ce6825080"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga801c21c8f1d529c8d189990ce6825080">&#9670;&nbsp;</a></span>cyhal_signal_type_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="group__group__hal__impl__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">cyhal_signal_type_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Trigger type. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga801c21c8f1d529c8d189990ce6825080aa9353d53eb66a3c2e9ebdddf5d0a2592"></a>CYHAL_SIGNAL_TYPE_LEVEL&#160;</td><td class="fielddoc"><p>Level triggered. </p>
-</td></tr>
-<tr><td class="fieldname"><a id="gga801c21c8f1d529c8d189990ce6825080a58d09b40c703bb1d09ac9d635c096cd9"></a>CYHAL_SIGNAL_TYPE_EDGE&#160;</td><td class="fielddoc"><p>Edge triggered. </p>
-</td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga2f9c57eb63bc389ac1da2f1735300f2b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga2f9c57eb63bc389ac1da2f1735300f2b">&#9670;&nbsp;</a></span>_cyhal_connect_signal()</h2>
@@ -164,19 +120,19 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a> _cyhal_connect_signal </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga9f1b9789bf38e1c6a4cd386ed5c0bc38">cyhal_source_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers.html#gae6e4ea4100036d96d2efc006a3f69c9b">cyhal_source_t</a>&#160;</td>
           <td class="paramname"><em>source</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga0b2d716ce1c5d6d971265d6ceda55bda">cyhal_dest_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers.html#ga8cc68fc0f23a2de010228ae5188598f0">cyhal_dest_t</a>&#160;</td>
           <td class="paramname"><em>dest</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">cyhal_signal_type_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__interconnect.html#ga801c21c8f1d529c8d189990ce6825080">cyhal_signal_type_t</a>&#160;</td>
           <td class="paramname"><em>type</em>&#160;</td>
         </tr>
         <tr>
@@ -209,13 +165,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a> _cyhal_disconnect_signal </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga9f1b9789bf38e1c6a4cd386ed5c0bc38">cyhal_source_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers.html#gae6e4ea4100036d96d2efc006a3f69c9b">cyhal_source_t</a>&#160;</td>
           <td class="paramname"><em>source</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers__pmg1s3.html#ga0b2d716ce1c5d6d971265d6ceda55bda">cyhal_dest_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers.html#ga8cc68fc0f23a2de010228ae5188598f0">cyhal_dest_t</a>&#160;</td>
           <td class="paramname"><em>dest</em>&#160;</td>
         </tr>
         <tr>
@@ -235,6 +191,44 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The status of the disconnect request </dd></dl>
+
+</div>
+</div>
+<a id="ga0681e91ab0d3792eff85a723a60ed301"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0681e91ab0d3792eff85a723a60ed301">&#9670;&nbsp;</a></span>_cyhal_can_connect_signal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool _cyhal_can_connect_signal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers.html#gae6e4ea4100036d96d2efc006a3f69c9b">cyhal_source_t</a>&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__triggers.html#ga8cc68fc0f23a2de010228ae5188598f0">cyhal_dest_t</a>&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks to see if a signal can be connected between the provided source and dest. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">source</td><td>The source of the signal to check </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dest</td><td>The destination of the signal to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Indication of whether a signal can connect between the provided points </dd></dl>
 
 </div>
 </div>

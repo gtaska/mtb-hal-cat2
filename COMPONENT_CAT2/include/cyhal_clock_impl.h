@@ -2,11 +2,11 @@
 * File Name: cyhal_clock_impl.h
 *
 * Description:
-* PSoC 4 specific implementation for clocks API.
+* CAT2 (PMG/PSoC 4) specific implementation for clocks API.
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2019 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,7 +49,7 @@ extern "C"
  * \subsection subsection_clock_snippet_5_impl Snippet: System initialization
  * The following snippet shows the clock driver can be used to initialize all clocks in the system.
  * \note This example is device specific.
- * \snippet clock.c snippet_cyhal_clock_system_init_p4
+ * \snippet hal_clock.c snippet_cyhal_clock_system_init_p4
  */
 
 /** Internal Main Oscillator: This is a fixed-frequency clock that is commonly used as a general purpose source for clocks that do not require specific frequencies or very high accuracy. This clock is stopped in the deep sleep and hibernate power modes. */
@@ -65,10 +65,12 @@ extern const cyhal_resource_inst_t CYHAL_CLOCK_ECO;
 #if defined(CY_IP_M0S8WCO)
 /** Watch Crystal Oscillator: This source is driven from an off-chip watch crystal that provides an extremely accurate source. This clock is stopped in the hibernate power mode. */
 extern const cyhal_resource_inst_t CYHAL_CLOCK_WCO;
+#if (WCO_WDT_EN == 1)
 /** WDC mux selection: A clock source for the Watch Dog Counters. It is recommended to stop any running LPTimer
     instances before changing this source. If this selection is changed while an LPTimer is running, call
     \ref cyhal_lptimer_reload after changing the source. */
 extern const cyhal_resource_inst_t CYHAL_CLOCK_WDCSEL;
+#endif
 #endif
 
 #if (EXCO_PLL_PRESENT > 0)

@@ -89,26 +89,22 @@ $(document).ready(function(){initNavTree('group__group__hal__impl.html','');});
   <div class="summary">
 <a href="#groups">API Reference</a>  </div>
   <div class="headertitle">
-<div class="title">PSoC 4 Implementation Specific</div>  </div>
+<div class="title">CAT2 (PMG/PSoC 4) Implementation Specific</div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
-<p>This section provides details about the PSoC 4 implementation of the Cypress HAL. </p>
+<p>This section provides details about the PMG/PSoC 4 implementation of the Cypress HAL. </p>
 <p>All information within this section is platform specific and is provided for reference. Portable application code should depend only on the APIs and types which are documented in the <a class="el" href="group__group__hal.html">HAL Drivers</a> section.</p>
 <h1><a class="anchor" id="group_hal_impl_mapping"></a>
 HAL Resource Hardware Mapping</h1>
-<p>The following table shows a mapping of each HAL driver to the lower level firmware driver and the corresponding hardware resource. This is intended to help understand how the HAL is implemented for PSoC 4 and what features the underlying hardware supports.</p>
+<p>The following table shows a mapping of each HAL driver to the lower level firmware driver and the corresponding hardware resource. This is intended to help understand how the HAL is implemented for PMG/PSoC 4 and what features the underlying hardware supports.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone">HAL Resource  </th><th class="markdownTableHeadNone">PDL Driver(s)  </th><th class="markdownTableHeadNone">PSoC 4 Hardware   </th></tr>
+<th class="markdownTableHeadNone">HAL Resource  </th><th class="markdownTableHeadNone">PDL Driver(s)  </th><th class="markdownTableHeadNone">CAT2 Hardware   </th></tr>
 <tr class="markdownTableBody" class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">ADC  </td><td class="markdownTableBodyNone">cy_adc  </td><td class="markdownTableBodyNone">SAR ADC   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowEven">
 <td class="markdownTableBodyNone">Clock  </td><td class="markdownTableBodyNone">cy_sysclk  </td><td class="markdownTableBodyNone">All clocks (system &amp; peripheral)   </td></tr>
-<tr class="markdownTableBody" class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Comparator  </td><td class="markdownTableBodyNone">cy_lpcomp  </td><td class="markdownTableBodyNone">LPComp   </td></tr>
-<tr class="markdownTableBody" class="markdownTableRowEven">
-<td class="markdownTableBodyNone">CRC  </td><td class="markdownTableBodyNone">cy_crypto_core_crc  </td><td class="markdownTableBodyNone">Crypto   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">DMA  </td><td class="markdownTableBodyNone">cy_dmac  </td><td class="markdownTableBodyNone">DMA Controller   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowEven">
@@ -122,11 +118,7 @@ HAL Resource Hardware Mapping</h1>
 <tr class="markdownTableBody" class="markdownTableRowEven">
 <td class="markdownTableBodyNone">I2C  </td><td class="markdownTableBodyNone">cy_scb_i2c  </td><td class="markdownTableBodyNone">SCB   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">I2S  </td><td class="markdownTableBodyNone">cy_i2s  </td><td class="markdownTableBodyNone">I2S   </td></tr>
-<tr class="markdownTableBody" class="markdownTableRowEven">
 <td class="markdownTableBodyNone">LPTimer  </td><td class="markdownTableBodyNone">cy_mcwdt  </td><td class="markdownTableBodyNone">MCWDT   </td></tr>
-<tr class="markdownTableBody" class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">Opamp  </td><td class="markdownTableBodyNone">cy_ctb  </td><td class="markdownTableBodyNone">CTBm   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowEven">
 <td class="markdownTableBodyNone">PWM  </td><td class="markdownTableBodyNone">cy_pwm  </td><td class="markdownTableBodyNone">TCPWM   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowOdd">
@@ -140,10 +132,8 @@ HAL Resource Hardware Mapping</h1>
 <tr class="markdownTableBody" class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">Timer  </td><td class="markdownTableBodyNone">cy_tcpwm_counter  </td><td class="markdownTableBodyNone">TCPWM   </td></tr>
 <tr class="markdownTableBody" class="markdownTableRowEven">
-<td class="markdownTableBodyNone">TRNG  </td><td class="markdownTableBodyNone">cy_crypto_core_trng  </td><td class="markdownTableBodyNone">Crypto   </td></tr>
-<tr class="markdownTableBody" class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">UART  </td><td class="markdownTableBodyNone">cy_scb_uart  </td><td class="markdownTableBodyNone">SCB   </td></tr>
-<tr class="markdownTableBody" class="markdownTableRowEven">
+<tr class="markdownTableBody" class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">WDT  </td><td class="markdownTableBodyNone">cy_wdt  </td><td class="markdownTableBodyNone">WDT   </td></tr>
 </table>
 <h1><a class="anchor" id="group_hal_impl_errors"></a>
@@ -156,21 +146,21 @@ API Reference</h2></td></tr>
 <tr class="memdesc:group__group__hal__impl__clock"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation specific interface for using the Clock driver. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__dma"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__dma.html">DMA (Direct Memory Access)</a></td></tr>
-<tr class="memdesc:group__group__hal__impl__dma"><td class="mdescLeft">&#160;</td><td class="mdescRight">DW (DataWire) is one of two DMA hardware implementations for PSOC6. <br /></td></tr>
+<tr class="memdesc:group__group__hal__impl__dma"><td class="mdescLeft">&#160;</td><td class="mdescRight">DW (DataWire) is one of two DMA hardware implementations for CAT1 (PSoC 6). <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__gpio"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__gpio.html">GPIO</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:group__group__hal__impl__hw__types"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__hw__types.html">PSoC 4 Specific Hardware Types</a></td></tr>
+<tr class="memitem:group__group__hal__impl__hw__types"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__hw__types.html">PMG/PSoC 4 Specific Hardware Types</a></td></tr>
 <tr class="memdesc:group__group__hal__impl__hw__types"><td class="mdescLeft">&#160;</td><td class="mdescRight">Aliases for types which are part of the public HAL interface but whose representations need to vary per HAL implementation. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__interconnect"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__interconnect.html">Interconnect (Internal Digital Routing)</a></td></tr>
-<tr class="memdesc:group__group__hal__impl__interconnect"><td class="mdescLeft">&#160;</td><td class="mdescRight">The interconnect system connects the various PSoC 4 peripherals using trigger signals. <br /></td></tr>
+<tr class="memdesc:group__group__hal__impl__interconnect"><td class="mdescLeft">&#160;</td><td class="mdescRight">The interconnect system connects the various hardware peripherals using trigger signals. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__pin__package"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__pin__package.html">Pins</a></td></tr>
 <tr class="memdesc:group__group__hal__impl__pin__package"><td class="mdescLeft">&#160;</td><td class="mdescRight">Definitions for the pinout for each supported device. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__syspm"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__syspm.html">System Power Management</a></td></tr>
-<tr class="memdesc:group__group__hal__impl__syspm"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PSoC 6 Power Management has the following characteristics: <a class="el" href="group__group__hal__syspm.html#gga144e474d3bfb544b207f172d1d8bd633acd2a5522b6591eb77418369e464a3eb1">CYHAL_SYSPM_SYSTEM_NORMAL</a> equates to the Low Power mode<br />
+<tr class="memdesc:group__group__hal__impl__syspm"><td class="mdescLeft">&#160;</td><td class="mdescRight">The CAT1 (PSoC 6) Power Management has the following characteristics: <a class="el" href="group__group__hal__syspm.html#gga144e474d3bfb544b207f172d1d8bd633acd2a5522b6591eb77418369e464a3eb1">CYHAL_SYSPM_SYSTEM_NORMAL</a> equates to the Low Power mode<br />
  <a class="el" href="group__group__hal__syspm.html#gga144e474d3bfb544b207f172d1d8bd633af4060b98561e43a6b930576644af014f">CYHAL_SYSPM_SYSTEM_LOW</a> equates to the Ultra Low Power mode. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__timer"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__timer.html">Timer (Timer/Counter)</a></td></tr>
@@ -179,7 +169,7 @@ API Reference</h2></td></tr>
 <tr class="memdesc:group__group__hal__impl__triggers"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trigger connections for supported device families. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__wdt"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__wdt.html">WDT (Watchdog Timer)</a></td></tr>
-<tr class="memdesc:group__group__hal__impl__wdt"><td class="mdescLeft">&#160;</td><td class="mdescRight">The PSoC 4 WDT is only capable of supporting certain timeout ranges below its maximum timeout. <br /></td></tr>
+<tr class="memdesc:group__group__hal__impl__wdt"><td class="mdescLeft">&#160;</td><td class="mdescRight">The CAT2 (PMG/PSoC 4) WDT is only capable of supporting certain timeout ranges below its maximum timeout. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:group__group__hal__impl__adc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__adc.html">ADC (Analog Digital Converter)</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>

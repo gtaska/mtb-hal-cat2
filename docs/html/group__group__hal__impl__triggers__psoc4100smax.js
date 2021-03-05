@@ -3,6 +3,7 @@ var group__group__hal__impl__triggers__psoc4100smax =
     [ "cyhal_source_t", "group__group__hal__impl__triggers__psoc4100smax.html#gae645e2818fc4ca5b2fb57532fcd9f8a5", null ],
     [ "cyhal_dest_t", "group__group__hal__impl__triggers__psoc4100smax.html#ga9f4ccc24bf42d155f1889959e519ebb8", null ],
     [ "cyhal_trigger_source_psoc4100smax_t", "group__group__hal__impl__triggers__psoc4100smax.html#gaac7073cbe7e284fc3fd3a6bc685ea41e", [
+      [ "CYHAL_TRIGGER_CPUSS_ZERO", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ea03a2f1af3373ec9c433c50f71ac3955d", null ],
       [ "CYHAL_TRIGGER_CANFD_TR_DBG_DMA_REQ0", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41eaa1150b8e36358a364f6fbb3a3e841325", null ],
       [ "CYHAL_TRIGGER_CANFD_TR_FIFO00", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ead04f3b7749e7c32287324d6b638ff462", null ],
       [ "CYHAL_TRIGGER_CANFD_TR_FIFO10", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ea1fa99f24d7e91d93f47eb2a985d96908", null ],
@@ -23,7 +24,6 @@ var group__group__hal__impl__triggers__psoc4100smax =
       [ "CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT13", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ea19e849ae74908ede9b97bfec178c500e", null ],
       [ "CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT14", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ea2496260fd34cb137cf8ab3dc025aef0f", null ],
       [ "CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT15", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ea4d21edb5740989e9251d025e02a4b286", null ],
-      [ "CYHAL_TRIGGER_CPUSS_ZERO", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ea03a2f1af3373ec9c433c50f71ac3955d", null ],
       [ "CYHAL_TRIGGER_EXCO_TRIGGER", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41ead7096e4f5d5270dfc3949f13ff932513", null ],
       [ "CYHAL_TRIGGER_LPCOMP_COMP_OUT0", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41eaaa6a16e46678f6fe30f9ef2f22bfb1af", null ],
       [ "CYHAL_TRIGGER_LPCOMP_COMP_OUT1", "group__group__hal__impl__triggers__psoc4100smax.html#ggaac7073cbe7e284fc3fd3a6bc685ea41eabbfd261ebd2d3f43a512bcbd145aa890", null ],

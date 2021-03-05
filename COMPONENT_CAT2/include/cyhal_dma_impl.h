@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,15 +33,16 @@ extern "C" {
 /** \addtogroup group_hal_impl_dma DMA (Direct Memory Access)
  * \ingroup group_hal_impl
  * \{
- * DW (DataWire) is one of two DMA hardware implementations for PSOC6. DW is
- * designed for low latency memory to peripheral or peripheral to memory
+ * DW (DataWire) is one of two DMA hardware implementations for CAT1 (PSoC 6).
+ * DW is designed for low latency memory to peripheral or peripheral to memory
  * transfers but can also perform memory to memory transfers and peripheral to
  * peripheral transfers.
  *
  * DMAC (Direct Memory Access Controller) is the second of two DMA hardware
- * implementations for PSOC6. DMAC is designed with high memory bandwidth for
- * large memory to memory transfers but can perform peripheral to memory,
- * memory to peripheral, and peripheral to peripheral transfers.
+ * implementations for CAT1 (PSoC 6). It is also the implementation that is
+ * found on CAT2 (PMG/PSoC 4) devices. DMAC is designed with high memory
+ * bandwidth for large memory to memory transfers but can perform peripheral
+ * to memory, memory to peripheral, and peripheral to peripheral transfers.
  *
  * Which DMA type is used is dependent on the exact hardware and number of DMA
  * channels already in use. This implementation will attempt to use DMAC first
@@ -51,7 +52,7 @@ extern "C" {
  * \section group_hal_impl_dma_interconnect Interconnect
  * For both DW and DMAC each channel has a single input and a single output
  * trigger available. The input, when triggered, initiates a DMA transfer of
- * the configured type (note that this also affects the type transfered by the
+ * the configured type (note that this also affects the type transferred by the
  * SW triggering). For output, a trigger is generated when a DMA transfer of
  * the configured type is completed. For DW and DMAC neither input nor output
  * triggers can be disabled completely but the signals do not, of course, have

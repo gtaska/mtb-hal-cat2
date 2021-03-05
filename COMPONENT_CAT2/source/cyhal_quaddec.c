@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2020 Cypress Semiconductor Corporation
+* Copyright 2020-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,6 +68,9 @@ extern "C" {
 
 #define _CYHAL_CNT_NUM _CYHAL_TCPWM_CNT_NUMBER(obj->tcpwm.resource)
 
+#if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
+static cyhal_tcpwm_input_t _cyhal_quaddec_translate_input_signal(cyhal_quaddec_input_t signal);
+#endif
 
 static inline cy_rslt_t _cyhal_quaddec_configure_clock(cyhal_tcpwm_t *tcpwm, en_clk_dst_t pclk, uint32_t frequency)
 {
@@ -111,6 +114,7 @@ static inline cy_rslt_t _cyhal_quaddec_configure_clock(cyhal_tcpwm_t *tcpwm, en_
 cy_rslt_t _cyhal_quaddec_connect_pin(cyhal_quaddec_input_t signal, cyhal_gpio_t pin,
                                      TCPWM_Type* base, uint8_t channel_num)
 {
+#if defined(CYHAL_PIN_MAP_TCPWM_TR_IN)
     bool found = false;
     uint8_t index;
     uint8_t array_size = sizeof(cyhal_pin_map_tcpwm_tr_in) / sizeof(cyhal_resource_pin_mapping_t);
@@ -169,6 +173,14 @@ cy_rslt_t _cyhal_quaddec_connect_pin(cyhal_quaddec_input_t signal, cyhal_gpio_t 
     }
 
     return CY_RSLT_SUCCESS;
+#else
+    CY_UNUSED_PARAMETER(signal);
+    CY_UNUSED_PARAMETER(pin);
+    CY_UNUSED_PARAMETER(base);
+    CY_UNUSED_PARAMETER(channel_num);
+
+    return CYHAL_GPIO_RSLT_ERR_NO_OUTPUT_SIGNAL;
+#endif /* defined(CYHAL_PIN_MAP_TCPWM_TR_IN) */
 }
 #endif
 
@@ -198,6 +210,7 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
         cy_stc_tcpwm_quaddec_config_t config;
 
         obj->tcpwm.base = _CYHAL_TCPWM_DATA[obj->tcpwm.resource.block_num].base;
+        _cyhal_tcpwm_init_data(&obj->tcpwm);
 
         memset(&config, 0, sizeof(cy_stc_tcpwm_quaddec_config_t));
 
@@ -225,7 +238,8 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
         {
             obj->phi_a = phi_a;
             #if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
-            rslt = cyhal_gpio_enable_output(phi_a, &obj->source_phi_a);
+            uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_PHI_A);
+            rslt = cyhal_gpio_enable_output(phi_a, &(obj->tcpwm.inputs[idx]));
             #endif
         }
 
@@ -238,7 +252,8 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
         {
             obj->phi_b = phi_b;
             #if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
-            rslt = cyhal_gpio_enable_output(phi_b, &obj->source_phi_b);
+            uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_PHI_B);
+            rslt = cyhal_gpio_enable_output(phi_b, &(obj->tcpwm.inputs[idx]));
             #endif
         }
 
@@ -253,14 +268,16 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
             {
                 obj->index = index;
                 #if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
-                rslt = cyhal_gpio_enable_output(index, &obj->source_index);
+                uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_INDEX);
+                rslt = cyhal_gpio_enable_output(index, &(obj->tcpwm.inputs[idx]));
                 #endif
             }
         }
         #if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
         else
         {
-            obj->source_index = CYHAL_TRIGGER_CPUSS_ZERO;
+            uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_INDEX);
+            obj->tcpwm.inputs[idx] = CYHAL_TRIGGER_CPUSS_ZERO;
         }
         #endif
 
@@ -275,28 +292,31 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
     // Internal signal configuration
     if (rslt == CY_RSLT_SUCCESS)
     {
-        rslt = cyhal_quaddec_connect_digital(obj, obj->source_phi_a, CYHAL_QUADDEC_INPUT_PHI_A);
+        uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_PHI_A);
+        rslt = cyhal_quaddec_connect_digital(obj, obj->tcpwm.inputs[idx], CYHAL_QUADDEC_INPUT_PHI_A);
         if (rslt != CY_RSLT_SUCCESS)
         {
-            obj->source_phi_a = CYHAL_TRIGGER_CPUSS_ZERO;
+            obj->tcpwm.inputs[idx] = CYHAL_TRIGGER_CPUSS_ZERO;
         }
     }
 
     if (rslt == CY_RSLT_SUCCESS)
     {
-        rslt = cyhal_quaddec_connect_digital(obj, obj->source_phi_b, CYHAL_QUADDEC_INPUT_PHI_B);
+        uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_PHI_B);
+        rslt = cyhal_quaddec_connect_digital(obj, obj->tcpwm.inputs[idx], CYHAL_QUADDEC_INPUT_PHI_B);
         if (rslt != CY_RSLT_SUCCESS)
         {
-            obj->source_phi_b = CYHAL_TRIGGER_CPUSS_ZERO;
+            obj->tcpwm.inputs[idx] = CYHAL_TRIGGER_CPUSS_ZERO;
         }
     }
 
     if ((rslt == CY_RSLT_SUCCESS) && (index != NC))
     {
-        rslt = cyhal_quaddec_connect_digital(obj, obj->source_index, CYHAL_QUADDEC_INPUT_INDEX);
+        uint8_t idx = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_INDEX);
+        rslt = cyhal_quaddec_connect_digital(obj, obj->tcpwm.inputs[idx], CYHAL_QUADDEC_INPUT_INDEX);
         if (rslt != CY_RSLT_SUCCESS)
         {
-            obj->source_index = CYHAL_TRIGGER_CPUSS_ZERO;
+            obj->tcpwm.inputs[idx] = CYHAL_TRIGGER_CPUSS_ZERO;
         }
     }
 
@@ -361,7 +381,6 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
     // Enable the quadrature function
     if (rslt == CY_RSLT_SUCCESS)
     {
-        _cyhal_tcpwm_init_data(&obj->tcpwm);
         Cy_TCPWM_QuadDec_Enable(obj->tcpwm.base, _CYHAL_CNT_NUM);
     }
     else
@@ -376,17 +395,20 @@ void cyhal_quaddec_free(cyhal_quaddec_t *obj)
 {
     CY_ASSERT(obj != NULL);
     #if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
-    if ((obj->phi_a != NC) && (obj->source_phi_a != CYHAL_TRIGGER_CPUSS_ZERO))
+    uint8_t idx_phi_a = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_PHI_A);
+    if ((obj->phi_a != NC) && (obj->tcpwm.inputs[idx_phi_a] != CYHAL_TRIGGER_CPUSS_ZERO))
     {
-        cyhal_quaddec_disconnect_digital(obj, obj->source_phi_a, CYHAL_QUADDEC_INPUT_PHI_A);
+        cyhal_quaddec_disconnect_digital(obj, obj->tcpwm.inputs[idx_phi_a], CYHAL_QUADDEC_INPUT_PHI_A);
     }
-    if ((obj->phi_b != NC) && (obj->source_phi_b != CYHAL_TRIGGER_CPUSS_ZERO))
+    uint8_t idx_phi_b = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_PHI_B);
+    if ((obj->phi_b != NC) && (obj->tcpwm.inputs[idx_phi_b] != CYHAL_TRIGGER_CPUSS_ZERO))
     {
-        cyhal_quaddec_disconnect_digital(obj, obj->source_phi_b, CYHAL_QUADDEC_INPUT_PHI_B);
+        cyhal_quaddec_disconnect_digital(obj, obj->tcpwm.inputs[idx_phi_b], CYHAL_QUADDEC_INPUT_PHI_B);
     }
-    if ((obj->index != NC) && (obj->source_index != CYHAL_TRIGGER_CPUSS_ZERO))
+    uint8_t idx_index = (uint8_t)_cyhal_quaddec_translate_input_signal(CYHAL_QUADDEC_INPUT_INDEX);
+    if ((obj->index != NC) && (obj->tcpwm.inputs[idx_index] != CYHAL_TRIGGER_CPUSS_ZERO))
     {
-        cyhal_quaddec_disconnect_digital(obj, obj->source_index, CYHAL_QUADDEC_INPUT_INDEX);
+        cyhal_quaddec_disconnect_digital(obj, obj->tcpwm.inputs[idx_index], CYHAL_QUADDEC_INPUT_INDEX);
     }
     #endif
     _cyhal_utils_release_if_used(&obj->phi_a);
@@ -471,7 +493,7 @@ uint32_t cyhal_quaddec_read_capture(const cyhal_quaddec_t *obj)
 
 #if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
 
-static cyhal_tcpwm_input_t _cyhal_translate_input_signal(cyhal_quaddec_input_t signal)
+static cyhal_tcpwm_input_t _cyhal_quaddec_translate_input_signal(cyhal_quaddec_input_t signal)
 {
     switch (signal)
     {
@@ -507,15 +529,15 @@ cy_rslt_t cyhal_quaddec_connect_digital(cyhal_quaddec_t *obj, cyhal_source_t sou
             return CYHAL_QUADDEC_RSLT_ERR_BAD_ARGUMENT;
     }
 
-    tcpwm_signal = _cyhal_translate_input_signal(signal);
+    tcpwm_signal = _cyhal_quaddec_translate_input_signal(signal);
 
-    return _cyhal_tcpwm_connect_digital(obj->tcpwm.base, obj->tcpwm.resource, source, tcpwm_signal, input_type);
+    return _cyhal_tcpwm_connect_digital(&(obj->tcpwm), source, tcpwm_signal, input_type);
 }
 
 cy_rslt_t cyhal_quaddec_disconnect_digital(cyhal_quaddec_t *obj, cyhal_source_t source, cyhal_quaddec_input_t signal)
 {
-    return _cyhal_tcpwm_disconnect_digital(obj->tcpwm.base, obj->tcpwm.resource, source,
-                                           _cyhal_translate_input_signal(signal));
+    return _cyhal_tcpwm_disconnect_digital(&(obj->tcpwm), source,
+                                           _cyhal_quaddec_translate_input_signal(signal));
 }
 
 #elif defined(COMPONENT_CAT2)
@@ -538,7 +560,7 @@ cy_rslt_t cyhal_quaddec_disconnect_digital(cyhal_quaddec_t *obj, cyhal_source_t 
 
 #endif
 
-static cyhal_tcpwm_output_t _cyhal_translate_output_signal(cyhal_quaddec_output_t signal)
+static cyhal_tcpwm_output_t _cyhal_quaddec_translate_output_signal(cyhal_quaddec_output_t signal)
 {
     switch (signal)
     {
@@ -556,8 +578,7 @@ cy_rslt_t cyhal_quaddec_enable_output(cyhal_quaddec_t *obj, cyhal_quaddec_output
         return CYHAL_QUADDEC_RSLT_ERR_BAD_ARGUMENT;
     }
 
-    return _cyhal_tcpwm_enable_output(obj->tcpwm.base, obj->tcpwm.resource,
-                                      _cyhal_translate_output_signal(signal), source);
+    return _cyhal_tcpwm_enable_output(&(obj->tcpwm), _cyhal_quaddec_translate_output_signal(signal), source);
 }
 
 cy_rslt_t cyhal_quaddec_disable_output(cyhal_quaddec_t *obj, cyhal_quaddec_output_t signal)
@@ -565,6 +586,5 @@ cy_rslt_t cyhal_quaddec_disable_output(cyhal_quaddec_t *obj, cyhal_quaddec_outpu
     if (signal != CYHAL_QUADDEC_OUTPUT_COMPARE_MATCH)
         return CYHAL_QUADDEC_RSLT_ERR_BAD_ARGUMENT;
 
-    return _cyhal_tcpwm_disable_output(obj->tcpwm.base, obj->tcpwm.resource,
-                                       _cyhal_translate_output_signal(signal));
+    return _cyhal_tcpwm_disable_output(&(obj->tcpwm), _cyhal_quaddec_translate_output_signal(signal));
 }

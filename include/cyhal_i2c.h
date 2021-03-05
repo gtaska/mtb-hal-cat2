@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,23 +57,23 @@
 * the <b>sda</b> and <b>scl</b> pins.
 *
 * Initializing as I2C master
-* \snippet i2c.c snippet_cyhal_i2c_master_init
+* \snippet hal_i2c.c snippet_cyhal_i2c_master_init
 *
 * Initializing as I2C slave
-* \snippet i2c.c snippet_cyhal_i2c_slave_init
+* \snippet hal_i2c.c snippet_cyhal_i2c_slave_init
 *
 * \subsection subsection_i2c_snippet_2 Snippet 2: Handling events
 * This snippet shows how to enable and handle I2C events using \ref cyhal_i2c_enable_event and \ref cyhal_i2c_register_callback.<br>
 * The <b>callback</b> parameter of \ref cyhal_i2c_register_callback is used to pass the callback handler that will be invoked when an event occurs.<br>
 * The <b>event</b> parameter of \ref cyhal_i2c_enable_event is used to pass the bitmasks of events ( \ref cyhal_i2c_event_t) to be enabled.
 *
-* \snippet i2c.c snippet_cyhal_handle_i2c_events
+* \snippet hal_i2c.c snippet_cyhal_handle_i2c_events
 *
 * \subsection subsection_i2c_snippet_3 Snippet 3: I2C Master Asynchronous Transfer
 * This snippet shows how to implement asynchronous transfers using \ref cyhal_i2c_master_transfer_async.<br>
 * \ref cyhal_i2c_abort_async is used to stop the transfer, in this case when an error occurs.
 *
-* \snippet i2c.c snippet_cyhal_async_transfer
+* \snippet hal_i2c.c snippet_cyhal_async_transfer
 *
 * \section subsection_i2c_moreinformation More Information
 *
@@ -396,7 +396,7 @@ cy_rslt_t cyhal_i2c_set_fifo_level(cyhal_i2c_t *obj, cyhal_i2c_fifo_type_t type,
  * @param[in]  obj        The I2C object
  * @param[in]  output     Which output signal to enable
  * @param[out] source     Pointer to user-allocated source signal object which
- * will be initialized by enable_output. source should be passed to
+ * will be initialized by enable_output. \p source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
  * @return The status of the output enable
  * */

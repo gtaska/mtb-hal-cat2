@@ -10,7 +10,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2019-2020 Cypress Semiconductor Corporation
+* Copyright 2019-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,14 +91,14 @@ cy_rslt_t cyhal_wdt_init(cyhal_wdt_t *obj, uint32_t timeout_ms)
 
     _cyhal_wdt_initialized = true;
 
+    cyhal_wdt_stop(obj); // Stop and unlock before doing other work
+
     if (!_cyhal_wdt_pdl_initialized)
     {
-        Cy_WDT_Enable();
+        Cy_WDT_ClearInterrupt();
         Cy_WDT_MaskInterrupt();
         _cyhal_wdt_pdl_initialized = true;
     }
-
-    cyhal_wdt_stop(obj);
 
     _cyhal_wdt_initial_timeout_ms = timeout_ms;
 

@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ extern "C" {
  * \ingroup group_hal_impl
  * \{
  * \section group_hal_impl_gpio_interrupt Interrupt Priorities
- * In PSoC 6, each GPIO port has a single IRQ line. Hence, the interrupt priority
+ * In CAT1 (PSoC 6), each GPIO port has a single IRQ line. Hence, the interrupt priority
  * set through \ref cyhal_gpio_enable_event for a specific pin on a port will apply
  * to the all the pins in that pin's port. If multiple pins on the same port are
  * set at different priorities, the priority that the last pin is set to will be applied
@@ -63,7 +63,7 @@ extern "C" {
  * \ingroup group_hal_impl
  * \{
  * \section group_hal_impl_gpio_interrupt Interrupt Priorities
- * In PSoC 4, ports 0 through 3 have dedicated IRQ lines (ioss_interrupts_gpio_0_IRQn - ioss_interrupts_gpio_3_IRQn)
+ * In CAT2 (PMG/PSoC 4), ports 0 through 3 have dedicated IRQ lines (ioss_interrupts_gpio_0_IRQn - ioss_interrupts_gpio_3_IRQn)
  * and other ports are required to use the All-Port IRQ line (ioss_interrupt_gpio_IRQn).
  * If multiple pins on the same port are set at different priorities, the priority that the
  * last pin is set to will be applied to all pins used on that port. When using the pin that does
@@ -74,7 +74,7 @@ extern "C" {
  *    because the same All-Port IRQ line will be used for all GPIOs.
  *
  ** \section group_hal_impl_gpio_interconnect Interconnect
- * PSoC4 does not have GPIO triggers.
+ * PSoC 4 does not have GPIO triggers.
  * \} group_hal_impl_gpio
  */
 #endif

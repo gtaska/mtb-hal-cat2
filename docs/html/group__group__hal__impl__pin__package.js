@@ -1,12 +1,17 @@
 var group__group__hal__impl__pin__package =
 [
+    [ "PMG1S0 24-QFN-PMG1-S0", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0" ],
+    [ "PMG1S1 40-QFN-PMG1-S1", "group__group__hal__impl__pin__package__pmg1s1__40__qfn__pmg1__s1.html", "group__group__hal__impl__pin__package__pmg1s1__40__qfn__pmg1__s1" ],
+    [ "PMG1S2 40-QFN-PMG1-S2", "group__group__hal__impl__pin__package__pmg1s2__40__qfn__pmg1__s2.html", "group__group__hal__impl__pin__package__pmg1s2__40__qfn__pmg1__s2" ],
+    [ "PMG1S3 48-QFN", "group__group__hal__impl__pin__package__pmg1s3__48__qfn.html", "group__group__hal__impl__pin__package__pmg1s3__48__qfn" ],
+    [ "PMG1S3 97-BGA", "group__group__hal__impl__pin__package__pmg1s3__97__bga.html", "group__group__hal__impl__pin__package__pmg1s3__97__bga" ],
     [ "PSoC4000S 20-SSOP", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html", "group__group__hal__impl__pin__package__psoc4000s__20__ssop" ],
     [ "PSoC4000S 24-QFN", "group__group__hal__impl__pin__package__psoc4000s__24__qfn.html", "group__group__hal__impl__pin__package__psoc4000s__24__qfn" ],
     [ "PSoC4000S 25-CSP", "group__group__hal__impl__pin__package__psoc4000s__25__csp.html", "group__group__hal__impl__pin__package__psoc4000s__25__csp" ],
     [ "PSoC4000S 28-SSOP-AUTO", "group__group__hal__impl__pin__package__psoc4000s__28__ssop__auto.html", "group__group__hal__impl__pin__package__psoc4000s__28__ssop__auto" ],
     [ "PSoC4000S 32-QFN", "group__group__hal__impl__pin__package__psoc4000s__32__qfn.html", "group__group__hal__impl__pin__package__psoc4000s__32__qfn" ],
     [ "PSoC4000S 32-TQFP", "group__group__hal__impl__pin__package__psoc4000s__32__tqfp.html", "group__group__hal__impl__pin__package__psoc4000s__32__tqfp" ],
-    [ "PSoC4000S 40-QFN-AUTO", "group__group__hal__impl__pin__package__psoc4000s__40__qfn__auto.html", "group__group__hal__impl__pin__package__psoc4000s__40__qfn__auto" ],
+    [ "PSoC4000S 40-QFN", "group__group__hal__impl__pin__package__psoc4000s__40__qfn.html", "group__group__hal__impl__pin__package__psoc4000s__40__qfn" ],
     [ "PSoC4000S 48-TQFP", "group__group__hal__impl__pin__package__psoc4000s__48__tqfp.html", "group__group__hal__impl__pin__package__psoc4000s__48__tqfp" ],
     [ "PSoC4100S 28-SSOP-AUTO", "group__group__hal__impl__pin__package__psoc4100s__28__ssop__auto.html", "group__group__hal__impl__pin__package__psoc4100s__28__ssop__auto" ],
     [ "PSoC4100S 32-QFN", "group__group__hal__impl__pin__package__psoc4100s__32__qfn.html", "group__group__hal__impl__pin__package__psoc4100s__32__qfn" ],

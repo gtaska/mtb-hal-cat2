@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@
 #include "cyhal_dma_dmac.h"
 #include "cyhal_dma_impl.h"
 #include "cyhal_hwmgr.h"
+#include "cyhal_hwmgr_impl.h"
 #include "cyhal_interconnect.h"
 #include "cyhal_syspm.h"
 #include "cyhal_utils.h"
@@ -295,7 +296,17 @@ static void _cyhal_dma_dmac_irq_handler(void)
 #endif
 }
 
-cy_rslt_t _cyhal_dma_dmac_init(cyhal_dma_t *obj, uint8_t priority)
+static cyhal_source_t _cyhal_dma_dmac_get_src(uint8_t block_num, uint8_t channel_num)
+{
+    return (cyhal_source_t)(CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 + (block_num * CPUSS_DMAC_CH_NR) + channel_num);
+}
+
+static cyhal_dest_t _cyhal_dma_dmac_get_dest(uint8_t block_num, uint8_t channel_num)
+{
+    return (cyhal_dest_t)(CYHAL_TRIGGER_CPUSS_DMAC_TR_IN0 + (block_num * CPUSS_DMAC_CH_NR) + channel_num);
+}
+
+cy_rslt_t _cyhal_dma_dmac_init(cyhal_dma_t *obj, cyhal_source_t *src, cyhal_dest_t *dest, uint8_t priority)
 {
     if(!CY_DMAC_IS_PRIORITY_VALID(priority))
         return CYHAL_DMA_RSLT_ERR_INVALID_PRIORITY;
@@ -305,7 +316,8 @@ cy_rslt_t _cyhal_dma_dmac_init(cyhal_dma_t *obj, uint8_t priority)
         return CYHAL_SYSPM_RSLT_ERR_PM_PENDING;
     }
 
-    cy_rslt_t rslt = cyhal_hwmgr_allocate(CYHAL_RSC_DMA, &obj->resource);
+    cy_rslt_t rslt = _cyhal_hwmgr_allocate_with_connection(
+        CYHAL_RSC_DMA, src, dest, _cyhal_dma_dmac_get_src, _cyhal_dma_dmac_get_dest, &obj->resource);
     if(rslt != CY_RSLT_SUCCESS)
         return rslt;
 
@@ -318,10 +330,6 @@ cy_rslt_t _cyhal_dma_dmac_init(cyhal_dma_t *obj, uint8_t priority)
     obj->descriptor = obj->channel_config.descriptor;
 #endif
     GET_RESOURCE_DATA(obj->channel_config).priority = priority;
-
-    obj->callback_data.callback = NULL;
-    obj->callback_data.callback_arg = NULL;
-    obj->irq_cause = 0;
 
     if (!_cyhal_dma_dmac_has_enabled())
     {
@@ -353,8 +361,6 @@ void _cyhal_dma_dmac_free(cyhal_dma_t *obj)
         _cyhal_syspm_unregister_peripheral_callback(&_cyhal_dma_dmac_pm_callback_args);
         _cyhal_dma_dmac_pm_transition_pending = false;
     }
-
-    cyhal_hwmgr_free(&obj->resource);
 }
 
 /* Initialize descriptor, initialize channel, enable channel, enable channel
@@ -376,6 +382,15 @@ cy_rslt_t _cyhal_dma_dmac_configure(cyhal_dma_t *obj, const cyhal_dma_cfg_t *cfg
         GET_RESOURCE_DATA(obj->descriptor_config).dataSize = CY_DMAC_WORD;
     else
         return CYHAL_DMA_RSLT_ERR_INVALID_TRANSFER_WIDTH;
+
+    /* By default, transfer what the user set for dataSize. However, if transfering between memory
+     * and a peripheral, make sure the peripheral access is using words. */
+    GET_RESOURCE_DATA(obj->descriptor_config).srcTransferSize =
+        GET_RESOURCE_DATA(obj->descriptor_config).dstTransferSize = CY_DMAC_TRANSFER_SIZE_DATA;
+    if (obj->direction == CYHAL_DMA_DIRECTION_PERIPH2MEM)
+        GET_RESOURCE_DATA(obj->descriptor_config).srcTransferSize = CY_DMAC_TRANSFER_SIZE_WORD;
+    else if (obj->direction == CYHAL_DMA_DIRECTION_MEM2PERIPH)
+        GET_RESOURCE_DATA(obj->descriptor_config).dstTransferSize = CY_DMAC_TRANSFER_SIZE_WORD;
 
 #if defined(CY_IP_M4CPUSS_DMAC)
     GET_RESOURCE_DATA(obj->descriptor_config).nextDescriptor = GET_RESOURCE_DATA(&obj->descriptor);
@@ -568,7 +583,7 @@ cy_rslt_t _cyhal_dma_dmac_connect_digital(cyhal_dma_t *obj, cyhal_source_t sourc
     obj->descriptor.dmac.ctl |= _VAL2FLD(DMAC_CH_V2_DESCR_CTL_TR_IN_TYPE, _cyhal_convert_input_t(input));
     Cy_DMAC_Channel_Enable(_cyhal_dma_dmac_get_base(obj->resource.block_num), obj->resource.channel_num);
 
-    cyhal_dest_t dest = (cyhal_dest_t)(CYHAL_TRIGGER_CPUSS_DMAC_TR_IN0 + (obj->resource.block_num * CPUSS_DMAC_CH_NR) + obj->resource.channel_num);
+    cyhal_dest_t dest = _cyhal_dma_dmac_get_dest(obj->resource.block_num, obj->resource.channel_num);
 
     return _cyhal_connect_signal(source, dest, CYHAL_SIGNAL_TYPE_EDGE);
 }
@@ -585,7 +600,7 @@ cy_rslt_t _cyhal_dma_dmac_enable_output(cyhal_dma_t *obj, cyhal_dma_output_t out
     obj->descriptor.dmac.ctl |= _VAL2FLD(DMAC_CH_V2_DESCR_CTL_TR_OUT_TYPE, _cyhal_convert_output_t(output));
     Cy_DMAC_Channel_Enable(_cyhal_dma_dmac_get_base(obj->resource.block_num), obj->resource.channel_num);
 
-    *source = (cyhal_source_t)(CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 + (obj->resource.block_num * CPUSS_DMAC_CH_NR) + obj->resource.channel_num);
+    *source = _cyhal_dma_dmac_get_src(obj->resource.block_num, obj->resource.channel_num);
 
     return CY_RSLT_SUCCESS;
 }
@@ -605,7 +620,7 @@ cy_rslt_t _cyhal_dma_dmac_disconnect_digital(cyhal_dma_t *obj, cyhal_source_t so
 
     Cy_DMAC_Channel_Enable(_cyhal_dma_dmac_get_base(obj->resource.block_num), obj->resource.channel_num);
 
-    cyhal_dest_t dest = (cyhal_dest_t)(CYHAL_TRIGGER_CPUSS_DMAC_TR_IN0 + (obj->resource.block_num * CPUSS_DMAC_CH_NR) + obj->resource.channel_num);
+    cyhal_dest_t dest = _cyhal_dma_dmac_get_dest(obj->resource.block_num, obj->resource.channel_num);
 
     return _cyhal_disconnect_signal(source, dest);
 }
@@ -643,7 +658,7 @@ cy_rslt_t _cyhal_dma_dmac_connect_digital(cyhal_dma_t *obj, cyhal_source_t sourc
     return _cyhal_connect_signal(source, dest, CYHAL_SIGNAL_TYPE_EDGE);
 }
 
-// PSoC4 output triggers are always active. This is a noop except to return the source.
+// M0S8 output triggers are always active. This is a noop except to return the source.
 cy_rslt_t _cyhal_dma_dmac_enable_output(cyhal_dma_t *obj, cyhal_dma_output_t output, cyhal_source_t *source)
 {
     if(output != CYHAL_DMA_OUTPUT_TRIGGER_SINGLE_ELEMENT &&
@@ -669,7 +684,7 @@ cy_rslt_t _cyhal_dma_dmac_disconnect_digital(cyhal_dma_t *obj, cyhal_source_t so
     return _cyhal_disconnect_signal(source, dest);
 }
 
-// PSoC4 output triggers are always active. This is a noop.
+// M0S8 output triggers are always active. This is a noop.
 cy_rslt_t _cyhal_dma_dmac_disable_output(cyhal_dma_t *obj, cyhal_dma_output_t output)
 {
     CY_UNUSED_PARAMETER(obj);

@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,19 +61,19 @@
 * The following snippet initializes an ADC and one channel.
 * One ADC conversion result is returned corresponding to the input at the specified
 * pin.
-* \snippet adc.c snippet_cyhal_adc_simple_init
+* \snippet hal_adc.c snippet_cyhal_adc_simple_init
 *
 * \subsection subsection_adc_snippet_2 Snippet 2: Multi-channel ADC initialization and reading conversion result
 * The following snippet initializes an ADC with one single-ended channel and one differential channel
-* \snippet adc.c snippet_cyhal_adc_multi_init
+* \snippet hal_adc.c snippet_cyhal_adc_multi_init
 *
 * \subsection subsection_adc_snippet_3 Snippet 3: Asynchronously read multiple channels
 *  The following snippet illustrates how to asynchronously read multiple scans of multiple channels.
-* \snippet adc.c snippet_cyhal_adc_async_read
+* \snippet hal_adc.c snippet_cyhal_adc_async_read
 *
 * \subsection subsection_adc_snippet_4 Snippet 4: Continuous scanning
 *  This snippet shows how to run the ADC in continuous mode and process results as each scan completes.
-* \snippet adc.c snippet_cyhal_adc_continuous_read
+* \snippet hal_adc.c snippet_cyhal_adc_continuous_read
 */
 
 #pragma once
@@ -511,7 +511,7 @@ void cyhal_adc_enable_event(cyhal_adc_t *obj, cyhal_adc_event_t event, uint8_t i
 /** Connects a source signal and enables the specified input
  *
  * @param[in] obj          The ADC object
- * @param[in] source       Source signal
+ * @param[in] source       Source signal obtained from another driver's cyhal_<PERIPH>_enable_output
  * @param[in] input        Which input signal to connect to
   * @return The status of the connection
  */
@@ -522,7 +522,7 @@ cy_rslt_t cyhal_adc_connect_digital(cyhal_adc_t *obj, cyhal_source_t source, cyh
  * @param[in]  obj          The ADC object
  * @param[in]  output       Which output signal to enable
  * @param[out] source       Pointer to user-allocated source signal object
- * which will be initialized by enable_output. source should be passed to
+ * which will be initialized by enable_output. \p source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
   * @return The status of the output enable
  */
@@ -531,11 +531,11 @@ cy_rslt_t cyhal_adc_enable_output(cyhal_adc_t *obj, cyhal_adc_output_t output, c
 /** Disconnect a source signal and disable ADC input
  *
  * @param[in] obj          The ADC object
- * @param[in] source       Source signal
+ * @param[in] source       Source signal from cyhal_<PERIPH>_enable_output to disable
  * @param[in] input        Which input signal to disconnect
   * @return The status of the disconnect
  */
-cy_rslt_t cyhal_adc_disconnect_digital(cyhal_adc_t *obj, cyhal_source_t source,  cyhal_adc_input_t input);
+cy_rslt_t cyhal_adc_disconnect_digital(cyhal_adc_t *obj, cyhal_source_t source, cyhal_adc_input_t input);
 
 /** Disables specified output signal from ADC.
  *

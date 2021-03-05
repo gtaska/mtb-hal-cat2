@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,13 +56,13 @@
  * The clock frequency and the duty cycle is set using \ref cyhal_pwm_set_duty_cycle. <br>
  * \ref cyhal_pwm_start starts the PWM output on the pin.
  *
- * \snippet pwm.c snippet_cyhal_pwm_simple_init
+ * \snippet hal_pwm.c snippet_cyhal_pwm_simple_init
  *
  *
  * \subsection subsection_pwm_snippet_2 Snippet 2: Starting and stopping the PWM output
  * \ref cyhal_pwm_start and \ref cyhal_pwm_stop functions can be used after PWM initialization to start and stop the PWM output.
  *
- * \snippet pwm.c snippet_cyhal_pwm_start_stop
+ * \snippet hal_pwm.c snippet_cyhal_pwm_start_stop
  *
  *
  * \subsection subsection_pwm_snippet_3 Snippet 3: Advanced PWM output to pin
@@ -70,14 +70,14 @@
  * (left, right, center) and run mode (one-shot or continuous). The following snippet initializes a left-aligned, continuous running PWM
  * assigned to the supplied pin. The inverted output is assigned to a second pin (<b>compl_pin</b>).
  *
- * \snippet pwm.c snippet_cyhal_pwm_adv_init
+ * \snippet hal_pwm.c snippet_cyhal_pwm_adv_init
  *
  *
  * \subsection subsection_pwm_snippet_4 Snippet 4: Interrupts on PWM events
  * PWM events like hitting the terminal count or a compare event can be used to trigger a callback function. <br>
  * \ref cyhal_pwm_enable_event() can be used to enable one or more events to trigger the callback function.
  *
- * \snippet pwm.c snippet_cyhal_pwm_events
+ * \snippet hal_pwm.c snippet_cyhal_pwm_events
  */
 
 #pragma once
@@ -173,8 +173,8 @@ typedef void(*cyhal_pwm_event_callback_t)(void *callback_arg, cyhal_pwm_event_t 
  *                               for this object but the init function will initialize its contents.
  * @param[in]  pin              The PWM pin to initialize. This pin is required, it cannot be \ref NC (No Connect).
  * @param[in]  compl_pin        An optional, additional inverted output pin. <br>
- * If supplied, this must be connected to the same PWM instance as <b>pin</b>, for
- * PSoC 6 see \ref section_hal_impl_pwm_compl_pins.<br>
+ * If supplied, this must be connected to the same PWM instance as <b>pin</b>, see
+ * \ref section_hal_impl_pwm_compl_pins.<br>
  * If this output is not needed, use \ref NC (No Connect).
  * @param[in]  pwm_alignment    PWM alignment: left, right, or center.
  * @param[in]  continuous       PWM run type: continuous (true) or one shot (false).
@@ -251,9 +251,9 @@ void cyhal_pwm_enable_event(cyhal_pwm_t *obj, cyhal_pwm_event_t event, uint8_t i
 /** Connects a source signal and configures and enables a PWM event to be
  * triggered from that signal. These PWM events can be configured
  * independently and connect to the same or different source signals.
- * 
+ *
  * @param[in] obj      PWM obj
- * @param[in] source   Source signal
+ * @param[in] source   Source signal obtained from another driver's cyhal_<PERIPH>_enable_output
  * @param[in] signal   The PWM input signal
  * @param[in] type     The PWM input signal edge type
  * @return The status of the connection
@@ -263,11 +263,11 @@ cy_rslt_t cyhal_pwm_connect_digital(cyhal_pwm_t *obj, cyhal_source_t source, cyh
 /** Enables the specified output signal from a PWM that will be triggered
  * when the corresponding event occurs. Multiple output signals can be
  * configured simultaneously.
- * 
+ *
  * @param[in]  obj      PWM obj
  * @param[in]  signal   The PWM output signal
  * @param[out] source   Pointer to user-allocated source signal object which
- * will be initialized by enable_output. source should be passed to
+ * will be initialized by enable_output. \p source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
  * @return The status of the output enable
  * */
@@ -276,7 +276,7 @@ cy_rslt_t cyhal_pwm_enable_output(cyhal_pwm_t *obj, cyhal_pwm_output_t signal, c
 /** Disconnects a source signal and disables the PWM event.
  *
  * @param[in] obj      PWM obj
- * @param[in] source   Source signal
+ * @param[in] source   Source signal from cyhal_<PERIPH>_enable_output to disable
  * @param[in] signal   The PWM input signal
  * @return The status of the disconnection
  * */

@@ -2,11 +2,11 @@
 * File Name: cyhal_clock_impl.h
 *
 * Description:
-* PSoC 6 specific implementation for clocks API.
+* Device specific implementation for clocks API.
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2019 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");

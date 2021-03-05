@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@
  * \addtogroup group_hal_impl_interconnect Interconnect (Internal Digital Routing)
  * \ingroup group_hal_impl
  * \{
- * The interconnect system connects the various PSoC 4 peripherals using trigger
+ * The interconnect system connects the various hardware peripherals using trigger
  * signals. Triggers are output when a particular event occurs or condition is
  * met by one of the peripherals. These triggers can be routed to other
  * peripherals using the interconnect system in order to initiate an action at
@@ -42,7 +42,21 @@
  * trigger can be routed to multiple destinations but a single destination can
  * only be connected to a single source. There are different trigger layouts
  * depending on device architecture.
- * 
+ */
+
+#if defined(COMPONENT_CAT1A)
+/*
+ * <b>PSoC 6S1 Triggers:</b>
+ * \image html psoc6able2_trigger_layout.png width=800px
+ * <b>PSoC 6S2 Triggers:</b>
+ * \image html psoc6a2m_trigger_layout.png width=800px
+ * <b>PSoC 6S3 Triggers:</b>
+ * \image html psoc6a512k_trigger_layout.png width=800px
+ * <b>PSoC 6S4 Triggers:</b>
+ * \image html psoc6a256k_trigger_layout.png width=800px
+ */
+#elif defined(COMPONENT_CAT2)
+/*
  * <b>PSoC 4000S Triggers:</b>
  * \image html psoc4000s_trigger_layout.png width=540px
  * <b>PSoC 4100S Triggers:</b>
@@ -52,6 +66,7 @@
  * <b>PSoC 4100S Plus 256k Triggers:</b>
  * \image html psoc4100sp256k_trigger_layout.png width=540px
  */
+#endif /* defined(COMPONENT_CAT1A) */
 
 #pragma once
 
@@ -61,13 +76,6 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-/** Trigger type */
-typedef enum
-{
-    CYHAL_SIGNAL_TYPE_LEVEL = 0, //!< Level triggered
-    CYHAL_SIGNAL_TYPE_EDGE  = 1, //!< Edge triggered
-} cyhal_signal_type_t;
 
 /** Connects two digital signals on the device using the internal interconnect.
  * A single source can drive multiple destinations, but a destination can be
@@ -87,6 +95,13 @@ cy_rslt_t _cyhal_connect_signal(cyhal_source_t source, cyhal_dest_t dest, cyhal_
  * @return The status of the disconnect request
  */
 cy_rslt_t _cyhal_disconnect_signal(cyhal_source_t source, cyhal_dest_t dest);
+
+/** Checks to see if a signal can be connected between the provided source and dest.
+ * @param[in] source The source of the signal to check
+ * @param[in] dest   The destination of the signal to check
+ * @return Indication of whether a signal can connect between the provided points
+ */
+bool _cyhal_can_connect_signal(cyhal_source_t source, cyhal_dest_t dest);
 
 #if defined(__cplusplus)
 }

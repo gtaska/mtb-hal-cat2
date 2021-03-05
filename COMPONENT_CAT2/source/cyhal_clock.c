@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -486,6 +486,11 @@ cy_rslt_t cyhal_clock_set_enabled(cyhal_clock_t *clock, bool enabled, bool wait_
 {
     CY_ASSERT(NULL != clock);
 
+#if !defined(CY_IP_M0S8EXCO) && !defined(CY_IP_M0S8WCO) && (EXCO_PLL_PRESENT == 0)
+    /* wait_for_lock parameter is not used on devices that do not support ECO or WCO. */
+    CY_UNUSED_PARAMETER(wait_for_lock);
+#endif /* !defined(CY_IP_M0S8EXCO) && !defined(CY_IP_M0S8WCO) && (EXCO_PLL_PRESENT == 0) */
+
     /* Timeout values are from the device datasheet. */
 
     switch (clock->block)
@@ -790,14 +795,14 @@ cy_rslt_t cyhal_clock_get_sources(const cyhal_clock_t *clock, const cyhal_resour
 #endif
 #if defined(CY_IP_M0S8WCO)
         case CYHAL_CLOCK_BLOCK_WCO:
+#endif
             *count = 0;
             break;
-#if (WCO_WDT_EN == 1)
+#if defined(CY_IP_M0S8WCO) && (WCO_WDT_EN == 1)
         case CYHAL_CLOCK_BLOCK_WDCSEL:
             *sources = CYHAL_CLOCK_SOURCE_WDCSEL;
             *count = sizeof(CYHAL_CLOCK_SOURCE_WDCSEL) / sizeof(CYHAL_CLOCK_SOURCE_WDCSEL[0]);
             break;
-#endif
 #endif
 #if (EXCO_PLL_PRESENT > 0)
         case CYHAL_CLOCK_BLOCK_PLLSEL:

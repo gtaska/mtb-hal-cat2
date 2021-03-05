@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,15 +47,15 @@
 * \section section_interconnect_snippets Code Snippets
 *
 * \subsection subsection_interconnect_snippet1 Snippet 1: Connecting a pin to TCPWM block
-* The following code snippet demonstrates connecting a GPIO pin to an active TCPWM block on a PSoC 6 device.
+* The following code snippet demonstrates connecting a GPIO pin to an active TCPWM block on a device
 * using the \ref cyhal_connect_pin. It is assumed that the TCPWM is already configured and active.<br>
-* \snippet interconnect.c snippet_cyhal_interconnect_connect_pin
+* \snippet hal_interconnect.c snippet_cyhal_interconnect_connect_pin
 *
 * \subsection subsection_interconnect_snippet2 Snippet 2: Connecting a Timer output signal to a DMA input signal
 * The following code snippet demonstrates configuring and connecting a Timer
 * which will overflow every 2 seconds and, in doing so, trigger a DMA channel
 * start.
-* \snippet interconnect.c snippet_cyhal_interconnect_timer_to_dma
+* \snippet hal_interconnect.c snippet_cyhal_interconnect_timer_to_dma
 */
 
 #pragma once
@@ -64,7 +64,6 @@
 #include <stdbool.h>
 #include "cy_result.h"
 #include "cyhal_hw_types.h"
-#include "cyhal_interconnect_impl.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -89,6 +88,13 @@ extern "C" {
 /**
  * \}
  */
+
+/** Trigger type */
+typedef enum
+{
+    CYHAL_SIGNAL_TYPE_LEVEL = 0, //!< Level triggered
+    CYHAL_SIGNAL_TYPE_EDGE  = 1, //!< Edge triggered
+} cyhal_signal_type_t;
 
 /** Connect a pin to a peripheral terminal. This will route a direct connection from the pin to the peripheral.
  * Any previous direct connection from the pin will be overriden.<br>

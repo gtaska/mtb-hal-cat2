@@ -1,10 +1,10 @@
 var group__group__hal__impl__pin__package__psoc4000s__20__ssop =
 [
-    [ "cyhal_resource_pin_mapping_t", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#structcyhal__resource__pin__mapping__t", [
-      [ "inst", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#a5c5b6367a94636f9811352bbbc69b1db", null ],
-      [ "pin", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#a61f6033fdaae54a06ac8e63656b2a37a", null ],
-      [ "drive_mode", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#a01c7dc6cfa4fca67252a14571b98a3ff", null ],
-      [ "hsiom", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#ad4514be01ab83c7248c320b3232145c1", null ]
+    [ "cyhal_resource_pin_mapping_t", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#structcyhal__resource__pin__mapping__t", [
+      [ "inst", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#a5c5b6367a94636f9811352bbbc69b1db", null ],
+      [ "pin", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#a61f6033fdaae54a06ac8e63656b2a37a", null ],
+      [ "drive_mode", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#a01c7dc6cfa4fca67252a14571b98a3ff", null ],
+      [ "hsiom", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#ad4514be01ab83c7248c320b3232145c1", null ]
     ] ],
     [ "CYHAL_GET_GPIO", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#gadbcb21726bedc8b2e4f1bb2e0235035d", null ],
     [ "CYHAL_GET_PIN", "group__group__hal__impl__pin__package__psoc4000s__20__ssop.html#gae0af2ee8c5a2a2e6661962b368d1f2ba", null ],

@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('group__group__hal__impl__clock.html','
   <div class="summary">
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<div class="title">Clocks<div class="ingroups"><a class="el" href="group__group__hal__impl.html">PSoC 4 Implementation Specific</a></div></div>  </div>
+<div class="title">Clocks<div class="ingroups"><a class="el" href="group__group__hal__impl.html">CAT2 (PMG/PSoC 4) Implementation Specific</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">General Description</h2>
@@ -119,9 +119,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ga40a9d112c77efcc9b6038fbf5c7ea951"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__resource__inst__t">cyhal_resource_inst_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__clock.html#ga40a9d112c77efcc9b6038fbf5c7ea951">CYHAL_CLOCK_WCO</a></td></tr>
 <tr class="memdesc:ga40a9d112c77efcc9b6038fbf5c7ea951"><td class="mdescLeft">&#160;</td><td class="mdescRight">Watch Crystal Oscillator: This source is driven from an off-chip watch crystal that provides an extremely accurate source.  <a href="#ga40a9d112c77efcc9b6038fbf5c7ea951">More...</a><br /></td></tr>
 <tr class="separator:ga40a9d112c77efcc9b6038fbf5c7ea951"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga49449388a8953bacc153fa045ee9769a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__resource__inst__t">cyhal_resource_inst_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__clock.html#ga49449388a8953bacc153fa045ee9769a">CYHAL_CLOCK_WDCSEL</a></td></tr>
-<tr class="memdesc:ga49449388a8953bacc153fa045ee9769a"><td class="mdescLeft">&#160;</td><td class="mdescRight">WDC mux selection: A clock source for the Watch Dog Counters.  <a href="#ga49449388a8953bacc153fa045ee9769a">More...</a><br /></td></tr>
-<tr class="separator:ga49449388a8953bacc153fa045ee9769a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafaa08251706d5635ad5ebf609ab1adcb"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__resource__inst__t">cyhal_resource_inst_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__impl__clock.html#gafaa08251706d5635ad5ebf609ab1adcb">CYHAL_CLOCK_LF</a></td></tr>
 <tr class="memdesc:gafaa08251706d5635ad5ebf609ab1adcb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Low Frequency Clock: This clock is the source for the multi-counter watchdog timers (MCWDT), and can also be a source for the RTC.  <a href="#gafaa08251706d5635ad5ebf609ab1adcb">More...</a><br /></td></tr>
 <tr class="separator:gafaa08251706d5635ad5ebf609ab1adcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -200,23 +197,6 @@ Variables</h2></td></tr>
 
 <p>Watch Crystal Oscillator: This source is driven from an off-chip watch crystal that provides an extremely accurate source. </p>
 <p>This clock is stopped in the hibernate power mode. </p>
-
-</div>
-</div>
-<a id="ga49449388a8953bacc153fa045ee9769a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga49449388a8953bacc153fa045ee9769a">&#9670;&nbsp;</a></span>CYHAL_CLOCK_WDCSEL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__resource__inst__t">cyhal_resource_inst_t</a> CYHAL_CLOCK_WDCSEL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>WDC mux selection: A clock source for the Watch Dog Counters. </p>
-<p>It is recommended to stop any running LPTimer instances before changing this source. If this selection is changed while an LPTimer is running, call <a class="el" href="group__group__hal__lptimer.html#ga5ed361c85190707574565009eb325473">cyhal_lptimer_reload</a> after changing the source. </p>
 
 </div>
 </div>

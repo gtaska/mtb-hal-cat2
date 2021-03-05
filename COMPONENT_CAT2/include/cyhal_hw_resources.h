@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,6 +53,8 @@ typedef enum
     CYHAL_RSC_OPAMP,     /*!< Opamp */
     CYHAL_RSC_SCB,       /*!< Serial Communications Block */
     CYHAL_RSC_TCPWM,     /*!< Timer/Counter/PWM block */
+    CYHAL_RSC_USB,       /*!< USB Full Speed Device block */
+    CYHAL_RSC_USBPD,     /*!< USB-C Power Delivery */
     CYHAL_RSC_INVALID,   /*!< Placeholder for invalid type */
 } cyhal_resource_t;
 

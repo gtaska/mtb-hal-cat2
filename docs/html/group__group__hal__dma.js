@@ -11,6 +11,15 @@ var group__group__hal__dma =
       [ "burst_size", "group__group__hal__dma.html#ab9a976a59ce1acea9c281337c290d229", null ],
       [ "action", "group__group__hal__dma.html#a17a6575e0901cce49fdf8b7da8f2130d", null ]
     ] ],
+    [ "cyhal_dma_src_t", "group__group__hal__dma.html#structcyhal__dma__src__t", [
+      [ "source", "group__group__hal__dma.html#a4458236b92f369fdde9715b8b6e45b3c", null ],
+      [ "input", "group__group__hal__dma.html#a4a84836c06db798025e21943f253659f", null ]
+    ] ],
+    [ "cyhal_dma_dest_t", "group__group__hal__dma.html#structcyhal__dma__dest__t", [
+      [ "output", "group__group__hal__dma.html#a5fde47af76029eaba80edda37b16a065", null ],
+      [ "dest", "group__group__hal__dma.html#a441e10ce6c695f05aaf2a6d128c46b81", null ]
+    ] ],
+    [ "cyhal_dma_init", "group__group__hal__dma.html#gab9c200507a8ee87b894150416e4f5dd1", null ],
     [ "cyhal_dma_event_callback_t", "group__group__hal__dma.html#ga8d2fdb7ab4e9ba5367ef596ad42bbe3f", null ],
     [ "cyhal_dma_direction_t", "group__group__hal__dma.html#ga430c1e3ddedade3b6f7ef1f8532e665b", [
       [ "CYHAL_DMA_DIRECTION_MEM2MEM", "group__group__hal__dma.html#gga430c1e3ddedade3b6f7ef1f8532e665ba86dedc0ee3d9bf091e9f936040e2066a", null ],
@@ -43,7 +52,7 @@ var group__group__hal__dma =
       [ "CYHAL_DMA_TRANSFER_BURST", "group__group__hal__dma.html#gga05291825b0a7c7b9a92373ec53342b7aa1d892969519c81dd0728bc5ea99c835e", null ],
       [ "CYHAL_DMA_TRANSFER_FULL", "group__group__hal__dma.html#gga05291825b0a7c7b9a92373ec53342b7aac422419b0c70b168a56a7bedc2bc2dad", null ]
     ] ],
-    [ "cyhal_dma_init", "group__group__hal__dma.html#ga77d62adf012b570ff1a157b43d134318", null ],
+    [ "cyhal_dma_init_adv", "group__group__hal__dma.html#gac1ab5fd8128e928de6827c5469de598f", null ],
     [ "cyhal_dma_free", "group__group__hal__dma.html#ga8c1bf16caa5d53cb129e5544da1c8b21", null ],
     [ "cyhal_dma_configure", "group__group__hal__dma.html#gad39f32ac4fada8bc9e757df0a22fcce4", null ],
     [ "cyhal_dma_start_transfer", "group__group__hal__dma.html#gaf57a2b19848478b6604e09a3ecc3fbfc", null ],

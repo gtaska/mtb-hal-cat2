@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@
  * \ingroup group_hal_impl
  * \{
  * \section cyhal_adc_impl_features Features
- * The PSoC 6 ADC supports the following features:
+ * The CAT1/CAT2 (PMG/PSoC 4/PSoC 6) ADC supports the following features:
  * * Resolution: 12 bit
  * * Only @ref CYHAL_POWER_LEVEL_DEFAULT and CYHAL_POWER_LEVEL_OFF are defined. The default power
  *   level will automatically adjust based on smple rate.
@@ -55,7 +55,7 @@
 #include "cyhal_system.h"
 #include <string.h>
 
-#if defined(CY_IP_MXS40PASS_SAR_INSTANCES) 
+#if defined(CY_IP_MXS40PASS_SAR_INSTANCES)
 #define _CYHAL_ADC_SAR_INSTANCES CY_IP_MXS40PASS_SAR_INSTANCES
 #elif defined(CY_IP_M0S8PASS4A_INSTANCES)
 #define _CYHAL_ADC_SAR_INSTANCES CY_IP_M0S8PASS4A_INSTANCES
@@ -545,7 +545,7 @@ static uint32_t _cyhal_adc_convert_average_mode(uint32_t average_mode_flags)
 static cy_rslt_t _cyhal_adc_populate_pdl_config(const cyhal_adc_config_t* hal_config, cy_stc_sar_config_t* pdl_config)
 {
     memset(pdl_config, 0, sizeof(cy_stc_sar_config_t));
-    if(hal_config->resolution != _CYHAL_ADC_RESOLUTION) /* PSoC 6 SAR does not support configurable resolution */
+    if(hal_config->resolution != _CYHAL_ADC_RESOLUTION) /* SAR does not support configurable resolution */
     {
         return CYHAL_ADC_RSLT_BAD_ARGUMENT;
     }
@@ -627,38 +627,12 @@ static void _cyhal_adc_irq_handler(void)
                 .src_increment = 1u,
                 .dst_addr = (uint32_t)obj->async_buff_next,
                 .dst_increment = 1u,
-                .transfer_width = 16u,
+                .transfer_width = 32u,
                 .length = num_channels,
                 .burst_size = 0u,
                 .action = CYHAL_DMA_TRANSFER_FULL
             };
 
-            /* The upper half word of the result are mirrored status bits.
-             * We don't want to copy these into the result buffer, so we want to do
-             * 16-bit transfers and skip every other half-word. But the peripheral registers
-             * only support 32-bit reads, so we need to tell the DMA to read 4 bytes but only
-             * transfer 2. The HAL API doesn't support this right now, so we have to manipulate the
-             * underlying descriptor directly. */
-#if defined(CY_IP_M4CPUSS_DMA)
-            if(obj->dma.resource.type == CYHAL_RSC_DW)
-            {
-                obj->dma.descriptor_config.dw.srcTransferSize = CY_DMA_TRANSFER_SIZE_WORD;
-                obj->dma.descriptor_config.dw.dstTransferSize = CY_DMA_TRANSFER_SIZE_WORD;
-            }
-#endif
-#if defined(CY_IP_M0S8CPUSSV3_DMAC)
-            if(obj->dma.resource.type == CYHAL_RSC_DMA)
-            {
-                obj->dma.descriptor_config.srcTransferSize = CY_DMAC_TRANSFER_SIZE_WORD;
-                obj->dma.descriptor_config.dstTransferSize = CY_DMAC_TRANSFER_SIZE_WORD;
-            }
-#elif defined(CY_IP_M4CPUSS_DMAC)
-            if(obj->dma.resource.type == CYHAL_RSC_DMA)
-            {
-                obj->dma.descriptor_config.dmac.srcTransferSize = CY_DMAC_TRANSFER_SIZE_WORD;
-                obj->dma.descriptor_config.dmac.dstTransferSize = CY_DMAC_TRANSFER_SIZE_WORD;
-            }
-#endif
             // Configure needs to happen after we've manipulated the descriptor config
             cy_rslt_t result = cyhal_dma_configure(&(obj->dma), &dma_config);
             if(CY_RSLT_SUCCESS == result)
@@ -709,7 +683,9 @@ static void _cyhal_adc_dma_handler(void* arg, cyhal_dma_event_t event)
         // ourselves once all channel scans are complete.
         while(obj->async_buff_orig != obj->async_buff_next)
         {
-            int16_t sar_result = (int16_t)*(obj->async_buff_orig);
+            // Mask off the upper two bytes because those contain mirrored status bits which
+            // are not part of the ADC counts
+            int16_t sar_result = (int16_t)(0xFFFF & *(obj->async_buff_orig));
             *(obj->async_buff_orig) = sar_result;
             ++(obj->async_buff_orig);
         }
@@ -742,6 +718,7 @@ cy_rslt_t cyhal_adc_init(cyhal_adc_t *obj, cyhal_gpio_t pin, const cyhal_clock_t
     obj->clock.reserved = false;
     obj->resource.type = CYHAL_RSC_INVALID;
     obj->async_mode = CYHAL_ASYNC_SW;
+    obj->source = CYHAL_TRIGGER_CPUSS_ZERO;
 #if defined(CY_IP_M0S8PASS4A_INSTANCES)
     obj->resolution = _CYHAL_ADC_RESOLUTION;
     obj->ext_vref = NC;
@@ -856,6 +833,16 @@ void cyhal_adc_free(cyhal_adc_t *obj)
         NVIC_DisableIRQ(irqn);
         _cyhal_adc_config_structs[obj->resource.block_num] = NULL;
 
+        cy_rslt_t rslt;
+        rslt = cyhal_adc_disable_output(obj, CYHAL_ADC_OUTPUT_SCAN_COMPLETE);
+        CY_ASSERT(CY_RSLT_SUCCESS == rslt);
+        if (CYHAL_TRIGGER_CPUSS_ZERO != obj->source)
+        {
+            rslt = cyhal_adc_disconnect_digital(obj, obj->source, CYHAL_ADC_INPUT_START_SCAN);
+            CY_ASSERT(CY_RSLT_SUCCESS == rslt);
+        }
+        (void)rslt; // Disable compiler warning in release build
+
         Cy_SAR_SetVssaSarSeqCtrl(obj->base, _CYHAL_ADC_SARSEQ_STATE(false));
         Cy_SAR_SetVssaVminusSwitch(obj->base, _CYHAL_ADC_SWITCH_STATE(false));
         Cy_SAR_Disable(obj->base);
@@ -943,9 +930,9 @@ cy_rslt_t _cyhal_adc_populate_acquisition_timers(cyhal_adc_t* obj)
             sample_timer_clocks[i] = clock_cycles + 1;
         }
 
-        obj->base->SAMPLE_TIME01 = (sample_timer_clocks[0] << SAR_SAMPLE_TIME01_SAMPLE_TIME0_Pos) 
+        obj->base->SAMPLE_TIME01 = (sample_timer_clocks[0] << SAR_SAMPLE_TIME01_SAMPLE_TIME0_Pos)
                                  | (sample_timer_clocks[1] << SAR_SAMPLE_TIME01_SAMPLE_TIME1_Pos);
-        obj->base->SAMPLE_TIME23 = (sample_timer_clocks[2] << SAR_SAMPLE_TIME23_SAMPLE_TIME2_Pos) 
+        obj->base->SAMPLE_TIME23 = (sample_timer_clocks[2] << SAR_SAMPLE_TIME23_SAMPLE_TIME2_Pos)
                                  | (sample_timer_clocks[3] << SAR_SAMPLE_TIME23_SAMPLE_TIME3_Pos);
 
         for(uint8_t i = 0; i < CY_SAR_SEQ_NUM_CHANNELS; ++i)
@@ -979,7 +966,7 @@ cy_rslt_t cyhal_adc_configure(cyhal_adc_t *obj, const cyhal_adc_config_t *config
         // If this pin wasn't used in the previous config for either vref or bypass, reserve it
         if(NC == obj->ext_vref && config->ext_vref != obj->bypass_pin)
         {
-            const cyhal_resource_pin_mapping_t* ext_vref_map = 
+            const cyhal_resource_pin_mapping_t* ext_vref_map =
                 _cyhal_adc_find_matching_resource(&(obj->resource), config->ext_vref, cyhal_pin_map_pass_sar_ext_vref0,
                     sizeof(cyhal_pin_map_pass_sar_ext_vref0)/sizeof(cyhal_pin_map_pass_sar_ext_vref0[0]));
 
@@ -998,7 +985,7 @@ cy_rslt_t cyhal_adc_configure(cyhal_adc_t *obj, const cyhal_adc_config_t *config
             }
         }
     }
-    else 
+    else
     {
         if(NC != obj->ext_vref) // We used to have an external vref pin - free it
         {
@@ -1007,7 +994,7 @@ cy_rslt_t cyhal_adc_configure(cyhal_adc_t *obj, const cyhal_adc_config_t *config
             {
                 obj->bypass_pin = NC;
             }
-            // It is okay to do this without checking if the pin is still used for bypass, 
+            // It is okay to do this without checking if the pin is still used for bypass,
             // because in that case we will just re-reserve the pin below
             cyhal_gpio_free(obj->ext_vref);
             obj->ext_vref = NC;
@@ -1025,7 +1012,7 @@ cy_rslt_t cyhal_adc_configure(cyhal_adc_t *obj, const cyhal_adc_config_t *config
         if(CY_RSLT_SUCCESS == result)
         {
             // Bypass and ext_vref share the same hard-wired IO connection
-            const cyhal_resource_pin_mapping_t* bypass_map = 
+            const cyhal_resource_pin_mapping_t* bypass_map =
                 _cyhal_adc_find_matching_resource(&(obj->resource), config->bypass_pin, cyhal_pin_map_pass_sar_ext_vref0,
                     sizeof(cyhal_pin_map_pass_sar_ext_vref0)/sizeof(cyhal_pin_map_pass_sar_ext_vref0[0]));
 
@@ -1044,10 +1031,10 @@ cy_rslt_t cyhal_adc_configure(cyhal_adc_t *obj, const cyhal_adc_config_t *config
             obj->bypass_pin = config->bypass_pin;
         }
     }
-    else 
+    else
     {
         // We used to have an external vref pin - free it, unless it's still used for ext_vref
-        if(NC != obj->bypass_pin && obj->ext_vref != obj->bypass_pin) 
+        if(NC != obj->bypass_pin && obj->ext_vref != obj->bypass_pin)
         {
             cyhal_gpio_free(obj->bypass_pin);
             obj->bypass_pin = NC;
@@ -1284,10 +1271,10 @@ cy_rslt_t cyhal_adc_set_sample_rate(cyhal_adc_t* obj, uint32_t desired_sample_ra
 *       ADC Channel HAL Functions
 *******************************************************************************/
 
-uint32_t _cyhal_adc_channel_convert_config(const cyhal_adc_channel_config_t* config, const cyhal_adc_t* adc, 
+uint32_t _cyhal_adc_channel_convert_config(const cyhal_adc_channel_config_t* config, const cyhal_adc_t* adc,
                                             cyhal_gpio_t vplus, cyhal_gpio_t vminus)
 {
-    uint32_t result = 
+    uint32_t result =
           _BOOL2FLD(SAR_CHAN_CONFIG_AVG_EN, config->enable_averaging)
         | _VAL2FLD(SAR_CHAN_CONFIG_SAMPLE_TIME_SEL, 0u); /* Placeholder, will be updated by populate_acquisition_timers */
 #if defined(CY_IP_M0S8PASS4A_INSTANCES)
@@ -1370,6 +1357,13 @@ cy_rslt_t cyhal_adc_channel_init_diff(cyhal_adc_channel_t *obj, cyhal_adc_t* adc
         {
             result = CYHAL_ADC_RSLT_BAD_ARGUMENT;
         }
+        #if defined(CY_IP_M0S8PASS4A_INSTANCES)
+        // For PSoC 4A devices, vplus must be an even number pin, and vminus the following odd numbered pin
+        else if ((vplus & 1) != 0 || (vplus + 1) != vminus)
+        {
+            result = CYHAL_ADC_RSLT_BAD_ARGUMENT;
+        }
+        #endif
     }
 
     if(CY_RSLT_SUCCESS == result)
@@ -1534,12 +1528,12 @@ int32_t cyhal_adc_read(const cyhal_adc_channel_t *obj)
         obj->adc->conversion_complete = false;
 
         // If interleaved averaging and average is enabled for this channel, set for
-        // continuous scanning and then stop the scan once we get a result. This is 
+        // continuous scanning and then stop the scan once we get a result. This is
         // because the ADC hardware has a special case where it will not raise
         // the EOC interrupt until AVG_COUNT scans have occurred when all enabled
         // channels are using interleaved channels. This means that for the first AVG_COUNT - 1
-        // scans there will be no interrupt, therefore conversion_complete will never 
-        // be set true, and therefore the loop below would be stuck waiting forever, 
+        // scans there will be no interrupt, therefore conversion_complete will never
+        // be set true, and therefore the loop below would be stuck waiting forever,
         // never able to trigger a subsequent scan.
         Cy_SAR_StartConvert(obj->adc->base, (isInterleaved && isChannelAveraging) ? CY_SAR_START_CONVERT_CONTINUOUS : CY_SAR_START_CONVERT_SINGLE_SHOT);
     }

@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2019-2020 Cypress Semiconductor Corporation
+* Copyright 2019-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -121,6 +121,9 @@ typedef enum
     CYHAL_TCPWM_INPUT_CAPTURE,  //!< Capture signal
 } cyhal_tcpwm_input_t;
 
+/** The number of unique TCPWM inputs as defined by cyhal_tcpwm_input_t */
+#define _CYHAL_TCPWM_INPUTS     5
+
 /** TCPWM/counter output signal */
 typedef enum
 {
@@ -130,6 +133,9 @@ typedef enum
     CYHAL_TCPWM_OUTPUT_TERMINAL_COUNT, //!< Terminal count signal (logical OR of overflow and underflow signal)
     CYHAL_TCPWM_OUTPUT_LINE_OUT,       //!< Line out signal
 } cyhal_tcpwm_output_t;
+
+/** The number of unique TCPWM outputs as defined by cyhal_tcpwm_output_t */
+#define _CYHAL_TCPWM_OUTPUTS     5
 
 /** Handler for TCPWM interrupts */
 typedef void(*_cyhal_tcpwm_event_callback_t)(void *callback_arg, int event);
@@ -196,48 +202,45 @@ bool _cyhal_tcpwm_pm_transition_pending(void);
 /** Connects a source signal and configures and enables a TCPWM event to be
  * triggered from that signal. These TCPWM events can be configured
  * independently and connect to the same or different source signals.
- * 
- * @param[in] base     TCPWM base
- * @param[in] resource TCPWM resource
- * @param[in] source   Source signal
+ *
+ * @param[in] obj      TCPWM HAL object
+ * @param[in] source   Source signal obtained from another driver's cyhal_<PERIPH>_enable_output
  * @param[in] signal   The TCPWM input signal
  * @param[in] type     The TCPWM input signal edge type
  * @return The status of the connection
  * */
-cy_rslt_t _cyhal_tcpwm_connect_digital(TCPWM_Type *base, cyhal_resource_inst_t resource, cyhal_source_t source, cyhal_tcpwm_input_t signal, cyhal_edge_type_t type);
+cy_rslt_t _cyhal_tcpwm_connect_digital(cyhal_tcpwm_t *obj, cyhal_source_t source, cyhal_tcpwm_input_t signal, cyhal_edge_type_t type);
 
 /** Enables the specified output signal from a TCPWM that will be triggered
  * when the corresponding event occurs. Multiple output signals can be
  * configured simultaneously.
- * 
- * @param[in]  base     TCPWM base
- * @param[in]  resource TCPWM resource
+ *
+ * @param[in]  obj      TCPWM HAL object
  * @param[in]  signal   The TCPWM output signal
  * @param[out] source   Pointer to user-allocated source signal object which
  * will be initialized by enable_output. source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
  * @return The status of the output enable
  * */
-cy_rslt_t _cyhal_tcpwm_enable_output(TCPWM_Type *base, cyhal_resource_inst_t resource, cyhal_tcpwm_output_t signal, cyhal_source_t *source);
+cy_rslt_t _cyhal_tcpwm_enable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t signal, cyhal_source_t *source);
 
 /** Disconnects a source signal and disables the corresponding input to a TCPWM
  *
- * @param[in] base     TCPWM base
- * @param[in] resource TCPWM resource
- * @param[in] source   Source signal
+ * @param[in] obj      TCPWM HAL object
+ * @param[in] source   Source signal from cyhal_<PERIPH>_enable_output to disable
  * @param[in] signal   The TCPWM input signal
  * @return The status of the disconnection
  * */
-cy_rslt_t _cyhal_tcpwm_disconnect_digital(TCPWM_Type *base, cyhal_resource_inst_t resource, cyhal_source_t source, cyhal_tcpwm_input_t signal);
+cy_rslt_t _cyhal_tcpwm_disconnect_digital(cyhal_tcpwm_t *obj, cyhal_source_t source, cyhal_tcpwm_input_t signal);
 
 /** Disables the specified output signal from a TCPWM.
  *
- * @param[in]  base     TCPWM base
+ * @param[in]  obj      TCPWM HAL object
  * @param[in]  resource TCPWM resource
  * @param[in]  signal   The TCPWM output signal
  * @return The status of the output disable
  * */
-cy_rslt_t _cyhal_tcpwm_disable_output(TCPWM_Type *base, cyhal_resource_inst_t resource, cyhal_tcpwm_output_t signal);
+cy_rslt_t _cyhal_tcpwm_disable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t signal);
 
 #if defined(__cplusplus)
 }

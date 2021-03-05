@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -178,7 +178,7 @@ static cy_rslt_t _cyhal_flash_run_operation(
 }
 
 cy_rslt_t cyhal_flash_init(cyhal_flash_t *obj)
-{   
+{
     CY_UNUSED_PARAMETER(obj);
     CY_ASSERT(NULL != obj);
 #if defined(CY_IP_S8SRSSLT) && CY_FLASH_NON_BLOCKING_SUPPORTED

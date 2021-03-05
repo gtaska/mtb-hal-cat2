@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,14 @@ extern "C" {
 /* Callback array for GPIO interrupts */
 static cyhal_gpio_event_callback_t _cyhal_gpio_callbacks[IOSS_GPIO_GPIO_PORT_NR][CY_GPIO_PINS_MAX];
 static void *_cyhal_gpio_callback_args[IOSS_GPIO_GPIO_PORT_NR][CY_GPIO_PINS_MAX];
+#if defined(CY_IP_MXS40IOSS)
+static cyhal_source_t _cyhal_gpio_source_signals[sizeof(cyhal_pin_map_peri_tr_io_output)/sizeof(cyhal_resource_pin_mapping_t)] = { CYHAL_TRIGGER_CPUSS_ZERO };
+#endif
+
+#if defined(CY_DEVICE_PMG1S3)
+/* PMG1-S3: Work-around as device does not support any GPIO port specific interrupts. */
+#define ioss_interrupts_gpio_0_IRQn     (ioss_interrupt_gpio_IRQn)
+#endif
 
 /*******************************************************************************
 *       Internal Interrupt Service Routine
@@ -196,6 +204,21 @@ void cyhal_gpio_free(cyhal_gpio_t pin)
         _cyhal_gpio_callbacks[CYHAL_GET_PORT(pin)][CYHAL_GET_PIN(pin)] = NULL;
         _cyhal_gpio_callback_args[CYHAL_GET_PORT(pin)][CYHAL_GET_PIN(pin)] = NULL;
 
+        (void)cyhal_gpio_disable_output(pin);
+        #if defined(CY_IP_MXS40IOSS)
+        for(uint8_t i = 0; i < (uint8_t)(sizeof(cyhal_pin_map_peri_tr_io_output)/sizeof(cyhal_resource_pin_mapping_t)); i++)
+        {
+            cyhal_resource_pin_mapping_t mapping = cyhal_pin_map_peri_tr_io_output[i];
+            if(mapping.pin == pin)
+            {
+                if (CYHAL_TRIGGER_CPUSS_ZERO != _cyhal_gpio_source_signals[i])
+                {
+                    (void)cyhal_gpio_disconnect_digital(pin, _cyhal_gpio_source_signals[i]);
+                }
+            }
+        }
+        #endif
+
         Cy_GPIO_Pin_FastInit(CYHAL_GET_PORTADDR(pin), CYHAL_GET_PIN(pin), CY_GPIO_DM_ANALOG, 0UL, HSIOM_SEL_GPIO);
         /* Do not attempt to free the resource we don't reserve in mbed. */
 #ifndef __MBED__
@@ -265,7 +288,12 @@ cy_rslt_t cyhal_gpio_connect_digital(cyhal_gpio_t pin, cyhal_source_t source, cy
 
             cyhal_dest_t dest = (cyhal_dest_t)(CYHAL_TRIGGER_PERI_TR_IO_OUTPUT0 + (uint32_t)(mapping.inst));
 
-            return _cyhal_connect_signal(source, dest, type);
+            cy_rslt_t rslt = _cyhal_connect_signal(source, dest, type);
+            if (CY_RSLT_SUCCESS == rslt)
+            {
+                _cyhal_gpio_source_signals[i] = source;
+            }
+            return rslt;
         }
     }
 
@@ -305,7 +333,12 @@ cy_rslt_t cyhal_gpio_disconnect_digital(cyhal_gpio_t pin, cyhal_source_t source)
 
             cyhal_dest_t dest = (cyhal_dest_t)(CYHAL_TRIGGER_PERI_TR_IO_OUTPUT0 + (uint32_t)(mapping.inst));
 
-            return _cyhal_disconnect_signal(source, dest);
+            cy_rslt_t rslt = _cyhal_disconnect_signal(source, dest);
+            if (CY_RSLT_SUCCESS == rslt)
+            {
+                _cyhal_gpio_source_signals[i] = CYHAL_TRIGGER_CPUSS_ZERO;
+            }
+            return rslt;
         }
     }
 
@@ -328,7 +361,7 @@ cy_rslt_t cyhal_gpio_disable_output(cyhal_gpio_t pin)
     return CYHAL_GPIO_RSLT_ERR_NO_OUTPUT_SIGNAL;
 }
 #elif defined(CY_IP_M0S8IOSS)
-// PSoC4 devices do not have gpio triggers
+// M0S8 devices do not have gpio triggers
 cy_rslt_t cyhal_gpio_connect_digital(cyhal_gpio_t pin, cyhal_source_t source, cyhal_signal_type_t type)
 {
     CY_UNUSED_PARAMETER(pin);

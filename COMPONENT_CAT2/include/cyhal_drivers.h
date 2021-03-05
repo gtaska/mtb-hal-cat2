@@ -7,7 +7,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,24 +27,19 @@
 
 #include "cyhal_adc.h"
 #include "cyhal_clock.h"
-#include "cyhal_comp.h"
-#include "cyhal_crc.h"
 #include "cyhal_dma.h"
 #include "cyhal_ezi2c.h"
 #include "cyhal_flash.h"
 #include "cyhal_gpio.h"
 #include "cyhal_hwmgr.h"
 #include "cyhal_i2c.h"
-#include "cyhal_i2s.h"
 #include "cyhal_interconnect.h"
 #include "cyhal_lptimer.h"
-#include "cyhal_opamp.h"
 #include "cyhal_pwm.h"
 #include "cyhal_quaddec.h"
 #include "cyhal_spi.h"
 #include "cyhal_syspm.h"
 #include "cyhal_system.h"
 #include "cyhal_timer.h"
-#include "cyhal_trng.h"
 #include "cyhal_uart.h"
 #include "cyhal_wdt.h"

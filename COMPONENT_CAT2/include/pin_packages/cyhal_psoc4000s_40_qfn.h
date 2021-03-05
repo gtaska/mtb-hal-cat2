@@ -5,11 +5,11 @@
 * PSoC4000S device GPIO HAL header for 40-QFN package
 *
 * \note
-* Generator version: 1.6.0.379
+* Generator version: 1.6.0.464
 *
 ********************************************************************************
 * \copyright
-* Copyright 2016-2020 Cypress Semiconductor Corporation
+* Copyright 2016-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,10 +31,10 @@
 #include "cyhal_hw_resources.h"
 
 /**
- * \addtogroup group_hal_impl_pin_package_psoc4000s_40_qfn_auto PSoC4000S 40-QFN-AUTO
+ * \addtogroup group_hal_impl_pin_package_psoc4000s_40_qfn PSoC4000S 40-QFN
  * \ingroup group_hal_impl_pin_package
  * \{
- * Pin definitions and connections specific to the PSoC4000S 40-QFN-AUTO package.
+ * Pin definitions and connections specific to the PSoC4000S 40-QFN package.
  */
 
 #if defined(__cplusplus)
@@ -49,7 +49,7 @@ extern "C" {
 /** Macro that, given a gpio, will extract the port number */
 #define CYHAL_GET_PORT(pin)         ((uint8_t)((((uint8_t)pin) >> 3U) & 0x1FU))
 
-/** Definitions for all of the pins that are bonded out on in the 40-QFN-AUTO package for the PSoC4000S series. */
+/** Definitions for all of the pins that are bonded out on in the 40-QFN package for the PSoC4000S series. */
 typedef enum {
     NC = 0xFF, //!< No Connect/Invalid Pin
 
@@ -91,10 +91,10 @@ typedef enum {
     P4_1 = CYHAL_GET_GPIO(CYHAL_PORT_4, 1), //!< Port 4 Pin 1
     P4_2 = CYHAL_GET_GPIO(CYHAL_PORT_4, 2), //!< Port 4 Pin 2
     P4_3 = CYHAL_GET_GPIO(CYHAL_PORT_4, 3), //!< Port 4 Pin 3
-} cyhal_gpio_psoc4000s_40_qfn_auto_t;
+} cyhal_gpio_psoc4000s_40_qfn_t;
 
 /** Create generic name for the series/package specific type. */
-typedef cyhal_gpio_psoc4000s_40_qfn_auto_t cyhal_gpio_t;
+typedef cyhal_gpio_psoc4000s_40_qfn_t cyhal_gpio_t;
 
 /* Connection type definition */
 /** Represents an association between a pin and a resource */

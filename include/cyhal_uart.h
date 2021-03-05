@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,14 +76,14 @@
 *
 * The snippet also shows how to use \ref cyhal_uart_write, \ref cyhal_uart_putc, \ref cyhal_uart_read API.
 *
-* \snippet uart.c snippet_cyhal_uart_init
+* \snippet hal_uart.c snippet_cyhal_uart_init
 *
 * \subsection subsection_uart_snippet_2 Snippet 2: Interrupts on UART events
 *
 * In the following snippet, UART events are handled in a callback function.
 * The callback function has to be registered and then the events have to be enabled.
 *
-* \snippet uart.c snippet_cyhal_uart_event
+* \snippet hal_uart.c snippet_cyhal_uart_event
 *
 */
 
@@ -413,7 +413,7 @@ cy_rslt_t cyhal_uart_set_fifo_level(cyhal_uart_t *obj, cyhal_uart_fifo_type_t ty
  * @param[in]  obj        The UART object
  * @param[in]  output     Which output signal to enable
  * @param[out] source     Pointer to user-allocated source signal object which
- * will be initialized by enable_output. source should be passed to
+ * will be initialized by enable_output. \p source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
  * @return The status of the output enable
  * */

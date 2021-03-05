@@ -5,11 +5,11 @@
 * PSoC4100Sp256KB family HAL triggers header
 *
 * \note
-* Generator version: 1.6.0.379
+* Generator version: 1.6.0.464
 *
 ********************************************************************************
 * \copyright
-* Copyright 2016-2020 Cypress Semiconductor Corporation
+* Copyright 2016-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,15 +42,15 @@ extern "C" {
 /** @brief Name of each input trigger. */
 typedef enum
 {
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 = 0, //!< cpuss.dmac_tr_out[0]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT1 = 1, //!< cpuss.dmac_tr_out[1]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT2 = 2, //!< cpuss.dmac_tr_out[2]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT3 = 3, //!< cpuss.dmac_tr_out[3]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT4 = 4, //!< cpuss.dmac_tr_out[4]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT5 = 5, //!< cpuss.dmac_tr_out[5]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT6 = 6, //!< cpuss.dmac_tr_out[6]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT7 = 7, //!< cpuss.dmac_tr_out[7]
-    CYHAL_TRIGGER_CPUSS_ZERO = 8, //!< cpuss.zero
+    CYHAL_TRIGGER_CPUSS_ZERO = 0, //!< cpuss.zero
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 = 1, //!< cpuss.dmac_tr_out[0]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT1 = 2, //!< cpuss.dmac_tr_out[1]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT2 = 3, //!< cpuss.dmac_tr_out[2]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT3 = 4, //!< cpuss.dmac_tr_out[3]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT4 = 5, //!< cpuss.dmac_tr_out[4]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT5 = 6, //!< cpuss.dmac_tr_out[5]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT6 = 7, //!< cpuss.dmac_tr_out[6]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT7 = 8, //!< cpuss.dmac_tr_out[7]
     CYHAL_TRIGGER_CSD_DSI_SENSE_OUT = 9, //!< csd.dsi_sense_out
     CYHAL_TRIGGER_CSD_TR_ADC_DONE = 10, //!< csd.tr_adc_done
     CYHAL_TRIGGER_EXCO_TRIGGER = 11, //!< exco.trigger

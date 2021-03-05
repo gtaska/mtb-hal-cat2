@@ -9,7 +9,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2020 Cypress Semiconductor Corporation
+* Copyright 2020-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,12 +80,12 @@
 * \subsection subsection_quaddec_snippet_1 Snippet 1: Initialization and direction detection
 * The following snippet initializes a quadrature decoder and measures the counter to determine direction.
 * The <b>clk</b> may be left NULL, in which case a clock resource is automatically assigned.
-* \snippet quaddec.c snippet_cyhal_quaddec_direction
+* \snippet hal_quaddec.c snippet_cyhal_quaddec_direction
 *
 * \subsection subsection_quaddec_snippet_2 Snippet 2: Handling an event in a callback function
 * The following snippet initializes a quadrature decoder and triggers an event as changes happen.
 * The <b>clk</b> need not be provided (NULL), in which case a clock resource is assigned.
-* \snippet quaddec.c snippet_cyhal_quaddec_event_interrupt
+* \snippet hal_quaddec.c snippet_cyhal_quaddec_event_interrupt
 *
 */
 
@@ -280,7 +280,7 @@ void cyhal_quaddec_enable_event(cyhal_quaddec_t *obj, cyhal_quaddec_event_t even
  * signals.
  *
  * @param[in] obj      Quadrature decoder obj
- * @param[in] source   Source signal
+ * @param[in] source   Source signal obtained from another driver's cyhal_<PERIPH>_enable_output
  * @param[in] signal   The quadrature decoder input signal
  * @return The status of the connection
  * */
@@ -289,7 +289,7 @@ cy_rslt_t cyhal_quaddec_connect_digital(cyhal_quaddec_t *obj, cyhal_source_t sou
 /** Disconnects a source signal and disables the quadrature decoder event.
  *
  * @param[in] obj      Quadrature decoder obj
- * @param[in] source   Source signal
+ * @param[in] source   Source signal from cyhal_<PERIPH>_enable_output to disable
  * @param[in] signal   The quadrature decoder input signal
  * @return The status of the disconnection
  * */
@@ -302,7 +302,7 @@ cy_rslt_t cyhal_quaddec_disconnect_digital(cyhal_quaddec_t *obj, cyhal_source_t 
  * @param[in]  obj      Quadrature decoder obj
  * @param[in]  signal   The quadrature decoder output signal
  * @param[out] source   Pointer to user-allocated source signal object which
- * will be initialized by enable_output. source should be passed to
+ * will be initialized by enable_output. \p source should be passed to
  * (dis)connect_digital functions to (dis)connect the associated endpoints.
  * @return The status of the output enable
  * */

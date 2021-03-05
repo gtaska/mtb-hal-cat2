@@ -6,7 +6,7 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2020 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,9 @@
 *******************************************************************************/
 
 /**
-* \addtogroup group_hal_impl PSoC 4 Implementation Specific
+* \addtogroup group_hal_impl CAT2 (PMG/PSoC 4) Implementation Specific
 * \{
-* This section provides details about the PSoC 4 implementation of the Cypress HAL.
+* This section provides details about the PMG/PSoC 4 implementation of the Cypress HAL.
 * All information within this section is platform specific and is provided for reference.
 * Portable application code should depend only on the APIs and types which are documented
 * in the @ref group_hal section.
@@ -33,30 +33,25 @@
 * \section group_hal_impl_mapping HAL Resource Hardware Mapping
 * The following table shows a mapping of each HAL driver to the lower level firmware driver
 * and the corresponding hardware resource. This is intended to help understand how the HAL
-* is implemented for PSoC 4 and what features the underlying hardware supports.
+* is implemented for PMG/PSoC 4 and what features the underlying hardware supports.
 *
-* | HAL Resource       | PDL Driver(s)       | PSoC 4 Hardware                  |
+* | HAL Resource       | PDL Driver(s)       | CAT2 Hardware                  |
 * | ------------------ | ------------------- | -------------------------------- |
 * | ADC                | cy_adc              | SAR ADC                          |
 * | Clock              | cy_sysclk           | All clocks (system & peripheral) |
-* | Comparator         | cy_lpcomp           | LPComp                           |
-* | CRC                | cy_crypto_core_crc  | Crypto                           |
 * | DMA                | cy_dmac             | DMA Controller                   |
 * | EZI2C              | cy_scb_ezi2c        | SCB                              |
 * | Flash              | cy_flash            | Flash                            |
 * | GPIO               | cy_gpio             | GPIO                             |
 * | Hardware Manager   | NA                  | NA                               |
 * | I2C                | cy_scb_i2c          | SCB                              |
-* | I2S                | cy_i2s              | I2S                              |
 * | LPTimer            | cy_mcwdt            | MCWDT                            |
-* | Opamp              | cy_ctb              | CTBm                             |
 * | PWM                | cy_pwm              | TCPWM                            |
 * | Quadrature Decoder | cy_tcpwm_quaddec    | TCPWM                            |
 * | SPI                | cy_scb_spi          | SCB                              |
 * | SysPM              | cy_syspm            | System Power Resources           |
 * | System             | cy_syslib           | System Resources                 |
 * | Timer              | cy_tcpwm_counter    | TCPWM                            |
-* | TRNG               | cy_crypto_core_trng | Crypto                           |
 * | UART               | cy_scb_uart         | SCB                              |
 * | WDT                | cy_wdt              | WDT                              |
 *
@@ -69,7 +64,7 @@
 */
 
 /**
-* \addtogroup group_hal_impl_hw_types PSoC 4 Specific Hardware Types
+* \addtogroup group_hal_impl_hw_types PMG/PSoC 4 Specific Hardware Types
 * \{
 * Aliases for types which are part of the public HAL interface but whose representations
 * need to vary per HAL implementation
@@ -100,7 +95,6 @@ extern "C" {
 * \cond INTERNAL
 */
 
-//#define CYHAL_CRC_IMPL_HEADER       "cyhal_crc_impl.h"      //!< Implementation specific header for CRC
 #define CYHAL_DMA_IMPL_HEADER       "cyhal_dma_impl.h"      //!< Implementation specific header for DMA
 #define CYHAL_CLOCK_IMPL_HEADER     "cyhal_clock_impl.h"    //!< Implementation specific header for Clocks
 #define CYHAL_GPIO_IMPL_HEADER      "cyhal_gpio_impl.h"     //!< Implementation specific header for GPIO
@@ -110,7 +104,6 @@ extern "C" {
 #define CYHAL_SYSPM_IMPL_HEADER     "cyhal_syspm_impl.h"    //!< Implementation specific header for System Power Management
 #define CYHAL_TIMER_IMPL_HEADER     "cyhal_timer_impl.h"    //!< Implementation specific header for Timer
 #define CYHAL_INTERCONNECT_IMPL_HEADER "cyhal_interconnect_impl.h" //!< Implementation specific header for Interconnect
-//#define CYHAL_TRNG_IMPL_HEADER      "cyhal_trng_impl.h"     //!< Implementation specific header for TRNG
 
 /** \endcond */
 
@@ -138,6 +131,9 @@ typedef struct {
     bool                         dedicated_clock;
     uint32_t                     clock_hz;
     cyhal_event_callback_data_t  callback_data;
+#if defined(CY_IP_M0S8PERI_TR)
+    cyhal_source_t               inputs[5];
+#endif
 #else
     void *empty
 #endif
@@ -157,8 +153,10 @@ typedef struct {
     cy_stc_dmac_channel_config_t    channel_config;
     cy_stc_dmac_descriptor_config_t descriptor_config;
     cy_en_dmac_descriptor_t         descriptor;
+    uint32_t                        direction;
     uint32_t                        irq_cause;
     cyhal_event_callback_data_t     callback_data;
+    cyhal_source_t                  source;
 #else
     void *empty;
 #endif
@@ -178,6 +176,7 @@ typedef struct {
     cyhal_clock_t                   clock;
     cyhal_gpio_t                    ext_vref;
     cyhal_gpio_t                    bypass_pin;
+    cyhal_source_t                  source;
     bool                            dedicated_clock;
     bool                            continuous_scanning;
     /* Has at least one conversion completed since the last configuration change */
@@ -219,57 +218,6 @@ typedef struct _cyhal_adc_channel_s { /* Struct given an explicit name to make t
     void *empty;
 #endif
 } cyhal_adc_channel_t;
-
-/** @brief Comparator object */
-typedef struct {
-#if defined(CY_IP_M0S8LPCOMP_INSTANCES) || defined(CY_IP_M0S8PASS4A_CTB_INSTANCES)
-    cyhal_resource_inst_t        resource;
-    union
-    {
-#if defined(CY_IP_M0S8PASS4A_CTB_INSTANCES)
-        CTBM_Type *base_ctb;
-#endif
-#if defined(CY_IP_M0S8LPCOMP_INSTANCES)
-        LPCOMP_Type              *base_lpcomp;
-#endif
-    };
-    cyhal_gpio_t                 pin_vin_p;
-    cyhal_gpio_t                 pin_vin_m;
-    cyhal_gpio_t                 pin_out;
-    cyhal_event_callback_data_t  callback_data;
-    uint32_t                     irq_cause;
-#else
-    void *empty;
-#endif
-} cyhal_comp_t;
-
-/**
-  * @brief CRC object
-  *
-  * Application code should not rely on the specific contents of this struct.
-  * They are considered an implementation detail which is subject to change
-  * between platforms and/or HAL releases.
-  */
-typedef struct {
-#if defined(CPUSS_CRYPTO_PRESENT)
-    CRYPTO_Type*                base;
-    cyhal_resource_inst_t       resource;
-    uint32_t                    crc_width;
-#else
-    void *empty;
-#endif
-} cyhal_crc_t;
-
-/**
-  * @brief OPAMP object
-  *
-  * Application code should not rely on the specific contents of this struct.
-  * They are considered an implementation detail which is subject to change
-  * between platforms and/or HAL releases.
-  */
-typedef struct {
-    void *empty;
-} cyhal_opamp_t;
 
 /**
   * @brief Flash object
@@ -335,51 +283,6 @@ typedef struct {
 } cyhal_ezi2c_t;
 
 /**
-  * @brief I2S object
-  *
-  * Application code should not rely on the specific contents of this struct.
-  * They are considered an implementation detail which is subject to change
-  * between platforms and/or HAL releases.
-  */
-typedef struct {
-#ifdef CY_IP_MXAUDIOSS
-    I2S_Type                        *base;
-    cyhal_resource_inst_t           resource;
-    cyhal_gpio_t                    pin_tx_sck;
-    cyhal_gpio_t                    pin_tx_ws;
-    cyhal_gpio_t                    pin_tx_sdo;
-    cyhal_gpio_t                    pin_rx_sck;
-    cyhal_gpio_t                    pin_rx_ws;
-    cyhal_gpio_t                    pin_rx_sdi;
-    cyhal_gpio_t                    pin_mclk;
-    bool                            is_tx_slave;
-    bool                            is_rx_slave;
-    uint32_t                        mclk_hz;
-    uint8_t                         channel_length;
-    uint8_t                         word_length;
-    uint32_t                        sample_rate_hz;
-    cyhal_clock_t                   clock;
-    bool                            is_clock_owned;
-    uint16_t                        user_enabled_events;
-    cyhal_event_callback_data_t     callback_data;
-    cyhal_async_mode_t              async_mode;
-    uint8_t                         async_dma_priority;
-    cyhal_dma_t                     tx_dma;
-    cyhal_dma_t                     rx_dma;
-    // Note: When the async DMA mode is in use, these variables will always reflect the state
-    // that the transfer will be in after the in-progress DMA transfer, if any, is complete
-    const void                      *async_tx_buff;
-    size_t                          async_tx_length;
-    void                            *async_rx_buff;
-    size_t                          async_rx_length;
-    volatile bool                   pm_transition_ready;
-    cyhal_syspm_callback_data_t     pm_callback;
-#else
-    void *empty;
-#endif
-} cyhal_i2s_t;
-
-/**
   * @brief LPTIMER object
   *
   * Application code should not rely on the specific contents of this struct.
@@ -387,9 +290,14 @@ typedef struct {
   * between platforms and/or HAL releases.
   */
 typedef struct {
+#ifdef CY_IP_M0S8WCO
     WCO_Type                         *base;
     cyhal_resource_inst_t            resource;
     cyhal_event_callback_data_t      callback_data;
+    bool                             clear_int_mask;
+#else
+    void *empty;
+#endif
 } cyhal_lptimer_t;
 
 /**
@@ -427,22 +335,6 @@ typedef struct {
     void *empty;
 #endif
 } cyhal_quaddec_t;
-
-/**
-  * @brief RNG object
-  *
-  * Application code should not rely on the specific contents of this struct.
-  * They are considered an implementation detail which is subject to change
-  * between platforms and/or HAL releases.
-  */
-typedef struct {
-#if defined(CPUSS_CRYPTO_PRESENT)
-    CRYPTO_Type*                base;
-    cyhal_resource_inst_t       resource;
-#else
-    void *empty;
-#endif
-} cyhal_trng_t;
 
 /**
   * @brief RTC object

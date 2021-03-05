@@ -5,11 +5,11 @@
 * PSoC4100Smax family HAL triggers header
 *
 * \note
-* Generator version: 1.6.0.379
+* Generator version: 1.6.0.464
 *
 ********************************************************************************
 * \copyright
-* Copyright 2016-2020 Cypress Semiconductor Corporation
+* Copyright 2016-2021 Cypress Semiconductor Corporation
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,27 +42,27 @@ extern "C" {
 /** @brief Name of each input trigger. */
 typedef enum
 {
-    CYHAL_TRIGGER_CANFD_TR_DBG_DMA_REQ0 = 0, //!< canfd.tr_dbg_dma_req[0]
-    CYHAL_TRIGGER_CANFD_TR_FIFO00 = 1, //!< canfd.tr_fifo0[0]
-    CYHAL_TRIGGER_CANFD_TR_FIFO10 = 2, //!< canfd.tr_fifo1[0]
-    CYHAL_TRIGGER_CANFD_TR_TMP_RTP_OUT0 = 3, //!< canfd.tr_tmp_rtp_out[0]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 = 4, //!< cpuss.dmac_tr_out[0]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT1 = 5, //!< cpuss.dmac_tr_out[1]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT2 = 6, //!< cpuss.dmac_tr_out[2]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT3 = 7, //!< cpuss.dmac_tr_out[3]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT4 = 8, //!< cpuss.dmac_tr_out[4]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT5 = 9, //!< cpuss.dmac_tr_out[5]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT6 = 10, //!< cpuss.dmac_tr_out[6]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT7 = 11, //!< cpuss.dmac_tr_out[7]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT8 = 12, //!< cpuss.dmac_tr_out[8]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT9 = 13, //!< cpuss.dmac_tr_out[9]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT10 = 14, //!< cpuss.dmac_tr_out[10]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT11 = 15, //!< cpuss.dmac_tr_out[11]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT12 = 16, //!< cpuss.dmac_tr_out[12]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT13 = 17, //!< cpuss.dmac_tr_out[13]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT14 = 18, //!< cpuss.dmac_tr_out[14]
-    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT15 = 19, //!< cpuss.dmac_tr_out[15]
-    CYHAL_TRIGGER_CPUSS_ZERO = 20, //!< cpuss.zero
+    CYHAL_TRIGGER_CPUSS_ZERO = 0, //!< cpuss.zero
+    CYHAL_TRIGGER_CANFD_TR_DBG_DMA_REQ0 = 1, //!< canfd.tr_dbg_dma_req[0]
+    CYHAL_TRIGGER_CANFD_TR_FIFO00 = 2, //!< canfd.tr_fifo0[0]
+    CYHAL_TRIGGER_CANFD_TR_FIFO10 = 3, //!< canfd.tr_fifo1[0]
+    CYHAL_TRIGGER_CANFD_TR_TMP_RTP_OUT0 = 4, //!< canfd.tr_tmp_rtp_out[0]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT0 = 5, //!< cpuss.dmac_tr_out[0]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT1 = 6, //!< cpuss.dmac_tr_out[1]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT2 = 7, //!< cpuss.dmac_tr_out[2]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT3 = 8, //!< cpuss.dmac_tr_out[3]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT4 = 9, //!< cpuss.dmac_tr_out[4]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT5 = 10, //!< cpuss.dmac_tr_out[5]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT6 = 11, //!< cpuss.dmac_tr_out[6]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT7 = 12, //!< cpuss.dmac_tr_out[7]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT8 = 13, //!< cpuss.dmac_tr_out[8]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT9 = 14, //!< cpuss.dmac_tr_out[9]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT10 = 15, //!< cpuss.dmac_tr_out[10]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT11 = 16, //!< cpuss.dmac_tr_out[11]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT12 = 17, //!< cpuss.dmac_tr_out[12]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT13 = 18, //!< cpuss.dmac_tr_out[13]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT14 = 19, //!< cpuss.dmac_tr_out[14]
+    CYHAL_TRIGGER_CPUSS_DMAC_TR_OUT15 = 20, //!< cpuss.dmac_tr_out[15]
     CYHAL_TRIGGER_EXCO_TRIGGER = 21, //!< exco.trigger
     CYHAL_TRIGGER_LPCOMP_COMP_OUT0 = 22, //!< lpcomp.comp_out[0]
     CYHAL_TRIGGER_LPCOMP_COMP_OUT1 = 23, //!< lpcomp.comp_out[1]
