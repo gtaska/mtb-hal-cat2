@@ -106,18 +106,18 @@ cy_rslt_t cyhal_timer_init(cyhal_timer_t *obj, cyhal_gpio_t pin, const cyhal_clo
             obj->tcpwm.clock = *clk;
             _cyhal_utils_update_clock_format(&obj->tcpwm.clock);
             obj->tcpwm.clock_hz = cyhal_clock_get_frequency(&obj->tcpwm.clock);
-            if (CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)obj->tcpwm.clock.block, obj->tcpwm.clock.channel))
+            if (CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_assign_divider(pclk, &(obj->tcpwm.clock)))
             {
                 result = CYHAL_TIMER_RSLT_ERR_CLOCK_INIT;
             }
         }
-        else if (CY_RSLT_SUCCESS == (result = cyhal_clock_allocate(&(obj->tcpwm.clock), CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT)))
+        else if (CY_RSLT_SUCCESS == (result = _cyhal_utils_allocate_clock(&(obj->tcpwm.clock), timer, CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT, true)))
         {
             obj->tcpwm.dedicated_clock = true;
             result = cyhal_timer_set_frequency(obj, CYHAL_TIMER_DEFAULT_FREQ);
             if (CY_RSLT_SUCCESS == result)
             {
-                if (CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)obj->tcpwm.clock.block, obj->tcpwm.clock.channel))
+                if (CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_assign_divider(pclk, &(obj->tcpwm.clock)))
                 {
                     result = CYHAL_TIMER_RSLT_ERR_CLOCK_INIT;
                 }

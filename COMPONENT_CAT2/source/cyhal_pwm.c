@@ -227,22 +227,18 @@ cy_rslt_t cyhal_pwm_init_adv(cyhal_pwm_t *obj, cyhal_gpio_t pin, cyhal_gpio_t pi
 
     if (CY_RSLT_SUCCESS == result)
     {
-#if defined(CY_IP_M0S8TCPWM_INSTANCES)
-        uint32_t source_hz = Cy_SysClk_ClkSysGetFrequency();
-#else
-        uint32_t source_hz = Cy_SysClk_ClkPeriGetFrequency();
-#endif
+        uint32_t source_hz = _cyhal_utils_get_peripheral_clock_frequency(&(obj->tcpwm.resource));
         en_clk_dst_t pclk = (en_clk_dst_t)(_CYHAL_TCPWM_DATA[obj->tcpwm.resource.block_num].clock_dst + obj->tcpwm.resource.channel_num);
         if (NULL != clk)
         {
             obj->tcpwm.clock = *clk;
             _cyhal_utils_update_clock_format(&obj->tcpwm.clock);
-            if (CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)obj->tcpwm.clock.block, obj->tcpwm.clock.channel))
+            if (CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_assign_divider(pclk, &(obj->tcpwm.clock)))
             {
                 result = CYHAL_PWM_RSLT_FAILED_CLOCK_INIT;
             }
         }
-        else if (CY_RSLT_SUCCESS == (result = cyhal_clock_allocate(&obj->tcpwm.clock, CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT)))
+        else if (CY_RSLT_SUCCESS == (result = _cyhal_utils_allocate_clock(&obj->tcpwm.clock, &obj->tcpwm.resource, CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT, true)))
         {
             obj->tcpwm.dedicated_clock = true;
             uint32_t div = (dead_time_us > 0)
@@ -250,9 +246,9 @@ cy_rslt_t cyhal_pwm_init_adv(cyhal_pwm_t *obj, cyhal_gpio_t pin, cyhal_gpio_t pi
                 : (uint32_t)(1 << (_CYHAL_PWM_MAX_WIDTH - _CYHAL_TCPWM_DATA[obj->tcpwm.resource.block_num].max_count));
 
             if (0 == div ||
-                CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphSetDivider((cy_en_divider_types_t)obj->tcpwm.clock.block, obj->tcpwm.clock.channel, div - 1) ||
-                CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphEnableDivider((cy_en_divider_types_t)obj->tcpwm.clock.block, obj->tcpwm.clock.channel) ||
-                CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)obj->tcpwm.clock.block, obj->tcpwm.clock.channel))
+                CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_set_divider(pclk, &(obj->tcpwm.clock), div - 1) ||
+                CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_enable_divider(pclk, &(obj->tcpwm.clock)) ||
+                CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_assign_divider(pclk, &(obj->tcpwm.clock)))
             {
                 result = CYHAL_PWM_RSLT_FAILED_CLOCK_INIT;
             }

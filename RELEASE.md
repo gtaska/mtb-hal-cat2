@@ -38,6 +38,11 @@ The following HAL drivers are not supported on CAT2 as none of the devices in Mo
 * USB Device
 
 ### What Changed?
+#### v1.1.0
+* Added support for additional devices
+* Extended System driver to support registering for other interrupts
+* Fixed issues with level trigger signals to the DMA driver
+* Fixed a few bugs in various drivers
 #### v1.0.1
 * Added support for additional devices
 #### v1.0.0
@@ -50,8 +55,8 @@ This version of the CAT2 Hardware Abstraction Layer was validated for compatibil
 
 | Software and Tools                        | Version |
 | :---                                      | :----:  |
-| ModusToolbox Software Environment         | 2.2     |
-| GCC Compiler                              | 9.3     |
+| ModusToolbox Software Environment         | 2.2.1   |
+| GCC Compiler                              | 9.3.1   |
 | IAR Compiler                              | 8.4     |
 | ARM Compiler                              | 6.11    |
 

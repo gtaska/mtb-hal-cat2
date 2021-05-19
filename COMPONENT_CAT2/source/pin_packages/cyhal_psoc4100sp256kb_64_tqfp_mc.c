@@ -5,7 +5,7 @@
 * PSoC4100Sp256KB device GPIO HAL header for 64-TQFP-MC package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright

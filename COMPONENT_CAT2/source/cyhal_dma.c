@@ -29,18 +29,27 @@
 #include "cyhal_system.h"
 #include "cyhal_hwmgr.h"
 #include "cyhal_interconnect.h"
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+
+#if (defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC) || defined(CY_IP_MXAHBDMAC))
+#define HAS_DMAC (1)
+#endif
+#if    (defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_MXDW))
+#define HAS_DW   (1)
+#endif
+
+#if (HAS_DMAC)
 #include "cyhal_dma_dmac.h"
 #endif
-#if defined(CY_IP_M4CPUSS_DMA)
+#if (HAS_DW)
 #include "cyhal_dma_dw.h"
 #endif
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC || HAS_DW)
 
 #if defined(__cplusplus)
 extern "C" {
 #endif /* __cplusplus */
+
 
 
 cy_rslt_t cyhal_dma_init_adv(
@@ -58,10 +67,10 @@ cy_rslt_t cyhal_dma_init_adv(
     cyhal_source_t *src_trigger = (NULL == src) ? NULL : &src->source;
     cyhal_dest_t *dest_trigger = (NULL == dest) ? NULL : &dest->dest;
 
-#if !defined(CY_IP_M4CPUSS_DMAC) && defined(CY_IP_M4CPUSS_DMA)
+#if (HAS_DW && !HAS_DMAC)
     /* Only DW available. */
     rslt = _cyhal_dma_dw_init(obj, src_trigger, dest_trigger, priority);
-#elif (defined(CY_IP_M4CPUSS_DMAC) && !defined(CY_IP_M4CPUSS_DMA)) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#elif (HAS_DMAC && !HAS_DW)
     /* Only DMAC available. */
     rslt = _cyhal_dma_dmac_init(obj, src_trigger, dest_trigger, priority);
 #else
@@ -125,14 +134,18 @@ void cyhal_dma_free(cyhal_dma_t *obj)
     }
     (void)rslt; // Disable compiler warning in release build
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         _cyhal_dma_dmac_free(obj);
     }
 #endif
-#if defined(CY_IP_M4CPUSS_DMA)
+#if (HAS_DW)
+    #if (HAS_DMAC)
     if(obj->resource.type == CYHAL_RSC_DW)
+    #endif
     {
         _cyhal_dma_dw_free(obj);
     }
@@ -145,69 +158,90 @@ cy_rslt_t cyhal_dma_configure(cyhal_dma_t *obj, const cyhal_dma_cfg_t *cfg)
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_configure(obj, cfg);
     }
 #endif
-#if defined(CY_IP_M4CPUSS_DMA)
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        return _cyhal_dma_dw_configure(obj, cfg);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_configure(obj, cfg);
 #endif
-
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
 }
 
 cy_rslt_t cyhal_dma_start_transfer(cyhal_dma_t *obj)
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_start_transfer(obj);
     }
 #endif
-#if defined(CY_IP_M4CPUSS_DMA)
-    if(obj->resource.type == CYHAL_RSC_DW)
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_start_transfer(obj);
+#endif
+}
+
+cy_rslt_t cyhal_dma_enable(cyhal_dma_t *obj)
+{
+    CY_ASSERT(NULL != obj);
+
+#if (HAS_DMAC)
+    #if (HAS_DW)
+    if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
-        return _cyhal_dma_dw_start_transfer(obj);
+        return _cyhal_dma_dmac_enable(obj);
     }
 #endif
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_enable(obj);
+#endif
+}
 
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
+cy_rslt_t cyhal_dma_disable(cyhal_dma_t *obj)
+{
+    CY_ASSERT(NULL != obj);
+
+#if (HAS_DMAC)
+    #if (HAS_DW)
+    if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
+    {
+        return _cyhal_dma_dmac_disable(obj);
+    }
+#endif
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_disable(obj);
+#endif
 }
 
 bool cyhal_dma_is_busy(cyhal_dma_t *obj)
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_is_busy(obj);
     }
 #endif
-#if defined(CY_IP_M4CPUSS_DMA)
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        return _cyhal_dma_dw_is_busy(obj);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_is_busy(obj);
 #endif
-
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
 }
 
 void cyhal_dma_register_callback(cyhal_dma_t *obj, cyhal_dma_event_callback_t callback, void *callback_arg)
@@ -224,17 +258,18 @@ void cyhal_dma_enable_event(cyhal_dma_t *obj, cyhal_dma_event_t event, uint8_t i
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         _cyhal_dma_dmac_enable_event(obj, event, intr_priority, enable);
+        return;
     }
 #endif
-#if defined(CY_IP_M4CPUSS_DMA)
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        _cyhal_dma_dw_enable_event(obj, event, intr_priority, enable);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    _cyhal_dma_dw_enable_event(obj, event, intr_priority, enable);
 #endif
 }
 
@@ -242,96 +277,76 @@ cy_rslt_t cyhal_dma_connect_digital(cyhal_dma_t *obj, cyhal_source_t source, cyh
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_connect_digital(obj, source, input);
     }
 #endif
-#ifdef CY_IP_M4CPUSS_DMA
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        return _cyhal_dma_dw_connect_digital(obj, source, input);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_connect_digital(obj, source, input);
 #endif
-
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
 }
 
 cy_rslt_t cyhal_dma_enable_output(cyhal_dma_t *obj, cyhal_dma_output_t output, cyhal_source_t *source)
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_enable_output(obj, output, source);
     }
 #endif
-#ifdef CY_IP_M4CPUSS_DMA
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        return _cyhal_dma_dw_enable_output(obj, output, source);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_enable_output(obj, output, source);
 #endif
-
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
 }
 
 cy_rslt_t cyhal_dma_disconnect_digital(cyhal_dma_t *obj, cyhal_source_t source, cyhal_dma_input_t input)
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_disconnect_digital(obj, source, input);
     }
 #endif
-#ifdef CY_IP_M4CPUSS_DMA
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        return _cyhal_dma_dw_disconnect_digital(obj, source, input);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_disconnect_digital(obj, source, input);
 #endif
-
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
 }
 
 cy_rslt_t cyhal_dma_disable_output(cyhal_dma_t *obj, cyhal_dma_output_t output)
 {
     CY_ASSERT(NULL != obj);
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if (HAS_DMAC)
+    #if (HAS_DW)
     if(obj->resource.type == CYHAL_RSC_DMA)
+    #endif
     {
         return _cyhal_dma_dmac_disable_output(obj, output);
     }
 #endif
-#ifdef CY_IP_M4CPUSS_DMA
-    if(obj->resource.type == CYHAL_RSC_DW)
-    {
-        return _cyhal_dma_dw_disable_output(obj, output);
-    }
+#if (HAS_DW)
+    CY_ASSERT(obj->resource.type == CYHAL_RSC_DW);
+    return _cyhal_dma_dw_disable_output(obj, output);
 #endif
-
-    /* Control should never reach here but return value anyway to appease
-     * compilers */
-    CY_ASSERT(false);
-    return CYHAL_DMA_RSLT_FATAL_UNSUPPORTED_HARDWARE;
 }
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
 
-#endif /* defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_M0S8CPUSSV3_DMAC) */
+#endif /* (HAS_DMAC || HAS_DW) */

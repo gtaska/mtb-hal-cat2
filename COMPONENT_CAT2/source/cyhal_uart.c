@@ -86,22 +86,104 @@ static const cy_stc_scb_uart_config_t _cyhal_uart_default_config = {
 static void _cyhal_uart_irq_handler(void)
 {
     cyhal_uart_t *obj = (cyhal_uart_t*) _cyhal_scb_get_irq_obj();
+
+    /* Cy_SCB_UART_Interrupt() manipulates the interrupt masks. Save a copy to work around it. */
+    uint32_t txMasked = Cy_SCB_GetTxInterruptStatusMasked(obj->base);
+    uint32_t rxMasked = Cy_SCB_GetRxInterruptStatusMasked(obj->base);
+
+    /* SCB high-level API interrupt handler. Must be called as high-level API is used in the HAL */
     Cy_SCB_UART_Interrupt(obj->base, &(obj->context));
+
+    /* Custom handling for TX overflow (cannot occur using HAL API but can occur if user makes custom modifications)
+        Note: This is partially handled in Cy_SCB_UART_Interrupt()
+        but it only takes care of NACK and ARB_LOST errors. */
+    if (0UL != (CY_SCB_UART_TX_OVERFLOW & txMasked))
+    {
+        Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_UART_TX_OVERFLOW);
+
+        if (NULL != obj->context.cbEvents)
+        {
+            obj->context.cbEvents(CY_SCB_UART_TRANSMIT_ERR_EVENT);
+        }
+    }
+
+    /* Custom handling for TX underflow (cannot occur using HAL API but can occur if user makes custom modifications)
+        Note: This is partially handled in Cy_SCB_UART_Interrupt()
+        but it only takes care of NACK and ARB_LOST errors. */
+    if (0UL != (CY_SCB_UART_TX_UNDERFLOW & txMasked))
+    {
+        Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_UART_TX_UNDERFLOW);
+
+        if (NULL != obj->context.cbEvents)
+        {
+            obj->context.cbEvents(CY_SCB_UART_TRANSMIT_ERR_EVENT);
+        }
+    }
+
+    /* Custom handling for TX FIFO trigger.
+        Note: This is partially handled in Cy_SCB_UART_Interrupt()
+        when processing CY_SCB_TX_INTR_LEVEL. Do not clear the interrupt. */
+    if (0UL != (CY_SCB_UART_TX_TRIGGER & txMasked))
+    {
+        if (NULL != obj->context.cbEvents)
+        {
+            // Need to shift by 1 due to to existing logic in _cyhal_utils_convert_flags()
+            obj->context.cbEvents(CYHAL_UART_IRQ_TX_FIFO >> 1u);
+        }
+    }
+
+    /* Manually clear the tx done interrupt and re-enable the interrupt mask */
+    if (0UL != (CY_SCB_UART_TX_DONE & txMasked))
+    {
+        Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_UART_TX_DONE);
+        Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) | CY_SCB_UART_TX_DONE);
+    }
+
+    /* Custom handling for RX underflow (cannot occur using HAL API but can occur if user makes custom modifications)
+        Note: This is partially handled in Cy_SCB_UART_Interrupt()
+        which takes care of overflow, frame and parity errors. */
+    if (0UL != (CY_SCB_RX_INTR_UNDERFLOW & rxMasked))
+    {
+        Cy_SCB_ClearRxInterrupt(obj->base, CY_SCB_RX_INTR_UNDERFLOW);
+
+        if (NULL != obj->context.cbEvents)
+        {
+            obj->context.cbEvents(CY_SCB_UART_RECEIVE_ERR_EVENT);
+        }
+    }
+
+    /* Custom handling for RX FIFO trigger
+        Note: This is partially handled in Cy_SCB_UART_Interrupt()
+        when processing CY_SCB_RX_INTR_LEVEL. Do not clear the interrupt. */
+    if (0UL != (CY_SCB_UART_RX_TRIGGER & rxMasked))
+    {
+        if (NULL != obj->context.cbEvents)
+        {
+            // Need to shift by 1 due to to existing logic in _cyhal_utils_convert_flags()
+            obj->context.cbEvents(CYHAL_UART_IRQ_RX_FIFO >> 1u);
+        }
+    }
 }
 
 static void _cyhal_uart_cb_wrapper(uint32_t event)
 {
-    static const uint32_t status_map[] =            //Note: HAL defines in PDL order for mapping
+    static const uint32_t status_map[] =
     {
-        (uint32_t)CYHAL_UART_IRQ_NONE,                 // Default no IRQ
-        (uint32_t)CYHAL_UART_IRQ_TX_TRANSMIT_IN_FIFO,  // CY_SCB_UART_TRANSMIT_IN_FIFO_EVENT
-        (uint32_t)CYHAL_UART_IRQ_TX_DONE,              // CY_SCB_UART_TRANSMIT_DONE_EVENT
-        (uint32_t)CYHAL_UART_IRQ_RX_DONE,              // CY_SCB_UART_RECEIVE_DONE_EVENT
-        (uint32_t)CYHAL_UART_IRQ_RX_FULL,              // CY_SCB_UART_RB_FULL_EVENT
-        (uint32_t)CYHAL_UART_IRQ_RX_ERROR,             // CY_SCB_UART_RECEIVE_ERR_EVENT
-        (uint32_t)CYHAL_UART_IRQ_TX_ERROR,             // CY_SCB_UART_TRANSMIT_ERR_EVENT
-        (uint32_t)CYHAL_UART_IRQ_RX_NOT_EMPTY,         // CY_SCB_UART_RECEIVE_NOT_EMTPY
-        (uint32_t)CYHAL_UART_IRQ_TX_EMPTY,             // CY_SCB_UART_TRANSMIT_EMTPY
+        /* The ordering here has to match group_scb_uart_macros_callback_events in the PDL since it uses
+           the high-level APIs to perform the callback handling.
+           Note: Remember that the values are shifted by 1. */
+        (uint32_t)CYHAL_UART_IRQ_NONE,                 // 0: Default no IRQ
+        (uint32_t)CYHAL_UART_IRQ_TX_TRANSMIT_IN_FIFO,  // 1: CY_SCB_UART_TRANSMIT_IN_FIFO_EVENT
+        (uint32_t)CYHAL_UART_IRQ_TX_DONE,              // 2: CY_SCB_UART_TRANSMIT_DONE_EVENT
+        (uint32_t)CYHAL_UART_IRQ_RX_DONE,              // 3: CY_SCB_UART_RECEIVE_DONE_EVENT
+        (uint32_t)CYHAL_UART_IRQ_RX_FULL,              // 4: CY_SCB_UART_RB_FULL_EVENT
+        (uint32_t)CYHAL_UART_IRQ_RX_ERROR,             // 5: CY_SCB_UART_RECEIVE_ERR_EVENT
+        (uint32_t)CYHAL_UART_IRQ_TX_ERROR,             // 6: CY_SCB_UART_TRANSMIT_ERR_EVENT
+        (uint32_t)CYHAL_UART_IRQ_RX_NOT_EMPTY,         // 7: CY_SCB_UART_RECEIVE_NOT_EMTPY
+        (uint32_t)CYHAL_UART_IRQ_TX_EMPTY,             // 8: CY_SCB_UART_TRANSMIT_EMTPY
+        // Custom events from HAL
+        (uint32_t)CYHAL_UART_IRQ_TX_FIFO,              // 9: CYHAL_UART_IRQ_TX_FIFO
+        (uint32_t)CYHAL_UART_IRQ_RX_FIFO,              // 10: CYHAL_UART_IRQ_RX_FIFO
     };
     uint32_t hal_event = _cyhal_utils_convert_flags(status_map, sizeof(status_map) / sizeof(uint32_t), event);
 
@@ -229,13 +311,9 @@ static cy_en_scb_uart_stop_bits_t _cyhal_uart_convert_stopbits(uint8_t stopbits)
     }
 }
 
-static uint32_t _cyhal_uart_actual_baud(uint32_t divider, uint32_t oversample)
+static uint32_t _cyhal_uart_actual_baud(const cyhal_resource_inst_t *resource, uint32_t divider, uint32_t oversample)
 {
-    #if defined(COMPONENT_CAT1A)
-    return Cy_SysClk_ClkPeriGetFrequency() / (divider * oversample);
-    #elif defined(COMPONENT_CAT2)
-    return Cy_SysClk_ClkSysGetFrequency() / (divider * oversample);
-    #endif
+    return _cyhal_utils_get_peripheral_clock_frequency(resource) / (divider * oversample);
 }
 
 static uint32_t _cyhal_uart_baud_perdif(uint32_t desired_baud, uint32_t actual_baud)
@@ -245,15 +323,15 @@ static uint32_t _cyhal_uart_baud_perdif(uint32_t desired_baud, uint32_t actual_b
         : ((desired_baud * 100) - (actual_baud * 100)) / desired_baud;
 }
 
-static uint8_t _cyhal_uart_best_oversample(uint32_t baudrate)
+static uint8_t _cyhal_uart_best_oversample(const cyhal_resource_inst_t *resource, uint32_t baudrate)
 {
     uint8_t best_oversample = _CYHAL_UART_OVERSAMPLE_MIN;
     uint8_t best_difference = 0xFF;
 
     for (uint8_t i = _CYHAL_UART_OVERSAMPLE_MIN; i < _CYHAL_UART_OVERSAMPLE_MAX + 1; i++)
     {
-        uint32_t divider = _cyhal_utils_divider_value(baudrate * i, 0);
-        uint8_t difference = (uint8_t)_cyhal_uart_baud_perdif(baudrate, _cyhal_uart_actual_baud(divider, i));
+        uint32_t divider = _cyhal_utils_divider_value(resource, baudrate * i, 0);
+        uint8_t difference = (uint8_t)_cyhal_uart_baud_perdif(baudrate, _cyhal_uart_actual_baud(resource, divider, i));
 
         if (difference < best_difference)
         {
@@ -316,7 +394,7 @@ cy_rslt_t cyhal_uart_init(cyhal_uart_t *obj, cyhal_gpio_t tx, cyhal_gpio_t rx, c
         if (clk == NULL)
         {
             obj->is_user_clock = false;
-            result = cyhal_clock_allocate(&(obj->clock), CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT);
+            result = _cyhal_utils_allocate_clock(&(obj->clock), &rsc, CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT, true);
         }
         else
         {
@@ -328,8 +406,8 @@ cy_rslt_t cyhal_uart_init(cyhal_uart_t *obj, cyhal_gpio_t tx, cyhal_gpio_t rx, c
 
     if (result == CY_RSLT_SUCCESS)
     {
-        result = (cy_rslt_t)Cy_SysClk_PeriphAssignDivider(
-            _cyhal_scb_get_clock_index(obj->resource.block_num), (cy_en_divider_types_t)obj->clock.block, obj->clock.channel);
+        result = _cyhal_utils_peri_pclk_assign_divider(
+            _cyhal_scb_get_clock_index(obj->resource.block_num), &(obj->clock));
     }
 
     if (result == CY_RSLT_SUCCESS)
@@ -419,10 +497,10 @@ cy_rslt_t cyhal_uart_set_baud(cyhal_uart_t *obj, uint32_t baudrate, uint32_t *ac
         return status;
     }
 
-    oversample_value = _cyhal_uart_best_oversample(baudrate);
+    oversample_value = _cyhal_uart_best_oversample(&(obj->resource), baudrate);
     obj->config.oversample = oversample_value;
 
-    divider = _cyhal_utils_divider_value(baudrate * oversample_value, 0);
+    divider = _cyhal_utils_divider_value(&(obj->resource), baudrate * oversample_value, 0);
 
     /* Set baud rate */
     status = cyhal_clock_set_divider(&(obj->clock), divider);
@@ -433,7 +511,7 @@ cy_rslt_t cyhal_uart_set_baud(cyhal_uart_t *obj, uint32_t baudrate, uint32_t *ac
         return status;
     }
 
-    calculated_baud = _cyhal_uart_actual_baud(divider, oversample_value);
+    calculated_baud = _cyhal_uart_actual_baud(&(obj->resource), divider, oversample_value);
 
     if (actualbaud != NULL)
         *actualbaud = calculated_baud;
@@ -445,9 +523,15 @@ cy_rslt_t cyhal_uart_set_baud(cyhal_uart_t *obj, uint32_t baudrate, uint32_t *ac
 
     /* Configure the UART interface */
     #if (CY_IP_MXSCB_VERSION >= 2) /* Versions 2 and later */
+    uint32_t mem_width = (obj->config.dataWidth <= CY_SCB_BYTE_WIDTH)
+        #if defined(COMPONENT_CAT1)
+        ? CY_SCB_MEM_WIDTH_BYTE : CY_SCB_MEM_WIDTH_HALFWORD;
+        #elif defined(COMPONENT_CAT2)
+        ? CY_SCB_CTRL_MEM_WIDTH_BYTE : CY_SCB_CTRL_MEM_WIDTH_HALFWORD;
+        #endif
+
     SCB_CTRL(obj->base) = _BOOL2FLD(SCB_CTRL_ADDR_ACCEPT, obj->config.acceptAddrInFifo)     |
-                _BOOL2FLD(SCB_CTRL_MEM_WIDTH, (obj->config.dataWidth <= CY_SCB_BYTE_WIDTH)
-                    ? CY_SCB_CTRL_MEM_WIDTH_BYTE : CY_SCB_CTRL_MEM_WIDTH_HALFWORD)          |
+                _BOOL2FLD(SCB_CTRL_MEM_WIDTH, mem_width)                                    |
                 _VAL2FLD(SCB_CTRL_OVS, oversample_value - 1)                                |
                 _VAL2FLD(SCB_CTRL_MODE, CY_SCB_CTRL_MODE_UART);
     #else /* Older versions of the block */
@@ -512,6 +596,7 @@ cy_rslt_t cyhal_uart_putc(cyhal_uart_t *obj, uint32_t value)
     {
         count = Cy_SCB_UART_Put(obj->base, value);
     }
+
     return CY_RSLT_SUCCESS;
 }
 
@@ -614,6 +699,7 @@ cy_rslt_t cyhal_uart_write(cyhal_uart_t *obj, void *tx, size_t *tx_length)
         return CYHAL_SYSPM_RSLT_ERR_PM_PENDING;
 
     *tx_length = Cy_SCB_UART_PutArray(obj->base, tx, *tx_length);
+
     return CY_RSLT_SUCCESS;
 }
 
@@ -680,28 +766,98 @@ void cyhal_uart_enable_event(cyhal_uart_t *obj, cyhal_uart_event_t event, uint8_
     if (enable)
     {
         obj->irq_cause |= event;
-        if (event & CYHAL_UART_IRQ_RX_NOT_EMPTY)
-        {
-            Cy_SCB_ClearRxInterrupt(obj->base, CY_SCB_RX_INTR_NOT_EMPTY);
-            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) | CY_SCB_RX_INTR_NOT_EMPTY);
-        }
         if (event & CYHAL_UART_IRQ_TX_EMPTY)
         {
             Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_UART_TX_EMPTY);
             Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) | CY_SCB_UART_TX_EMPTY);
         }
+        if (event & CYHAL_UART_IRQ_TX_DONE)
+        {
+            Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_UART_TX_DONE);
+            Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) | CY_SCB_UART_TX_DONE);
+        }
+        if (event & CYHAL_UART_IRQ_TX_ERROR)
+        {
+            // Omit underflow condition as the interrupt perpetually triggers
+            Cy_SCB_ClearTxInterrupt(obj->base, (CY_SCB_UART_TX_OVERFLOW | CY_SCB_UART_TRANSMIT_ERR));
+            Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) | (CY_SCB_UART_TX_OVERFLOW | CY_SCB_UART_TRANSMIT_ERR));
+        }
+        if (event & CYHAL_UART_IRQ_TX_FIFO)
+        {
+            Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_UART_TX_TRIGGER);
+            Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) | CY_SCB_UART_TX_TRIGGER);
+        }
+
+        if (event & CYHAL_UART_IRQ_RX_NOT_EMPTY)
+        {
+            Cy_SCB_ClearRxInterrupt(obj->base, CY_SCB_UART_RX_NOT_EMPTY);
+            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) | CY_SCB_UART_RX_NOT_EMPTY);
+        }
+        if (event & CYHAL_UART_IRQ_RX_ERROR)
+        {
+            // Omit underflow condition as the interrupt perpetually triggers.
+            Cy_SCB_ClearRxInterrupt(obj->base, CY_SCB_UART_RECEIVE_ERR);
+            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) | CY_SCB_UART_RECEIVE_ERR);
+        }
+        if (event & CYHAL_UART_IRQ_RX_FIFO)
+        {
+            Cy_SCB_ClearRxInterrupt(obj->base, CY_SCB_UART_RX_TRIGGER);
+            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) | CY_SCB_UART_RX_TRIGGER);
+        }
     }
     else
     {
         obj->irq_cause &= ~event;
-        if (event & CYHAL_UART_IRQ_RX_NOT_EMPTY)
-        {
-            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) & ~CY_SCB_RX_INTR_NOT_EMPTY);
-        }
         if (event & CYHAL_UART_IRQ_TX_EMPTY)
         {
             Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) & ~CY_SCB_UART_TX_EMPTY);
         }
+        if (event & CYHAL_UART_IRQ_TX_DONE)
+        {
+            Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) & ~CY_SCB_UART_TX_DONE);
+        }
+        if (event & CYHAL_UART_IRQ_TX_ERROR)
+        {
+            Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) & ~(CY_SCB_UART_TX_OVERFLOW | CY_SCB_UART_TRANSMIT_ERR));
+        }
+        if (event & CYHAL_UART_IRQ_TX_FIFO)
+        {
+            Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) & ~CY_SCB_UART_TX_TRIGGER);
+        }
+
+        if (event & CYHAL_UART_IRQ_RX_NOT_EMPTY)
+        {
+            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) & ~CY_SCB_UART_RX_NOT_EMPTY);
+        }
+        if (event & CYHAL_UART_IRQ_RX_ERROR)
+        {
+            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) & ~CY_SCB_UART_RECEIVE_ERR);
+        }
+        if (event & CYHAL_UART_IRQ_RX_FIFO)
+        {
+            Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) & ~CY_SCB_UART_RX_TRIGGER);
+        }
+    }
+
+    if (event & CYHAL_UART_IRQ_TX_TRANSMIT_IN_FIFO)
+    {
+        /* This is a software event only. It is only applicable for cyhal_uart_write_async() */
+    }
+    if (event & CYHAL_UART_IRQ_RX_FULL)
+    {
+        /* This is a software event only. It is only applicable when using rx software buffer */
+    }
+    if (event & CYHAL_UART_IRQ_RX_DONE)
+    {
+        /* This is a software event only. It is only applicable for cyhal_uart_read_async() */
+    }
+    if (event == CYHAL_UART_IRQ_NONE)
+    {
+        /* "No interrupt" is equivalent for both "enable" and "disable" */
+        Cy_SCB_ClearRxInterrupt(obj->base, CY_SCB_RX_INTR_MASK);
+        Cy_SCB_ClearTxInterrupt(obj->base, CY_SCB_TX_INTR_MASK);
+        Cy_SCB_SetRxInterruptMask(obj->base, Cy_SCB_GetRxInterruptMask(obj->base) & ~CY_SCB_RX_INTR_MASK);
+        Cy_SCB_SetTxInterruptMask(obj->base, Cy_SCB_GetTxInterruptMask(obj->base) & ~CY_SCB_TX_INTR_MASK);
     }
 
     NVIC_SetPriority(_CYHAL_SCB_IRQ_N[obj->resource.block_num], intr_priority);

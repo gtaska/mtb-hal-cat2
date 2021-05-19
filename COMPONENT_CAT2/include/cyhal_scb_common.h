@@ -35,6 +35,7 @@
 #include "cy_device.h"
 #include "cy_pdl.h"
 #include "cyhal_utils.h"
+#include "cyhal_peri_common.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -181,11 +182,11 @@ static inline en_clk_dst_t _cyhal_scb_get_clock_index(uint32_t block_num)
     // PSOC6A256K does not have SCB 3
     #if defined(CY_DEVICE_PSOC6A256K)
     if (block_num < 3)
-        clk = (en_clk_dst_t)((uint32_t)PCLK_SCB0_CLOCK + block_num);
+        clk = (en_clk_dst_t)((uint32_t)_CYHAL_SCB0_PCLK_CLOCK + block_num);
     else
-        clk = (en_clk_dst_t)((uint32_t)PCLK_SCB0_CLOCK + block_num -1);
+        clk = (en_clk_dst_t)((uint32_t)_CYHAL_SCB0_PCLK_CLOCK + block_num -1);
     #else
-        clk = (en_clk_dst_t)((uint32_t)PCLK_SCB0_CLOCK + block_num);
+        clk = (en_clk_dst_t)((uint32_t)_CYHAL_SCB0_PCLK_CLOCK + block_num);
     #endif
     return clk;
 }

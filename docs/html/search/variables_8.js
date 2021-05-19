@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['length',['length',['../group__group__hal__dma.html#aa7fbd97e22cee8fd0079fe27479f00c1',1,'cyhal_dma_cfg_t']]]
+  ['keycode',['keycode',['../group__group__hal__keyscan.html#a438d909418d2e1a393e541399cc776c6',1,'cyhal_keyscan_action_t']]]
 ];

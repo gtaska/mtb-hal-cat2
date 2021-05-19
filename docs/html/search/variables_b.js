@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['output',['output',['../group__group__hal__dma.html#a5fde47af76029eaba80edda37b16a065',1,'cyhal_dma_dest_t']]]
+  ['next',['next',['../group__group__hal__syspm.html#a7cf9d47efae150366d250371f113ae6c',1,'cyhal_syspm_callback_data_t']]]
 ];

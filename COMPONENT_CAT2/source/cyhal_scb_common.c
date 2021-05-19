@@ -27,6 +27,7 @@
 #include "cyhal_syspm.h"
 #include "cyhal_clock.h"
 #include "cyhal_interconnect.h"
+#include "cyhal_peri_common.h"
 
 #if defined (CY_IP_MXSCB) || (CY_IP_M0S8SCB)
 
@@ -271,8 +272,8 @@ uint32_t _cyhal_i2c_set_peri_divider(CySCB_Type *base, uint32_t block_num, cyhal
             peri_freq = is_slave ? _CYHAL_SCB_PERI_CLOCK_SLAVE_FSTP : _CYHAL_SCB_PERI_CLOCK_MASTER_FSTP;
         }
 
-        if (peri_freq > 0 &&
-            Cy_SysClk_PeriphAssignDivider(_cyhal_scb_get_clock_index(block_num), (cy_en_divider_types_t)clock->block, clock->channel) == CY_SYSCLK_SUCCESS)
+        if (peri_freq > 0 && _cyhal_utils_peri_pclk_assign_divider(
+            _cyhal_scb_get_clock_index(block_num), clock) == CY_SYSCLK_SUCCESS)
         {
             cy_rslt_t status = cyhal_clock_set_enabled(clock, false, false);
             if (status == CY_RSLT_SUCCESS)
@@ -351,14 +352,18 @@ cy_rslt_t _cyhal_scb_enable_output(CySCB_Type *base, cyhal_resource_inst_t resou
 #if (defined(CY_IP_MXSCB) || defined(CY_DEVICE_PSOC4AMC) || defined(CY_DEVICE_PSOC4AS3) || defined(CY_DEVICE_PSOC4AS4))
     // This just returns a proper cyhal_source_t. Use _cyhal_scb_set_fifo_level
     // to actually set level.
+    cyhal_internal_source_t src_int;
     if(output == CYHAL_SCB_OUTPUT_TRIGGER_RX_FIFO_LEVEL_REACHED)
     {
 #if defined(CY_DEVICE_PSOC6A256K)
         // 256K devices have no SCB3
-        *source = resource.block_num < 3 ? (cyhal_source_t)(CYHAL_TRIGGER_SCB0_TR_RX_REQ + resource.block_num) : (cyhal_source_t)(CYHAL_TRIGGER_SCB0_TR_RX_REQ + resource.block_num - 1);
+        src_int = (resource.block_num < 3)
+            ? (cyhal_internal_source_t)(_CYHAL_TRIGGER_SCB0_TR_RX_REQ + resource.block_num)
+            : (cyhal_internal_source_t)(_CYHAL_TRIGGER_SCB0_TR_RX_REQ + resource.block_num - 1);
 #else
-        *source = (cyhal_source_t)(CYHAL_TRIGGER_SCB0_TR_RX_REQ + resource.block_num);
+        src_int = (cyhal_internal_source_t)(_CYHAL_TRIGGER_SCB0_TR_RX_REQ + resource.block_num);
 #endif
+        *source = (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(src_int, CYHAL_SIGNAL_TYPE_EDGE);
 
         return CY_RSLT_SUCCESS;
     }
@@ -368,10 +373,13 @@ cy_rslt_t _cyhal_scb_enable_output(CySCB_Type *base, cyhal_resource_inst_t resou
     {
 #if defined(CY_DEVICE_PSOC6A256K)
         // 256K devices have no SCB3
-        *source = resource.block_num < 3 ? (cyhal_source_t)(CYHAL_TRIGGER_SCB0_TR_TX_REQ + resource.block_num) : (cyhal_source_t)(CYHAL_TRIGGER_SCB0_TR_TX_REQ + resource.block_num - 1);
+        src_int = (resource.block_num < 3)
+            ? (cyhal_internal_source_t)(_CYHAL_TRIGGER_SCB0_TR_TX_REQ + resource.block_num)
+            : (cyhal_internal_source_t)(_CYHAL_TRIGGER_SCB0_TR_TX_REQ + resource.block_num - 1);
 #else
-        *source = (cyhal_source_t)(CYHAL_TRIGGER_SCB0_TR_TX_REQ + resource.block_num);
+        src_int = (cyhal_internal_source_t)(_CYHAL_TRIGGER_SCB0_TR_TX_REQ + resource.block_num);
 #endif
+        *source = (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(src_int, CYHAL_SIGNAL_TYPE_EDGE);
 
         return CY_RSLT_SUCCESS;
     }

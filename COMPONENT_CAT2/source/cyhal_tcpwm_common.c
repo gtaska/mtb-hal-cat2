@@ -36,13 +36,20 @@ extern "C" {
 #endif
 
 const _cyhal_tcpwm_data_t _CYHAL_TCPWM_DATA[] = {
+
+#if defined(COMPONENT_CAT1B)
+#define TCPWM_CLOCK(block, channel)     (PCLK_TCPWM##block##_CLOCK_COUNTER_EN##channel)
+#else
+#define TCPWM_CLOCK(block, channel)     (PCLK_TCPWM##block##_CLOCKS##channel)
+#endif
+
 #if defined(CY_IP_MXTCPWM_INSTANCES)
     #if (CY_IP_MXTCPWM_VERSION == 1)
         #if (CY_IP_MXTCPWM_INSTANCES > 0)
-            {TCPWM0, PCLK_TCPWM0_CLOCKS0, TCPWM0_CNT_CNT_WIDTH, TCPWM0_CNT_NR, 0, tcpwm_0_interrupts_0_IRQn },
+            {TCPWM0, TCPWM_CLOCK(0, 0), TCPWM0_CNT_CNT_WIDTH, TCPWM0_CNT_NR, 0, tcpwm_0_interrupts_0_IRQn },
         #endif
         #if (CY_IP_MXTCPWM_INSTANCES > 1)
-            {TCPWM1, PCLK_TCPWM1_CLOCKS0, TCPWM1_CNT_CNT_WIDTH, TCPWM1_CNT_NR, TCPWM0_CNT_NR, tcpwm_1_interrupts_0_IRQn },
+            {TCPWM1, TCPWM_CLOCK(1, 0), TCPWM1_CNT_CNT_WIDTH, TCPWM1_CNT_NR, TCPWM0_CNT_NR, tcpwm_1_interrupts_0_IRQn },
         #endif
         #if (CY_IP_MXTCPWM_INSTANCES > 2)
             #warning Unhandled TCPWM instance count
@@ -50,16 +57,16 @@ const _cyhal_tcpwm_data_t _CYHAL_TCPWM_DATA[] = {
     #else // (CY_IP_MXTCPWM_VERSION >= 2)
         #if (CY_IP_MXTCPWM_INSTANCES == 1)
             #if (TCPWM_GRP_NR > 0)
-                {TCPWM0, PCLK_TCPWM0_CLOCKS0, TCPWM_GRP_NR0_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR0_GRP_GRP_CNT_NR, 0, tcpwm_0_interrupts_0_IRQn },
+                {TCPWM0, TCPWM_CLOCK(0, 0), TCPWM_GRP_NR0_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR0_GRP_GRP_CNT_NR, 0, tcpwm_0_interrupts_0_IRQn },
             #endif
             #if (TCPWM_GRP_NR > 1)
-                {TCPWM0, PCLK_TCPWM0_CLOCKS256, TCPWM_GRP_NR1_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR1_GRP_GRP_CNT_NR, TCPWM_GRP_NR0_GRP_GRP_CNT_NR, tcpwm_0_interrupts_256_IRQn },
+                {TCPWM0, TCPWM_CLOCK(0, 256), TCPWM_GRP_NR1_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR1_GRP_GRP_CNT_NR, TCPWM_GRP_NR0_GRP_GRP_CNT_NR, tcpwm_0_interrupts_256_IRQn },
             #endif
             #if (TCPWM_GRP_NR > 2)
-                {TCPWM0, PCLK_TCPWM0_CLOCKS512, TCPWM_GRP_NR2_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR2_GRP_GRP_CNT_NR, TCPWM_GRP_NR0_GRP_GRP_CNT_NR + TCPWM_GRP_NR1_GRP_GRP_CNT_NR, tcpwm_0_interrupts_512_IRQn },
+                {TCPWM0, TCPWM_CLOCK(0, 512), TCPWM_GRP_NR2_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR2_GRP_GRP_CNT_NR, TCPWM_GRP_NR0_GRP_GRP_CNT_NR + TCPWM_GRP_NR1_GRP_GRP_CNT_NR, tcpwm_0_interrupts_512_IRQn },
             #endif
             #if (TCPWM_GRP_NR > 3)
-                {TCPWM0, PCLK_TCPWM0_CLOCKS768, TCPWM_GRP_NR3_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR3_GRP_GRP_CNT_NR, TCPWM_GRP_NR0_GRP_GRP_CNT_NR + TCPWM_GRP_NR1_GRP_GRP_CNT_NR + TCPWM_GRP_NR2_GRP_GRP_CNT_NR, tcpwm_0_interrupts_768_IRQn },
+                {TCPWM0, TCPWM_CLOCK(0, 768), TCPWM_GRP_NR3_CNT_GRP_CNT_WIDTH, TCPWM_GRP_NR3_GRP_GRP_CNT_NR, TCPWM_GRP_NR0_GRP_GRP_CNT_NR + TCPWM_GRP_NR1_GRP_GRP_CNT_NR + TCPWM_GRP_NR2_GRP_GRP_CNT_NR, tcpwm_0_interrupts_768_IRQn },
             #endif
         #endif
         #if (CY_IP_MXTCPWM_INSTANCES > 1)
@@ -214,7 +221,7 @@ static cyhal_syspm_callback_data_t _cyhal_tcpwm_syspm_callback_data =
 
 void _cyhal_tcpwm_init_data(cyhal_tcpwm_t *tcpwm)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     for (uint8_t i = 0; i < _CYHAL_TCPWM_INPUTS; i++)
     {
         tcpwm->inputs[i] = CYHAL_TRIGGER_CPUSS_ZERO;
@@ -281,7 +288,7 @@ void _cyhal_tcpwm_free(cyhal_tcpwm_t *obj)
             _cyhal_syspm_unregister_peripheral_callback(&_cyhal_tcpwm_syspm_callback_data);
         }
 
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
         for (uint8_t i = 0; i < _CYHAL_TCPWM_OUTPUTS; i++)
         {
             _cyhal_tcpwm_disable_output(obj, (cyhal_tcpwm_output_t)i);
@@ -308,9 +315,10 @@ void _cyhal_tcpwm_free(cyhal_tcpwm_t *obj)
 
     if (obj->dedicated_clock)
     {
-        cy_en_sysclk_status_t rslt = Cy_SysClk_PeriphDisableDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel);
+        en_clk_dst_t pclk = (en_clk_dst_t)(_CYHAL_TCPWM_DATA[obj->resource.block_num].clock_dst + obj->resource.channel_num);
+        cy_rslt_t rslt = _cyhal_utils_peri_pclk_disable_divider(pclk, &(obj->clock));
         CY_UNUSED_PARAMETER(rslt); /* CY_ASSERT only processes in DEBUG, ignores for others */
-        CY_ASSERT(CY_SYSCLK_SUCCESS == rslt);
+        CY_ASSERT(CY_RSLT_SUCCESS == rslt);
         cyhal_clock_free(&(obj->clock));
         obj->dedicated_clock = false;
     }
@@ -370,7 +378,7 @@ static uint8_t _cyhal_tcpwm_convert_output_t(cyhal_tcpwm_output_t signal)
 }
 #endif
 
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
 #if (CY_IP_MXTCPWM_VERSION == 1U) ||(CY_IP_MXTCPWM_VERSION == 2U) || (CY_IP_M0S8TCPWM_VERSION == 2)
 // Assumes trig_index is not offset by _CYHAL_TCPWM_TRIGGER_INPUTS_IDX_OFFSET
 // (that is, it is 0 indexed).
@@ -389,6 +397,7 @@ static cyhal_dest_t _cyhal_tpwm_calculate_dest(uint8_t block, uint8_t trig_index
 #elif (CY_IP_MXTCPWM_VERSION == 2U)
     return block == 0 ? (cyhal_dest_t)(CYHAL_TRIGGER_TCPWM0_TR_ALL_CNT_IN0 + trig_index) : (cyhal_dest_t)(CYHAL_TRIGGER_TCPWM0_TR_ALL_CNT_IN14 + trig_index);
 #elif (CY_IP_M0S8TCPWM_VERSION == 2)
+    CY_UNUSED_PARAMETER(block);
 #if defined(CY_DEVICE_PSOC4AS1)
     CY_ASSERT(block == 0);
     return (cyhal_dest_t)(CYHAL_TRIGGER_TCPWM_TR_IN12 + trig_index);
@@ -410,11 +419,23 @@ static cyhal_source_t _cyhal_tcpwm_calculate_source(uint8_t block, uint8_t chnl,
     switch(signal)
     {
         case CYHAL_TCPWM_OUTPUT_OVERFLOW:
-            return block == 0 ? (cyhal_source_t)(CYHAL_TRIGGER_TCPWM0_TR_OVERFLOW0 + chnl) : (cyhal_source_t)(CYHAL_TRIGGER_TCPWM1_TR_OVERFLOW0 + chnl);
+            return block == 0
+                ? (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM0_TR_OVERFLOW0 + chnl, CYHAL_SIGNAL_TYPE_EDGE)
+                : (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM1_TR_OVERFLOW0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
         case CYHAL_TCPWM_OUTPUT_UNDERFLOW:
-            return block == 0 ? (cyhal_source_t)(CYHAL_TRIGGER_TCPWM0_TR_UNDERFLOW0 + chnl) : (cyhal_source_t)(CYHAL_TRIGGER_TCPWM1_TR_UNDERFLOW0 + chnl);
+            return block == 0
+                ? (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM0_TR_UNDERFLOW0 + chnl, CYHAL_SIGNAL_TYPE_EDGE)
+                : (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM1_TR_UNDERFLOW0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
         case CYHAL_TCPWM_OUTPUT_COMPARE_MATCH:
-            return block == 0 ? (cyhal_source_t)(CYHAL_TRIGGER_TCPWM0_TR_COMPARE_MATCH0 + chnl) : (cyhal_source_t)(CYHAL_TRIGGER_TCPWM1_TR_COMPARE_MATCH0 + chnl);
+            #if defined(COMPONENT_CAT1B)
+            return block == 0
+                ? (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM0_TR_CC_MATCH0 + chnl, CYHAL_SIGNAL_TYPE_EDGE)
+                : (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM1_TR_CC_MATCH0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
+            #else
+            return block == 0
+                ? (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM0_TR_COMPARE_MATCH0 + chnl, CYHAL_SIGNAL_TYPE_EDGE)
+                : (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM1_TR_COMPARE_MATCH0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
+            #endif
        default:
             // Should never reach here
             CY_ASSERT(false);
@@ -425,11 +446,11 @@ static cyhal_source_t _cyhal_tcpwm_calculate_source(uint8_t block, uint8_t chnl,
     switch(signal)
     {
         case CYHAL_TCPWM_OUTPUT_OVERFLOW:
-            return (cyhal_source_t)(CYHAL_TRIGGER_TCPWM_TR_OVERFLOW0 + chnl);
+            return (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM_TR_OVERFLOW0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
         case CYHAL_TCPWM_OUTPUT_UNDERFLOW:
-            return (cyhal_source_t)(CYHAL_TRIGGER_TCPWM_TR_UNDERFLOW0 + chnl);
+            return (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM_TR_UNDERFLOW0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
         case CYHAL_TCPWM_OUTPUT_COMPARE_MATCH:
-            return (cyhal_source_t)(CYHAL_TRIGGER_TCPWM_TR_COMPARE_MATCH0 + chnl);
+            return (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM_TR_COMPARE_MATCH0 + chnl, CYHAL_SIGNAL_TYPE_EDGE);
        default:
             // Should never reach here
             CY_ASSERT(false);
@@ -444,11 +465,11 @@ static cyhal_source_t _cyhal_tcpwm_calculate_source(uint8_t out_trig_idx, uint8_
     // Offsetting by out_trig_idx is sufficient to get the correct trigger.
     if(free_trig == 0)
     {
-        return (cyhal_source_t)(CYHAL_TRIGGER_TCPWM0_TR_OUT00 + out_trig_idx);
+        return (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM0_TR_OUT00 + out_trig_idx, CYHAL_SIGNAL_TYPE_EDGE);
     }
     else if(free_trig == 1)
     {
-        return (cyhal_source_t)(CYHAL_TRIGGER_TCPWM0_TR_OUT10 + out_trig_idx);
+        return (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(_CYHAL_TRIGGER_TCPWM0_TR_OUT10 + out_trig_idx, CYHAL_SIGNAL_TYPE_EDGE);
     }
     else
     {
@@ -458,11 +479,11 @@ static cyhal_source_t _cyhal_tcpwm_calculate_source(uint8_t out_trig_idx, uint8_
     }
 }
 #endif
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 
 cy_rslt_t _cyhal_tcpwm_connect_digital(cyhal_tcpwm_t *obj, cyhal_source_t source, cyhal_tcpwm_input_t signal, cyhal_edge_type_t type)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     cy_rslt_t rslt;
     const uint8_t chnl = obj->resource.channel_num;
     const uint8_t block = obj->resource.block_num;
@@ -581,12 +602,12 @@ cy_rslt_t _cyhal_tcpwm_connect_digital(cyhal_tcpwm_t *obj, cyhal_source_t source
     CY_UNUSED_PARAMETER(type);
 
     return CYHAL_TCPWM_RSLT_ERR_BAD_ARGUMENT;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 cy_rslt_t _cyhal_tcpwm_enable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t signal, cyhal_source_t *source)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     const uint8_t block = obj->resource.block_num;
     const uint8_t chnl = obj->resource.channel_num;
 
@@ -624,12 +645,12 @@ cy_rslt_t _cyhal_tcpwm_enable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t si
     // Configure trigger out registers
     if(free_trig == 0)
     {
-        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0_Msk;
+        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= ~TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0_Msk;
         TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) |= _VAL2FLD(TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0, event_type);
     }
     else if(free_trig == 1)
     {
-        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1_Msk;
+        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= ~TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1_Msk;
         TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) |= _VAL2FLD(TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1, event_type);
     }
     else
@@ -646,12 +667,12 @@ cy_rslt_t _cyhal_tcpwm_enable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t si
     CY_UNUSED_PARAMETER(signal);
     CY_UNUSED_PARAMETER(source);
     return CYHAL_TCPWM_RSLT_ERR_NO_FREE_OUTPUT_SIGNALS;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 cy_rslt_t _cyhal_tcpwm_disconnect_digital(cyhal_tcpwm_t *obj, cyhal_source_t source, cyhal_tcpwm_input_t signal)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     const uint8_t block = obj->resource.block_num;
     const uint8_t chnl = obj->resource.channel_num;
     uint8_t trig_index;
@@ -741,12 +762,12 @@ cy_rslt_t _cyhal_tcpwm_disconnect_digital(cyhal_tcpwm_t *obj, cyhal_source_t sou
     CY_UNUSED_PARAMETER(signal);
     CY_UNUSED_PARAMETER(source);
     return CYHAL_TCPWM_RSLT_ERR_BAD_ARGUMENT;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 cy_rslt_t _cyhal_tcpwm_disable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t signal)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
 // Triggers are always generated for TCPWMv1 so this is a noop.
 #if (CY_IP_MXTCPWM_VERSION == 1U) || (CY_IP_M0S8TCPWM_VERSION == 2)
     CY_UNUSED_PARAMETER(obj);
@@ -766,13 +787,15 @@ cy_rslt_t _cyhal_tcpwm_disable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t s
     if(_FLD2VAL(TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0, TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl)) == event_type)
     {
         // Disable output trigger idx 0
-        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0_Msk;
+        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= ~TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0_Msk;
+        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) |= _VAL2FLD(TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT0, CY_TCPWM_CNT_TRIGGER_ON_DISABLED);
         _CYHAL_OUTPUT_TRIGGERS_USED[trig_index] &= ~1;
     }
     else if(_FLD2VAL(TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1, TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl)) == event_type)
     {
         // Disable output trigger idx 1
-        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1_Msk;
+        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) &= ~TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1_Msk;
+        TCPWM_GRP_CNT_TR_OUT_SEL(obj->base, block, chnl) |= _VAL2FLD(TCPWM_GRP_CNT_V2_TR_OUT_SEL_OUT1, CY_TCPWM_CNT_TRIGGER_ON_DISABLED);
         _CYHAL_OUTPUT_TRIGGERS_USED[trig_index] &= ~2;
     }
     else
@@ -787,7 +810,7 @@ cy_rslt_t _cyhal_tcpwm_disable_output(cyhal_tcpwm_t *obj, cyhal_tcpwm_output_t s
     CY_UNUSED_PARAMETER(signal);
 
     return CYHAL_TCPWM_RSLT_ERR_BAD_ARGUMENT;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 #if defined(__cplusplus)

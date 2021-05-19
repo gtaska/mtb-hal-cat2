@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['cy_5frslt_5fdecode_5ft',['cy_rslt_decode_t',['../group__group__result.html#unioncy__rslt__decode__t',1,'']]],
+  ['cy_5frslt_5fdecode_5ft_2e_5f_5funnamed_5f_5f',['cy_rslt_decode_t.__unnamed__',['../group__group__result.html#structcy__rslt__decode__t_8____unnamed____',1,'']]],
   ['cyhal_5fadc_5fchannel_5fconfig_5ft',['cyhal_adc_channel_config_t',['../group__group__hal__adc.html#structcyhal__adc__channel__config__t',1,'']]],
   ['cyhal_5fadc_5fchannel_5ft',['cyhal_adc_channel_t',['../group__group__hal__impl__hw__types.html#structcyhal__adc__channel__t',1,'']]],
   ['cyhal_5fadc_5fconfig_5ft',['cyhal_adc_config_t',['../group__group__hal__adc.html#structcyhal__adc__config__t',1,'']]],
@@ -19,6 +21,7 @@ var searchData=
   ['cyhal_5fflash_5ft',['cyhal_flash_t',['../group__group__hal__impl__hw__types.html#structcyhal__flash__t',1,'']]],
   ['cyhal_5fi2c_5fcfg_5ft',['cyhal_i2c_cfg_t',['../group__group__hal__i2c.html#structcyhal__i2c__cfg__t',1,'']]],
   ['cyhal_5fi2c_5ft',['cyhal_i2c_t',['../group__group__hal__impl__hw__types.html#structcyhal__i2c__t',1,'']]],
+  ['cyhal_5fkeyscan_5faction_5ft',['cyhal_keyscan_action_t',['../group__group__hal__keyscan.html#structcyhal__keyscan__action__t',1,'']]],
   ['cyhal_5flptimer_5finfo_5ft',['cyhal_lptimer_info_t',['../group__group__hal__lptimer.html#structcyhal__lptimer__info__t',1,'']]],
   ['cyhal_5flptimer_5ft',['cyhal_lptimer_t',['../group__group__hal__impl__hw__types.html#structcyhal__lptimer__t',1,'']]],
   ['cyhal_5fpwm_5ft',['cyhal_pwm_t',['../group__group__hal__impl__hw__types.html#structcyhal__pwm__t',1,'']]],

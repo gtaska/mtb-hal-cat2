@@ -26,7 +26,7 @@
 #include "cyhal_interconnect.h"
 #include "cyhal_gpio_impl.h"
 
-#if defined(CY_IP_MXPERI) || defined(CY_IP_M0S8PERI)
+#if defined(CY_IP_MXPERI) || defined(CY_IP_M0S8PERI) || defined(CY_IP_MXSPERI)
 
 #if defined(__cplusplus)
 extern "C"
@@ -45,8 +45,9 @@ typedef enum
     CYHAL_CONNECT_TYPE_DISCONNECT,
 } cyhal_connect_type_t;
 
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
-#if CY_IP_MXPERI_VERSION == 2u || CY_IP_M0S8PERI_VERSION == 1u
+// Only define if there are actual trigger signals
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
+#if CY_IP_MXPERI_VERSION >= 2u || CY_IP_M0S8PERI_VERSION >= 1u || CY_IP_MXSPERI >= 1u
 static int8_t _cyhal_get_first_1to1_mux_idx()
 {
     for(uint8_t idx = 0; idx < sizeof(cyhal_is_mux_1to1)/sizeof(cyhal_is_mux_1to1[0]); idx++)
@@ -63,13 +64,13 @@ static int8_t _cyhal_get_first_1to1_mux_idx()
 // default if no line has been selected)
 static uint8_t _cyhal_read_mux_input_idx(uint8_t mux_group, uint8_t mux_output_idx)
 {
-#if CY_IP_MXPERI_VERSION == 2u || CY_IP_M0S8PERI_VERSION == 1u
+#if CY_IP_MXPERI_VERSION >= 2u || CY_IP_M0S8PERI_VERSION >= 1u || CY_IP_MXSPERI >= 1u
     const int8_t MUX_GROUP_1TO1_OFFSET = _cyhal_get_first_1to1_mux_idx();
     const uint8_t FIRST_1TO1_MUX_GROUP_IDX = 16;
 #endif
 
     uint32_t mux_reg = 0;
-#if CY_IP_MXPERI_VERSION == 2u || CY_IP_M0S8PERI_VERSION == 1u
+#if CY_IP_MXPERI_VERSION == 2u || CY_IP_M0S8PERI_VERSION == 1u || CY_IP_MXSPERI >= 1u
     // M0S8 has no 1to1 muxes but the table is still valid
     if(cyhal_is_mux_1to1[mux_group])
     {
@@ -87,14 +88,14 @@ static uint8_t _cyhal_read_mux_input_idx(uint8_t mux_group, uint8_t mux_output_i
 #endif
 
 
-#if (CY_IP_MXPERI_VERSION == 1u) || (CY_IP_MXPERI_VERSION == 2u)
+#if CY_IP_MXPERI_VERSION >= 1u || CY_IP_MXSPERI >= 1u
     return _FLD2VAL(PERI_TR_GR_TR_OUT_CTL_TR_SEL, mux_reg);
 #elif CY_IP_M0S8PERI_VERSION == 1u
     return _FLD2VAL(PERI_TR_CTL_TR_SEL, mux_reg);
 #endif
 }
 
-#if CY_IP_MXPERI_VERSION == 2u || CY_IP_M0S8PERI_VERSION == 1u
+#if CY_IP_MXPERI_VERSION >= 2u || CY_IP_M0S8PERI_VERSION == 1u || CY_IP_MXSPERI >= 1u
 static cy_rslt_t _cyhal_interconnect_change_connection_direct(
     uint8_t mux_group, uint8_t mux_group_1to1_offset, uint8_t source_idx, uint8_t dest_idx, cyhal_signal_type_t type, bool connect)
 {
@@ -105,7 +106,7 @@ static cy_rslt_t _cyhal_interconnect_change_connection_direct(
 
     if(cyhal_is_mux_1to1[mux_group])
     {
-#if CY_IP_MXPERI_VERSION == 2u
+#if CY_IP_MXPERI_VERSION >= 2u || CY_IP_MXSPERI >= 1u
         // Cy_TrigMux_Select assumes the mux_group idx param starts from the
         // first 1to1 mux (so first 1to1 mux is 0)
         uint32_t out_trig = CY_SELECT_OUTPUT_LINE(mux_group - mux_group_1to1_offset, dest_idx);
@@ -127,7 +128,7 @@ static cy_rslt_t _cyhal_interconnect_change_connection_direct(
 
         if(connect)
         {
-#if CY_IP_MXPERI_VERSION == 2u
+#if CY_IP_MXPERI_VERSION >= 2u || CY_IP_MXSPERI >= 1u
             return Cy_TrigMux_Connect(in_trig, out_trig, false, (en_trig_type_t)type);
 #else
             return Cy_TrigMux_Connect(in_trig, out_trig);
@@ -197,7 +198,8 @@ static cy_rslt_t _cyhal_interconnect_change_connection_indirect(uint8_t source_m
 // indices, use this func to avoid duplicate code.
 static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyhal_dest_t dest, cyhal_signal_type_t type, cyhal_connect_type_t connect)
 {
-#if CY_IP_MXPERI_VERSION == 2u || CY_IP_M0S8PERI_VERSION == 1u
+    cyhal_internal_source_t internal_src = _CYHAL_TRIGGER_GET_SOURCE_SIGNAL(source);
+#if CY_IP_MXPERI_VERSION >= 2u || CY_IP_M0S8PERI_VERSION >= 1u || CY_IP_MXSPERI >= 1u
     const int8_t mux_group_1to1_offset = _cyhal_get_first_1to1_mux_idx();
 
     // cyhal_dest_to_mux stores 1to1 triggers with bit 8 set and the lower 7
@@ -210,9 +212,9 @@ static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyh
     uint8_t dest_idx = cyhal_mux_dest_index[dest];
 
     // Search through table of mux input trigger lines
-    for (uint8_t source_idx = 0; source_idx < cyhal_sources_per_mux[mux_group]; source_idx++)
+    for (uint16_t source_idx = 0; source_idx < cyhal_sources_per_mux[mux_group]; source_idx++)
     {
-        if(cyhal_mux_to_sources[mux_group][source_idx] == source)
+        if(cyhal_mux_to_sources[mux_group][source_idx] == internal_src)
         {
             // 1to1 triggers muxes source and dest indices must match
             if(cyhal_is_mux_1to1[mux_group] && source_idx != dest_idx)
@@ -242,13 +244,13 @@ static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyh
     // through mux 9 so handle here.
     if(dest_mux_group == 9)
     {
-        if(source < CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0 || source > CYHAL_TRIGGER_CPUSS_DW1_TR_OUT15)
+        if(internal_src < _CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0 || internal_src > _CYHAL_TRIGGER_CPUSS_DW1_TR_OUT15)
             return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
 
         if(dest < CYHAL_TRIGGER_USB_DMA_BURSTEND0 || dest > CYHAL_TRIGGER_USB_DMA_BURSTEND7)
             return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
 
-        uint16_t mux9_input_idx = (uint16_t)(source - CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0) + 1;
+        uint16_t mux9_input_idx = (uint16_t)(internal_src - _CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0) + 1;
         uint16_t mux9_output_idx = (uint16_t)(dest - CYHAL_TRIGGER_USB_DMA_BURSTEND0);
 
         uint8_t set_input_idx = _cyhal_read_mux_input_idx(9, mux9_output_idx);
@@ -269,10 +271,10 @@ static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyh
     // here (while handling all other connections through mux 10 later).
     if(dest_mux_group == 10 && dest >= CYHAL_TRIGGER_UDB_TR_DW_ACK0 && dest <= CYHAL_TRIGGER_UDB_TR_DW_ACK7)
     {
-        if(source < CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0 || source > CYHAL_TRIGGER_CPUSS_DW1_TR_OUT15)
+        if(internal_src < _CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0 || internal_src > _CYHAL_TRIGGER_CPUSS_DW1_TR_OUT15)
             return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
 
-        uint16_t mux10_input_idx = (uint16_t)(source - CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0) + 1;
+        uint16_t mux10_input_idx = (uint16_t)(internal_src - _CYHAL_TRIGGER_CPUSS_DW0_TR_OUT0) + 1;
         uint16_t mux10_output_idx = (uint16_t)(dest - CYHAL_TRIGGER_UDB_TR_DW_ACK0);
 
         uint8_t set_input_idx = _cyhal_read_mux_input_idx(10, mux10_output_idx);
@@ -299,7 +301,7 @@ static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyh
     {
         for(source_mux_input_idx = 0; source_mux_input_idx < cyhal_sources_per_mux[source_mux_group]; source_mux_input_idx++)
         {
-            if(cyhal_mux_to_sources[source_mux_group][source_mux_input_idx] == source)
+            if(cyhal_mux_to_sources[source_mux_group][source_mux_input_idx] == internal_src)
             {
                 found_source_mux_info = true;
                 break;
@@ -312,34 +314,33 @@ static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyh
     if(!found_source_mux_info)
         return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
 
-    // Construct the cyhal_source_t range that contains all possible inputs
-    // from the source mux to the dest mux. Not every cyhal_source_t in this
+    // Construct the cyhal_internal_source_t range that contains all possible inputs
+    // from the source mux to the dest mux. Not every cyhal_internal_source_t in this
     // range will go to the dest mux but dest_mux_input_line_low and
-    // dest_mux_input_line_high will be used in the next step to find which
-    // inputs can.
-    cyhal_source_t dest_mux_input_line_low;
-    cyhal_source_t dest_mux_input_line_high;
+    // dest_mux_input_line_high will be used in the next step to find which inputs can.
+    cyhal_internal_source_t dest_mux_input_line_low;
+    cyhal_internal_source_t dest_mux_input_line_high;
     switch (source_mux_group)
     {
         case 10:
-            dest_mux_input_line_low = CYHAL_TRIGGER_TR_GROUP10_OUTPUT0;
-            dest_mux_input_line_high = CYHAL_TRIGGER_TR_GROUP10_OUTPUT7;
+            dest_mux_input_line_low = _CYHAL_TRIGGER_TR_GROUP10_OUTPUT0;
+            dest_mux_input_line_high = _CYHAL_TRIGGER_TR_GROUP10_OUTPUT7;
             break;
         case 11:
-            dest_mux_input_line_low = CYHAL_TRIGGER_TR_GROUP11_OUTPUT0;
-            dest_mux_input_line_high = CYHAL_TRIGGER_TR_GROUP11_OUTPUT15;
+            dest_mux_input_line_low = _CYHAL_TRIGGER_TR_GROUP11_OUTPUT0;
+            dest_mux_input_line_high = _CYHAL_TRIGGER_TR_GROUP11_OUTPUT15;
             break;
         case 12:
-            dest_mux_input_line_low = CYHAL_TRIGGER_TR_GROUP12_OUTPUT0;
-            dest_mux_input_line_high = CYHAL_TRIGGER_TR_GROUP12_OUTPUT9;
+            dest_mux_input_line_low = _CYHAL_TRIGGER_TR_GROUP12_OUTPUT0;
+            dest_mux_input_line_high = _CYHAL_TRIGGER_TR_GROUP12_OUTPUT9;
             break;
         case 13:
-            dest_mux_input_line_low = CYHAL_TRIGGER_TR_GROUP13_OUTPUT0;
-            dest_mux_input_line_high = CYHAL_TRIGGER_TR_GROUP13_OUTPUT17;
+            dest_mux_input_line_low = _CYHAL_TRIGGER_TR_GROUP13_OUTPUT0;
+            dest_mux_input_line_high = _CYHAL_TRIGGER_TR_GROUP13_OUTPUT17;
             break;
         case 14:
-            dest_mux_input_line_low = CYHAL_TRIGGER_TR_GROUP14_OUTPUT0;
-            dest_mux_input_line_high = CYHAL_TRIGGER_TR_GROUP14_OUTPUT15;
+            dest_mux_input_line_low = _CYHAL_TRIGGER_TR_GROUP14_OUTPUT0;
+            dest_mux_input_line_high = _CYHAL_TRIGGER_TR_GROUP14_OUTPUT15;
             break;
         default:
             return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
@@ -414,40 +415,40 @@ static cy_rslt_t _cyhal_interconnect_check_connection(cyhal_source_t source, cyh
 #endif
 }
 
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 
 cy_rslt_t _cyhal_connect_signal(cyhal_source_t source, cyhal_dest_t dest, cyhal_signal_type_t type)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     return _cyhal_interconnect_check_connection(source, dest, type, CYHAL_CONNECT_TYPE_CONNECT);
 #else
     CY_UNUSED_PARAMETER(source);
     CY_UNUSED_PARAMETER(dest);
     CY_UNUSED_PARAMETER(type);
     return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 cy_rslt_t _cyhal_disconnect_signal(cyhal_source_t source, cyhal_dest_t dest)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     return _cyhal_interconnect_check_connection(source, dest, CYHAL_SIGNAL_TYPE_LEVEL, CYHAL_CONNECT_TYPE_DISCONNECT);
 #else
     CY_UNUSED_PARAMETER(source);
     CY_UNUSED_PARAMETER(dest);
     return CYHAL_INTERCONNECT_RSLT_INVALID_CONNECTION;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 bool _cyhal_can_connect_signal(cyhal_source_t source, cyhal_dest_t dest)
 {
-#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR)
+#if defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI)
     return (CY_RSLT_SUCCESS == _cyhal_interconnect_check_connection(source, dest, CYHAL_SIGNAL_TYPE_LEVEL, CYHAL_CONNECT_TYPE_VALIDATE));
 #else
     CY_UNUSED_PARAMETER(source);
     CY_UNUSED_PARAMETER(dest);
     return false;
-#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) */
+#endif /* defined(CY_IP_M0S8PERI_TR) || defined(CY_IP_MXPERI_TR) || defined(CY_IP_MXSPERI) */
 }
 
 cy_rslt_t cyhal_connect_pin(const cyhal_resource_pin_mapping_t *pin_connection)
@@ -486,4 +487,4 @@ cy_rslt_t cyhal_disconnect_pin(cyhal_gpio_t pin)
 }
 #endif
 
-#endif /* defined(CY_IP_MXPERI) || defined(CY_IP_M0S8PERI) */
+#endif /* defined(CY_IP_MXPERI) || defined(CY_IP_M0S8PERI) || defined(CY_IP_MXSPERI) */

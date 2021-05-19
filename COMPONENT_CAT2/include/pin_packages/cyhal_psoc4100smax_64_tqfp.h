@@ -5,7 +5,7 @@
 * PSoC4100Smax device GPIO HAL header for 64-TQFP package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright

@@ -36,6 +36,41 @@
 extern "C" {
 #endif
 
+// Documented in cyhal.h
+#define CYHAL_DRIVER_AVAILABLE_ADC          (CY_IP_M0S8PASS4A_INSTANCES)
+#define CYHAL_DRIVER_AVAILABLE_CLOCK        (1)
+#define CYHAL_DRIVER_AVAILABLE_COMP         (0) /* Not yet supported */
+#define CYHAL_DRIVER_AVAILABLE_CRC          (0) /* Not yet supported */
+#define CYHAL_DRIVER_AVAILABLE_DAC          (0)
+#define CYHAL_DRIVER_AVAILABLE_DMA          (CY_IP_M0S8CPUSSV3_DMAC)
+#define CYHAL_DRIVER_AVAILABLE_EZI2C        (CY_IP_MXSCB || CY_IP_M0S8SCB)
+#define CYHAL_DRIVER_AVAILABLE_FLASH        (1)
+#define CYHAL_DRIVER_AVAILABLE_GPIO         (1)
+#define CYHAL_DRIVER_AVAILABLE_HWMGR        (1)
+#define CYHAL_DRIVER_AVAILABLE_I2C          (CY_IP_MXSCB || CY_IP_M0S8SCB)
+#define CYHAL_DRIVER_AVAILABLE_I2S          (0) /* Not yet supported */
+#define CYHAL_DRIVER_AVAILABLE_INTERCONNECT (CY_IP_M0S8PERI_TR)
+#define CYHAL_DRIVER_AVAILABLE_KEYSCAN      (0)
+#define CYHAL_DRIVER_AVAILABLE_LPTIMER      (CY_IP_M0S8WCO && WCO_WDT_EN)
+#define CYHAL_DRIVER_AVAILABLE_OPAMP        (0) /* Not yet supported */
+#define CYHAL_DRIVER_AVAILABLE_PDMPCM       (0)
+#define CYHAL_DRIVER_AVAILABLE_PWM          (CY_IP_M0S8TCPWM)
+#define CYHAL_DRIVER_AVAILABLE_QSPI         (0)
+#define CYHAL_DRIVER_AVAILABLE_QUADDEC      (CY_IP_M0S8TCPWM)
+#define CYHAL_DRIVER_AVAILABLE_RTC          (0)
+#define CYHAL_DRIVER_AVAILABLE_SDHC         (0)
+#define CYHAL_DRIVER_AVAILABLE_SDIO         (0)
+#define CYHAL_DRIVER_AVAILABLE_SPI          (CY_IP_MXSCB || CY_IP_M0S8SCB)
+#define CYHAL_DRIVER_AVAILABLE_SYSPM        (1)
+#define CYHAL_DRIVER_AVAILABLE_SYSTEM       (1)
+#define CYHAL_DRIVER_AVAILABLE_TDM          (0)
+#define CYHAL_DRIVER_AVAILABLE_TIMER        (CY_IP_M0S8TCPWM)
+#define CYHAL_DRIVER_AVAILABLE_TRNG         (0) /* Not yet supported */
+#define CYHAL_DRIVER_AVAILABLE_UART         (CY_IP_MXSCB || CY_IP_M0S8SCB)
+#define CYHAL_DRIVER_AVAILABLE_USB_DEV      (0)
+#define CYHAL_DRIVER_AVAILABLE_WDT          (1)
+
+
 /* NOTE: Any changes made to this enum must also be made to the hardware manager resource tracking */
 /** Resource types that the hardware manager supports */
 typedef enum
@@ -57,6 +92,13 @@ typedef enum
     CYHAL_RSC_USBPD,     /*!< USB-C Power Delivery */
     CYHAL_RSC_INVALID,   /*!< Placeholder for invalid type */
 } cyhal_resource_t;
+
+/** \cond INTERNAL */
+/* Extracts the divider from the Peri group block number */
+#define _CYHAL_PERIPHERAL_GROUP_GET_DIVIDER_TYPE(block)     ((cy_en_divider_types_t)block)
+#define _CYHAL_PERIPHERAL_GROUP_GET_GROUP(block)            (0)
+/** \endcond */
+
 
 /* NOTE: Any changes here must also be made in cyhal_hwmgr.c */
 /** Enum for the different types of clocks that exist on the device. */
@@ -92,9 +134,9 @@ typedef enum
   * between platforms and/or HAL releases. */
 typedef struct
 {
-    cyhal_clock_block_t     block;
-    uint8_t                 channel;
-    bool                    reserved;
+    cyhal_clock_block_t     block;    //!< The resource block type
+    uint8_t                 channel;  //!< The resource instance number
+    bool                    reserved; //!< Whether the clock is 'owned'
 } cyhal_clock_t;
 
 /**

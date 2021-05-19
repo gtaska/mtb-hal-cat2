@@ -5,7 +5,7 @@
 * PSoC4000S device GPIO HAL header for 25-WLCSP package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright

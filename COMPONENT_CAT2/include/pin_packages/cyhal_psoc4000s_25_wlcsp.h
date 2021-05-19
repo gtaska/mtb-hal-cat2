@@ -5,7 +5,7 @@
 * PSoC4000S device GPIO HAL header for 25-WLCSP package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright
@@ -31,10 +31,10 @@
 #include "cyhal_hw_resources.h"
 
 /**
- * \addtogroup group_hal_impl_pin_package_psoc4000s_25_csp PSoC4000S 25-CSP
+ * \addtogroup group_hal_impl_pin_package_psoc4000s_25_wlcsp PSoC4000S 25-WLCSP
  * \ingroup group_hal_impl_pin_package
  * \{
- * Pin definitions and connections specific to the PSoC4000S 25-CSP package.
+ * Pin definitions and connections specific to the PSoC4000S 25-WLCSP package.
  */
 
 #if defined(__cplusplus)
@@ -78,10 +78,10 @@ typedef enum {
     P4_1 = CYHAL_GET_GPIO(CYHAL_PORT_4, 1), //!< Port 4 Pin 1
     P4_2 = CYHAL_GET_GPIO(CYHAL_PORT_4, 2), //!< Port 4 Pin 2
     P4_3 = CYHAL_GET_GPIO(CYHAL_PORT_4, 3), //!< Port 4 Pin 3
-} cyhal_gpio_psoc4000s_25_csp_t;
+} cyhal_gpio_psoc4000s_25_wlcsp_t;
 
 /** Create generic name for the series/package specific type. */
-typedef cyhal_gpio_psoc4000s_25_csp_t cyhal_gpio_t;
+typedef cyhal_gpio_psoc4000s_25_wlcsp_t cyhal_gpio_t;
 
 /* Connection type definition */
 /** Represents an association between a pin and a resource */

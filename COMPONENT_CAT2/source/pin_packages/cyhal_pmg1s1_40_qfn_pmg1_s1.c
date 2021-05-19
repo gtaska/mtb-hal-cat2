@@ -5,7 +5,7 @@
 * PMG1S1 device GPIO HAL header for 40-QFN-PMG1-S1 package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright

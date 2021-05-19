@@ -5,7 +5,7 @@
 * PSoC4100S device GPIO HAL header for 40-QFN package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright
@@ -31,10 +31,10 @@
 #include "cyhal_hw_resources.h"
 
 /**
- * \addtogroup group_hal_impl_pin_package_psoc4100s_40_qfn_auto PSoC4100S 40-QFN-AUTO
+ * \addtogroup group_hal_impl_pin_package_psoc4100s_40_qfn PSoC4100S 40-QFN
  * \ingroup group_hal_impl_pin_package
  * \{
- * Pin definitions and connections specific to the PSoC4100S 40-QFN-AUTO package.
+ * Pin definitions and connections specific to the PSoC4100S 40-QFN package.
  */
 
 #if defined(__cplusplus)
@@ -91,10 +91,10 @@ typedef enum {
     P4_1 = CYHAL_GET_GPIO(CYHAL_PORT_4, 1), //!< Port 4 Pin 1
     P4_2 = CYHAL_GET_GPIO(CYHAL_PORT_4, 2), //!< Port 4 Pin 2
     P4_3 = CYHAL_GET_GPIO(CYHAL_PORT_4, 3), //!< Port 4 Pin 3
-} cyhal_gpio_psoc4100s_40_qfn_auto_t;
+} cyhal_gpio_psoc4100s_40_qfn_t;
 
 /** Create generic name for the series/package specific type. */
-typedef cyhal_gpio_psoc4100s_40_qfn_auto_t cyhal_gpio_t;
+typedef cyhal_gpio_psoc4100s_40_qfn_t cyhal_gpio_t;
 
 /* Connection type definition */
 /** Represents an association between a pin and a resource */

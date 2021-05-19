@@ -33,7 +33,7 @@
 
 #pragma once
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC) || defined(CY_IP_MXAHBDMAC)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -62,6 +62,20 @@ void _cyhal_dma_dmac_free(cyhal_dma_t *obj);
  * @return The status of the configure request
  */
 cy_rslt_t _cyhal_dma_dmac_configure(cyhal_dma_t *obj, const cyhal_dma_cfg_t *cfg);
+
+/** Enable the DMAC transfer so that it can start transfering data when triggered.
+ *
+ * @param[in] obj    The DMA object
+ * @return The status of the enable request
+ */
+cy_rslt_t _cyhal_dma_dmac_enable(cyhal_dma_t *obj);
+
+/** Disable the DMAC transfer so that it does not continue to trigger.
+ *
+ * @param[in] obj    The DMA object
+ * @return The status of the enable request
+ */
+cy_rslt_t _cyhal_dma_dmac_disable(cyhal_dma_t *obj);
 
 /** Start a DMAC transfer
  *
@@ -129,6 +143,6 @@ cy_rslt_t _cyhal_dma_dmac_disable_output(cyhal_dma_t *obj, cyhal_dma_output_t ou
 }
 #endif /* __cplusplus */
 
-#endif /* defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC) */
+#endif /* defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M0S8CPUSSV3_DMAC) || defined(CY_IP_MXAHBDMAC) */
 
 /** \} group_hal_impl_dma_dmac */

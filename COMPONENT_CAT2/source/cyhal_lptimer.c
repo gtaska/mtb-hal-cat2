@@ -29,7 +29,8 @@
 * \addtogroup group_hal_impl_lptimer LPTIMER
 * \ingroup group_hal_impl
 * \{
-* The maximum number of ticks that can set to an LPTIMER is 0xFFF0FFFF. It is not recommended to use 0xFFFFFFFF because to avoid both C0 and C1 overflowing.
+* The maximum number of ticks that can set to an LPTIMER is 0xFFF0FFFF.
+* It is not recommended to use 0xFFFFFFFF. This is to avoid overflowing both C0 and C1.
 * \} group_hal_impl_lptimer
 */
 
@@ -40,10 +41,11 @@
 #include "cyhal_hwmgr.h"
 #include "cyhal_system_impl.h"
 #include "cyhal_utils.h"
+#include "cyhal_clock.h"
 
-#if defined (CY_IP_MXS40SRSS_MCWDT) || (defined (CY_IP_M0S8WCO) && WCO_WDT_EN)
+#if ((defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS)) && (SRSS_NUM_MCWDT > 0)) || (defined (CY_IP_M0S8WCO) && WCO_WDT_EN)
 
-#if defined (CY_IP_MXS40SRSS_MCWDT)
+#if defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS)
 #include "cy_mcwdt.h"
 #elif defined (CY_IP_M0S8WCO)
 #include "cy_wdc.h"
@@ -72,16 +74,17 @@
 extern "C" {
 #endif
 
-#if defined (CY_IP_MXS40SRSS_MCWDT_INSTANCES)
+#if defined (CY_IP_MXS40SRSS_INSTANCES) || defined (CY_IP_MXS40SSRSS_INSTANCES)
+#define _CYHAL_LPTIMER_INSTANCES    SRSS_NUM_MCWDT
 static MCWDT_STRUCT_Type * const _CYHAL_LPTIMER_BASE_ADDRESSES[] = {
-#if CY_IP_MXS40SRSS_MCWDT_INSTANCES >= 1
+#if SRSS_NUM_MCWDT >= 1
     MCWDT_STRUCT0,
 #endif
-#if CY_IP_MXS40SRSS_MCWDT_INSTANCES >= 2
+#if SRSS_NUM_MCWDT >= 2
     MCWDT_STRUCT1,
 #endif
-#if CY_IP_MXS40SRSS_MCWDT_INSTANCES >= 3
-#error "CY_IP_MXS40SRSS_MCWDT_INSTANCES > 2 not supported"
+#if SRSS_NUM_MCWDT >= 3
+#error "SRSS_NUM_MCWDT > 2 not supported"
 #endif
 };
 #elif defined (CY_IP_M0S8WCO_INSTANCES)
@@ -104,17 +107,38 @@ static WCO_Type * const _CYHAL_LPTIMER_BASE_ADDRESSES[] = {
 
 #define _CYHAL_LPTIMER_DEFAULT_PRIORITY   (3U)
 
-/* For all CAT1/CAT2 device the MCWDT is driven by CLK_LF that will always run at 32.768 KHz */
-#define _CYHAL_LPTIMER_CLK_FREQ_HZ        (32768U)
-
-#if defined (CY_IP_MXS40SRSS_MCWDT)
-static cyhal_lptimer_t *_cyhal_lptimer_config_structs[CY_IP_MXS40SRSS_MCWDT_INSTANCES];
+#if defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS)
+static cyhal_lptimer_t *_cyhal_lptimer_config_structs[SRSS_NUM_MCWDT];
 static const uint16_t _CYHAL_LPTIMER_RESET_TIME_US = 62;
 static const uint16_t _CYHAL_LPTIMER_SETMATCH_TIME_US = 0;
+static const cy_stc_mcwdt_config_t default_cfg = {
+                .c0Match = 0xFFFF,
+                .c1Match = 0xFFFF,
+                .c0Mode = CY_MCWDT_MODE_INT,
+                .c1Mode = CY_MCWDT_MODE_INT,
+                .c2Mode = CY_MCWDT_MODE_NONE,
+                .c2ToggleBit = 0,
+                .c0ClearOnMatch = false,
+                .c1ClearOnMatch = false,
+                .c0c1Cascade = true,
+                .c1c2Cascade = false
+        };
 #elif defined (CY_IP_M0S8WCO)
 static cyhal_lptimer_t *_cyhal_lptimer_config_structs[CY_IP_M0S8WCO_INSTANCES];
 static const uint16_t _CYHAL_LPTIMER_RESET_TIME_US = 180;
 static const uint16_t _CYHAL_LPTIMER_SETMATCH_TIME_US = 180;
+static const cy_stc_wdc_config_t default_cfg = {
+                .counter0Match = 0xFFFF,
+                .counter1Match = 0xFFFF,
+                .counter2ToggleBit = 0,
+                .counter0Interrupt = false,
+                .counter1Interrupt = true,
+                .counter2Interrupt = false,
+                .counter0ClearOnMatch = false,
+                .counter1ClearOnMatch = true,
+                .countersCascade = CY_WDC_CASCADE_COUNTERS01,
+                .clockSource = CY_WDC_CLOCK_ILO
+        };
 #else
 #error "Current HW block is not supported"
 #endif
@@ -129,14 +153,14 @@ static void _cyhal_lptimer_irq_handler(void)
     /* Clear interrupt mask if set only from cyhal_lptimer_set_delay() function */
     if (obj->clear_int_mask)
     {
-#if defined (CY_IP_MXS40SRSS_MCWDT)
+#if defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS)
         Cy_MCWDT_SetInterruptMask(obj->base, 0);
 #else
         Cy_WDC_InterruptDisable(obj->base, CY_WDC_COUNTER1);
 #endif
     }
 
-    if (NULL != obj->callback_data.callback)
+    if (NULL != obj->callback_data.callback && obj->isr_call_user_cb)
     {
         cyhal_lptimer_event_callback_t callback = (cyhal_lptimer_event_callback_t) obj->callback_data.callback;
         (callback)(obj->callback_data.callback_arg, CYHAL_LPTIMER_COMPARE_MATCH);
@@ -231,7 +255,7 @@ static uint32_t _cyhal_lptimer_set_delay_common(cyhal_lptimer_t *obj, uint32_t d
     Cy_MCWDT_SetMatch(obj->base, CY_MCWDT_COUNTER1, c1_match, _CYHAL_LPTIMER_SETMATCH_TIME_US);
 
     cyhal_system_critical_section_exit(critical_section);
-    #if defined (CY_IP_MXS40SRSS_MCWDT)
+    #if defined (CY_IP_MXS40SRSS) || defined (CY_IP_MXS40SSRSS)
     Cy_MCWDT_SetInterruptMask(obj->base, CY_MCWDT_CTR1);
     #else
     Cy_WDC_InterruptEnable(obj->base, CY_MCWDT_COUNTER1);
@@ -246,46 +270,22 @@ cy_rslt_t cyhal_lptimer_init(cyhal_lptimer_t *obj)
 
     obj->resource.type = CYHAL_RSC_INVALID;
     obj->clear_int_mask = false;
+    obj->isr_call_user_cb = false;
 
     cy_rslt_t rslt = cyhal_hwmgr_allocate(CYHAL_RSC_LPTIMER, &(obj->resource));
     if (CY_RSLT_SUCCESS == rslt)
     {
         obj->base = _CYHAL_LPTIMER_BASE_ADDRESSES[obj->resource.block_num];
-        #if defined (CY_IP_MXS40SRSS_MCWDT)
-        const cy_stc_mcwdt_config_t cfg = {
-                .c0Match = 0xFFFF,
-                .c1Match = 0xFFFF,
-                .c0Mode = CY_MCWDT_MODE_INT,
-                .c1Mode = CY_MCWDT_MODE_INT,
-                .c2Mode = CY_MCWDT_MODE_NONE,
-                .c2ToggleBit = 0,
-                .c0ClearOnMatch = false,
-                .c1ClearOnMatch = false,
-                .c0c1Cascade = true,
-                .c1c2Cascade = false
-        };
-        rslt = (cy_rslt_t) Cy_MCWDT_Init(obj->base, &cfg);
-        #elif defined (CY_IP_M0S8WCO)
+#if defined (CY_IP_MXS40SRSS_MCWDT) || defined (CY_IP_MXS40SSRSS)
+        cy_stc_mcwdt_config_t cfg = default_cfg;
+#elif defined (CY_IP_M0S8WCO)
+        cy_stc_wdc_config_t cfg = default_cfg;
         // The WDC_SEL clock source is populated into the config
         // register by the clock driver. Extract it so that the
         // PDL init doesn't revert it to default
-        cy_en_wdc_clock_t clock_source = Cy_WDC_GetClockSource(WCO);
-        const cy_stc_wdc_config_t cfg = {
-                .counter0Match = 0xFFFF,
-                .counter1Match = 0xFFFF,
-                .counter2ToggleBit = 0,
-                .counter0Interrupt = false,
-                .counter1Interrupt = true,
-                .counter2Interrupt = false,
-                .counter0ClearOnMatch = false,
-                .counter1ClearOnMatch = true,
-                .countersCascade = CY_WDC_CASCADE_COUNTERS01,
-                .clockSource = clock_source
-        };
-        rslt = (cy_rslt_t) Cy_WDC_Init(obj->base, &cfg);
-        #else
-        #error "Current HW block is not supported"
-        #endif
+        cfg.clockSource = Cy_WDC_GetClockSource(WCO);
+#endif
+        rslt = (cy_rslt_t) Cy_MCWDT_Init(obj->base, &cfg);
     }
 
     if (CY_RSLT_SUCCESS == rslt)
@@ -379,23 +379,14 @@ void cyhal_lptimer_enable_event(cyhal_lptimer_t *obj, cyhal_lptimer_event_t even
 
     IRQn_Type irqn = (IRQn_Type)(srss_interrupt_mcwdt_0_IRQn + obj->resource.block_num);
     Cy_MCWDT_ClearInterrupt(obj->base, CY_MCWDT_CTR1);
-
-    #if defined (CY_IP_MXS40SRSS_MCWDT)
-    Cy_MCWDT_SetInterruptMask(obj->base, enable ? CY_MCWDT_CTR1 : 0);
     NVIC_SetPriority(irqn, intr_priority);
-    #elif defined (CY_IP_M0S8WCO)
-    if (enable)
-    {
-        NVIC_SetPriority(irqn, intr_priority);
-        NVIC_EnableIRQ(irqn);
-    }
-    else
-    {
-        NVIC_DisableIRQ(irqn);
-    }
-    #else
-    #error "Current HW block is not supported"
-    #endif
+
+    obj->isr_call_user_cb = enable;
+#if defined (CY_IP_MXS40SRSS_MCWDT) || defined (CY_IP_MXS40SSRSS)
+    Cy_MCWDT_SetInterruptMask(obj->base, enable ? CY_MCWDT_CTR1 : 0);
+#elif defined (CY_IP_M0S8WCO)
+    (enable) ? NVIC_EnableIRQ(irqn) : NVIC_DisableIRQ(irqn);
+#endif
 }
 
 void cyhal_lptimer_irq_trigger(cyhal_lptimer_t *obj)
@@ -410,7 +401,13 @@ void cyhal_lptimer_get_info(cyhal_lptimer_t *obj, cyhal_lptimer_info_t *info)
     CY_UNUSED_PARAMETER(obj);
     CY_ASSERT(info != NULL);
 
-    info->frequency_hz = _CYHAL_LPTIMER_CLK_FREQ_HZ;
+    cyhal_clock_t lf_obj;
+#if (WCO_WDT_EN == 1)
+    cyhal_clock_get(&lf_obj, &CYHAL_CLOCK_WDCSEL);
+#else
+    cyhal_clock_get(&lf_obj, &CYHAL_CLOCK_LF);
+#endif
+    info->frequency_hz = cyhal_clock_get_frequency(&lf_obj);
     info->min_set_delay = _CYHAL_LPTIMER_MIN_DELAY;
     info->max_counter_value = _CYHAL_LPTIMER_MAX_COUNTER_VAL;
 }
@@ -419,4 +416,4 @@ void cyhal_lptimer_get_info(cyhal_lptimer_t *obj, cyhal_lptimer_info_t *info)
 }
 #endif
 
-#endif /* defined (CY_IP_MXS40SRSS_MCWDT) || (defined (CY_IP_M0S8WCO) && WCO_WDT_EN) */
+#endif /* defined (CY_IP_MXS40SRSS) || (defined (CY_IP_M0S8WCO) && WCO_WDT_EN) || (defined (CY_IP_MXS40SSRSS) && (SRSS_NUM_MCWDT > 0)) */

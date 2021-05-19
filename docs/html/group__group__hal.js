@@ -10,6 +10,7 @@ var group__group__hal =
     [ "HWMGR (Hardware Manager)", "group__group__hal__hwmgr.html", "group__group__hal__hwmgr" ],
     [ "I2C (Inter-Integrated Circuit)", "group__group__hal__i2c.html", "group__group__hal__i2c" ],
     [ "Interconnect (Internal Digital Routing)", "group__group__hal__interconnect.html", "group__group__hal__interconnect" ],
+    [ "Keyscan", "group__group__hal__keyscan.html", "group__group__hal__keyscan" ],
     [ "LPTimer (Low-Power Timer)", "group__group__hal__lptimer.html", "group__group__hal__lptimer" ],
     [ "PWM (Pulse Width Modulator)", "group__group__hal__pwm.html", "group__group__hal__pwm" ],
     [ "Quadrature Decoder", "group__group__hal__quaddec.html", "group__group__hal__quaddec" ],

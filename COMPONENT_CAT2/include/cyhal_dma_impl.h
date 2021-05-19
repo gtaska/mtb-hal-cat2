@@ -24,7 +24,7 @@
 
 #pragma once
 
-#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_M0S8CPUSSV3_DMAC)
+#if defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_M0S8CPUSSV3_DMAC) || defined(CY_IP_MXAHBDMAC) || defined(CY_IP_MXDW)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -82,4 +82,4 @@ extern "C" {
 }
 #endif
 
-#endif /* defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_M0S8CPUSSV3_DMAC) */
+#endif /* defined(CY_IP_M4CPUSS_DMAC) || defined(CY_IP_M4CPUSS_DMA) || defined(CY_IP_M0S8CPUSSV3_DMAC) || defined(CY_IP_MXAHBDMAC) || defined(CY_IP_MXDW) */

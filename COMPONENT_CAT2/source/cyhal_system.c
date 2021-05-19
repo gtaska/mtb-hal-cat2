@@ -35,7 +35,7 @@
 #include "cyabs_rtos.h"
 #endif
 
-#if defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT)
+#if defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT) || defined(CY_IP_MXS28SRSS) || defined(CY_IP_MXS40SSRSS)
 
 #if defined(__cplusplus)
 extern "C"
@@ -60,7 +60,9 @@ void Cy_SysLib_Rtos_Delay(uint32_t milliseconds)
 cy_rslt_t cyhal_system_delay_ms(uint32_t milliseconds)
 {
 #if defined(CY_RTOS_AWARE) || defined(COMPONENT_RTOS_AWARE)
-    return cy_rtos_delay_milliseconds(milliseconds);
+    // The RTOS is configured to round down, while this API is intended to wait at least the
+    // requested time. Add 1 to the requested time to make it behave the same.
+    return cy_rtos_delay_milliseconds(milliseconds + 1);
 #else
     Cy_SysLib_Delay(milliseconds);
     return CY_RSLT_SUCCESS;
@@ -102,8 +104,22 @@ cyhal_reset_reason_t cyhal_system_get_reset_reason(void)
     return reason;
 }
 
+cy_rslt_t cyhal_system_set_isr(int32_t irq_num, int32_t irq_src, uint8_t priority, cyhal_irq_handler handler)
+{
+    CY_UNUSED_PARAMETER(irq_src); // Not used by most configurations as there is a 1:1 mapping from irq_src to irq_num
+    cy_stc_sysint_t cfg =
+    {
+        .intrSrc = (IRQn_Type)irq_num,
+        .intrPriority = priority
+#if defined(COMPONENT_CAT1A) && (CY_CPU_CORTEX_M0P)
+        .cm0pSrc = irq_src;
+#endif
+    };
+    return Cy_SysInt_Init(&cfg, (cy_israddress)handler);
+}
+
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT) */
+#endif /* defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT) || defined(CY_IP_MXS28SRSS) || defined(CY_IP_MXS40SSRSS) */

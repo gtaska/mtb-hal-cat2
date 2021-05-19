@@ -5,7 +5,7 @@
 * PSoC4000S device GPIO HAL header for 40-QFN package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright

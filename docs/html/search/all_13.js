@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['uart_20hal_20results',['UART HAL Results',['../group__group__hal__results__uart.html',1,'']]],
-  ['uart_20_28universal_20asynchronous_20receiver_2dtransmitter_29',['UART (Universal Asynchronous Receiver-Transmitter)',['../group__group__hal__uart.html',1,'']]],
-  ['usbdm',['USBDM',['../group__group__hal__impl__pin__package__pmg1s2__40__qfn__pmg1__s2.html#ggad5f06312bf6821242376f686045b778ea4ce5d83730a8b57610cdffe18cd54eff',1,'USBDM():&#160;cyhal_pmg1s2_40_qfn_pmg1_s2.h'],['../group__group__hal__impl__pin__package__pmg1s3__48__qfn.html#gga4078d7c3ec40bd42ba23d0068f1f147ca4ce5d83730a8b57610cdffe18cd54eff',1,'USBDM():&#160;cyhal_pmg1s3_48_qfn.h'],['../group__group__hal__impl__pin__package__pmg1s3__97__bga.html#gga8903ed9208e3be2ca2d30b542fc2f295a4ce5d83730a8b57610cdffe18cd54eff',1,'USBDM():&#160;cyhal_pmg1s3_97_bga.h']]],
-  ['usbdp',['USBDP',['../group__group__hal__impl__pin__package__pmg1s2__40__qfn__pmg1__s2.html#ggad5f06312bf6821242376f686045b778ea91f4d44fb984bb1c20f9a34af8015642',1,'USBDP():&#160;cyhal_pmg1s2_40_qfn_pmg1_s2.h'],['../group__group__hal__impl__pin__package__pmg1s3__48__qfn.html#gga4078d7c3ec40bd42ba23d0068f1f147ca91f4d44fb984bb1c20f9a34af8015642',1,'USBDP():&#160;cyhal_pmg1s3_48_qfn.h'],['../group__group__hal__impl__pin__package__pmg1s3__97__bga.html#gga8903ed9208e3be2ca2d30b542fc2f295a91f4d44fb984bb1c20f9a34af8015642',1,'USBDP():&#160;cyhal_pmg1s3_97_bga.h']]]
+  ['timer_20_28timer_2fcounter_29',['Timer (Timer/Counter)',['../group__group__hal__impl__timer.html',1,'']]],
+  ['triggers',['Triggers',['../group__group__hal__impl__triggers.html',1,'']]],
+  ['timer_20hal_20results',['Timer HAL Results',['../group__group__hal__results__timer.html',1,'']]],
+  ['timer_20_28timer_2fcounter_29',['Timer (Timer/Counter)',['../group__group__hal__timer.html',1,'']]],
+  ['transfer_5fwidth',['transfer_width',['../group__group__hal__dma.html#ae5b6698dfc754dc0ca497842681ce7ef',1,'cyhal_dma_cfg_t']]],
+  ['two_5faddresses',['two_addresses',['../group__group__hal__ezi2c.html#a97635e53c040e1d00c4b6aa646093299',1,'cyhal_ezi2c_cfg_t']]],
+  ['type',['type',['../group__group__hal__impl__hw__types.html#ad111187a65d182386ea96858369b83d4',1,'cyhal_resource_inst_t::type()'],['../group__group__hal__clock.html#a40d24ccae9f6f78e2c94d5fdbef1f355',1,'cyhal_clock_tolerance_t::type()']]]
 ];

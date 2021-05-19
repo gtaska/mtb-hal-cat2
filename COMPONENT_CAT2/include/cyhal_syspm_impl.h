@@ -63,8 +63,6 @@ extern "C" {
 * \cond INTERNAL
 */
 
-cy_rslt_t cyhal_syspm_init(void);
-
 void _cyhal_syspm_register_peripheral_callback(cyhal_syspm_callback_data_t *callback_data);
 void _cyhal_syspm_unregister_peripheral_callback(cyhal_syspm_callback_data_t *callback_data);
 

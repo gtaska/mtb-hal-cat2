@@ -85,7 +85,9 @@ typedef enum {
 #elif defined(_GPIO_PSOC4100S_32_QFN_H_)
 #include "pin_packages/cyhal_psoc4100s_24_qfn.h"
 #elif defined(_GPIO_PSOC4100S_35_WLCSP_H_)
-#include "pin_packages/cyhal_psoc4100s_25_wlcsp.h"
+#include "pin_packages/cyhal_psoc4100s_35_wlcsp.h"
+#elif defined(_GPIO_PSOC4100S_35_WLCSP_2_H_)
+#include "pin_packages/cyhal_psoc4100s_35_wlcsp_2.h"
 #elif defined(_GPIO_PSOC4100S_40_QFN_AUTO_H_)
 #include "pin_packages/cyhal_psoc4100s_40_qfn_auto.h"
 #elif defined(_GPIO_PSOC4100S_40_QFN_H_)
@@ -100,6 +102,8 @@ typedef enum {
 #include "pin_packages/cyhal_psoc4100sp_44_tqfp.h"
 #elif defined(_GPIO_PSOC4100SP_48_TQFP_H_)
 #include "pin_packages/cyhal_psoc4100sp_48_tqfp.h"
+#elif defined(_GPIO_PSOC4100SP_64_QFN_H_)
+#include "pin_packages/cyhal_psoc4100sp_64_qfn.h"
 #elif defined(_GPIO_PSOC4100SP_64_TQFP_H_)
 #include "pin_packages/cyhal_psoc4100sp_64_tqfp.h"
 #elif defined(_GPIO_PSOC4100SP256KB_48_TQFP_MC_H_)
@@ -122,10 +126,14 @@ typedef enum {
 #include "pin_packages/cyhal_pmg1s1_40_qfn_pmg1_s1.h"
 #elif defined(_GPIO_PMG1S2_40_QFN_PMG1_S2_H_)
 #include "pin_packages/cyhal_pmg1s2_40_qfn_pmg1_s2.h"
-#elif defined(_GPIO_PMG1S3_48_QFN_H_)
-#include "pin_packages/cyhal_pmg1s3_48_qfn.h"
-#elif defined(_GPIO_PMG1S3_97_BGA_H_)
-#include "pin_packages/cyhal_pmg1s3_97_bga.h"
+#elif defined(_GPIO_PMG1S2_42_CSP_PMG1_S2_H_)
+#include "pin_packages/cyhal_pmg1s2_42_csp_pmg1_s2.h"
+#elif defined(_GPIO_PMG1S3_48_QFN_CYPM1311_H_)
+#include "pin_packages/cyhal_pmg1s3_48_qfn_cypm1311.h"
+#elif defined(_GPIO_PMG1S3_97_BGA_CYPD8225_H_)
+#include "pin_packages/cyhal_pmg1s3_97_bga_cypd8225.h"
+#elif defined(_GPIO_PMG1S3_97_BGA_CYPM1322_H_)
+#include "pin_packages/cyhal_pmg1s3_97_bga_cypm1322.h"
 #else
 #error "Unhandled Device/PinPackage combination"
 #endif

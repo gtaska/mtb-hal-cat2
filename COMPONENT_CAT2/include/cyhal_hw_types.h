@@ -35,7 +35,7 @@
 * and the corresponding hardware resource. This is intended to help understand how the HAL
 * is implemented for PMG/PSoC 4 and what features the underlying hardware supports.
 *
-* | HAL Resource       | PDL Driver(s)       | CAT2 Hardware                  |
+* | HAL Resource       | PDL Driver(s)       | CAT2 Hardware                    |
 * | ------------------ | ------------------- | -------------------------------- |
 * | ADC                | cy_adc              | SAR ADC                          |
 * | Clock              | cy_sysclk           | All clocks (system & peripheral) |
@@ -85,7 +85,7 @@ extern "C" {
 
 
 #ifndef CYHAL_ISR_PRIORITY_DEFAULT
-/** Priority that is applied by default to all drivers when initalized. Priorities can be
+/** Priority that is applied by default to all drivers when initialized. Priorities can be
  * overridden on each driver as part of enabling events.
  */
 #define CYHAL_ISR_PRIORITY_DEFAULT  (3)
@@ -135,7 +135,7 @@ typedef struct {
     cyhal_source_t               inputs[5];
 #endif
 #else
-    void *empty
+    void *empty;
 #endif
 } cyhal_tcpwm_t;
 
@@ -153,6 +153,7 @@ typedef struct {
     cy_stc_dmac_channel_config_t    channel_config;
     cy_stc_dmac_descriptor_config_t descriptor_config;
     cy_en_dmac_descriptor_t         descriptor;
+    uint16_t                        expected_bursts;
     uint32_t                        direction;
     uint32_t                        irq_cause;
     cyhal_event_callback_data_t     callback_data;
@@ -181,6 +182,7 @@ typedef struct {
     bool                            continuous_scanning;
     /* Has at least one conversion completed since the last configuration change */
     volatile bool                   conversion_complete;
+    bool                            stop_after_scan;
     struct _cyhal_adc_channel_s*    channel_config[CY_SAR_SEQ_NUM_CHANNELS];
     uint8_t                         user_enabled_events;
     cyhal_event_callback_data_t     callback_data;
@@ -295,6 +297,7 @@ typedef struct {
     cyhal_resource_inst_t            resource;
     cyhal_event_callback_data_t      callback_data;
     bool                             clear_int_mask;
+    bool                             isr_call_user_cb;
 #else
     void *empty;
 #endif

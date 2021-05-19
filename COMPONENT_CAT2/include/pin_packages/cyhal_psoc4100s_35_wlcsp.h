@@ -5,7 +5,7 @@
 * PSoC4100S device GPIO HAL header for 35-WLCSP package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright
@@ -31,10 +31,10 @@
 #include "cyhal_hw_resources.h"
 
 /**
- * \addtogroup group_hal_impl_pin_package_psoc4100s_35_csp_apple PSoC4100S 35-CSP-APPLE
+ * \addtogroup group_hal_impl_pin_package_psoc4100s_35_wlcsp PSoC4100S 35-WLCSP
  * \ingroup group_hal_impl_pin_package
  * \{
- * Pin definitions and connections specific to the PSoC4100S 35-CSP-APPLE package.
+ * Pin definitions and connections specific to the PSoC4100S 35-WLCSP package.
  */
 
 #if defined(__cplusplus)
@@ -49,7 +49,7 @@ extern "C" {
 /** Macro that, given a gpio, will extract the port number */
 #define CYHAL_GET_PORT(pin)         ((uint8_t)((((uint8_t)pin) >> 3U) & 0x1FU))
 
-/** Definitions for all of the pins that are bonded out on in the 35-CSP-APPLE package for the PSoC4100S series. */
+/** Definitions for all of the pins that are bonded out on in the 35-CSP-non-APPLE package for the PSoC4100S series. */
 typedef enum {
     NC = 0xFF, //!< No Connect/Invalid Pin
 
@@ -88,10 +88,10 @@ typedef enum {
     P4_1 = CYHAL_GET_GPIO(CYHAL_PORT_4, 1), //!< Port 4 Pin 1
     P4_2 = CYHAL_GET_GPIO(CYHAL_PORT_4, 2), //!< Port 4 Pin 2
     P4_3 = CYHAL_GET_GPIO(CYHAL_PORT_4, 3), //!< Port 4 Pin 3
-} cyhal_gpio_psoc4100s_35_csp_apple_t;
+} cyhal_gpio_psoc4100s_35_wlcsp_t;
 
 /** Create generic name for the series/package specific type. */
-typedef cyhal_gpio_psoc4100s_35_csp_apple_t cyhal_gpio_t;
+typedef cyhal_gpio_psoc4100s_35_wlcsp_t cyhal_gpio_t;
 
 /* Connection type definition */
 /** Represents an association between a pin and a resource */

@@ -28,7 +28,7 @@
 #include "cyhal_system.h"
 #include "cyhal_hwmgr.h"
 
-#if defined(CY_IP_MXS40IOSS) || defined(CY_IP_M0S8IOSS)
+#if defined(CY_IP_MXS40IOSS) || defined(CY_IP_M0S8IOSS) || defined(CY_IP_MXS40SIOSS)
 
 #if defined(__cplusplus)
 extern "C" {
@@ -313,7 +313,8 @@ cy_rslt_t cyhal_gpio_enable_output(cyhal_gpio_t pin, cyhal_source_t *source)
         {
             Cy_GPIO_SetHSIOM(CYHAL_GET_PORTADDR(pin), CYHAL_GET_PIN(pin), mapping.hsiom);
 
-            *source = (cyhal_source_t)(CYHAL_TRIGGER_PERI_TR_IO_INPUT0 + (uint32_t)(mapping.inst));
+            cyhal_internal_source_t int_src = (cyhal_internal_source_t)(_CYHAL_TRIGGER_PERI_TR_IO_INPUT0 + (uint32_t)(mapping.inst));
+            *source = (cyhal_source_t)_CYHAL_TRIGGER_CREATE_SOURCE(int_src, CYHAL_SIGNAL_TYPE_EDGE);
 
             return CY_RSLT_SUCCESS;
         }
@@ -360,7 +361,7 @@ cy_rslt_t cyhal_gpio_disable_output(cyhal_gpio_t pin)
 
     return CYHAL_GPIO_RSLT_ERR_NO_OUTPUT_SIGNAL;
 }
-#elif defined(CY_IP_M0S8IOSS)
+#elif defined(CY_IP_M0S8IOSS) || defined(CY_IP_MXS40SIOSS)
 // M0S8 devices do not have gpio triggers
 cy_rslt_t cyhal_gpio_connect_digital(cyhal_gpio_t pin, cyhal_source_t source, cyhal_signal_type_t type)
 {
@@ -395,4 +396,4 @@ cy_rslt_t cyhal_gpio_disable_output(cyhal_gpio_t pin)
 }
 #endif /* __cplusplus */
 
-#endif /* defined(CY_IP_MXS40IOSS) || defined(CY_IP_M0S8IOSS) */
+#endif /* defined(CY_IP_MXS40IOSS) || defined(CY_IP_M0S8IOSS) || defined(CY_IP_MXS40SIOSS) */

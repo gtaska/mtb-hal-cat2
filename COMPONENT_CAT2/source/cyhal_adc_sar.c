@@ -1,9 +1,9 @@
 /***************************************************************************/ /**
-* \file cyhal_adc.c
+* \file cyhal_adc_sar.c
 *
 * \brief
 * Provides a high level interface for interacting with the Cypress Analog/Digital
-* convert. This interface abstracts out the chip specific details. If any chip
+* converter. This interface abstracts out the chip specific details. If any chip
 * specific functionality is necessary, or performance is critical the low level
 * functions can be used directly.
 *
@@ -30,7 +30,7 @@
  * \ingroup group_hal_impl
  * \{
  * \section cyhal_adc_impl_features Features
- * The CAT1/CAT2 (PMG/PSoC 4/PSoC 6) ADC supports the following features:
+ * The CAT1A/CAT2 (PMG/PSoC 4/PSoC 6) ADC supports the following features:
  * * Resolution: 12 bit
  * * Only @ref CYHAL_POWER_LEVEL_DEFAULT and CYHAL_POWER_LEVEL_OFF are defined. The default power
  *   level will automatically adjust based on smple rate.
@@ -38,6 +38,10 @@
  * * Up to four unique acquisition times.
  * * DMA-based transfer when using @ref cyhal_adc_read_async. When using @ref cyhal_adc_read_async_uv,
  *   only interrupt-driven software copy is supported.
+ *
+ * After initializing the ADC or changing the reference or bypass selection, it may be necessary to wait up to
+ * 210 us for the reference buffer to settle. See the architecture TRM (Analog Subsystem -> SAR ADC ->
+ * Architecture -> SARREF) for device specific guidance.
  * \} group_hal_impl_adc
  */
 
@@ -79,9 +83,13 @@ extern "C"
     #define _CYHAL_ADC_SET_SWITCH(base, mask, state) Cy_SAR_SetAnalogSwitch((base), CY_SAR_MUX_SWITCH0, (mask), _CYHAL_ADC_SWITCH_STATE((state)))
 #endif
 
+#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1) && !defined(CY_DEVICE_PSOC6A256K)
+    #define _CYHAL_ADC_SINGLE_UNSUFFIXED
+#endif
+
 static SAR_Type *const _cyhal_adc_base[] =
 {
-#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+#if defined(_CYHAL_ADC_SINGLE_UNSUFFIXED)
     SAR,
 #else
 #if (_CYHAL_ADC_SAR_INSTANCES >= 1)
@@ -98,10 +106,12 @@ static SAR_Type *const _cyhal_adc_base[] =
 
 static const en_clk_dst_t _cyhal_adc_clock[] =
 {
-#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+#if defined(_CYHAL_ADC_SINGLE_UNSUFFIXED)
     PCLK_PASS_CLOCK_SAR,
 #elif (CY_IP_M0S8PASS4A_INSTANCES == 1)
     PCLK_PASS0_CLOCK_SAR,
+#elif (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+    PCLK_PASS_CLOCK_SAR0,
 #elif (CY_IP_MXS40PASS_SAR_INSTANCES == 2)
     PCLK_PASS_CLOCK_SAR0,
     PCLK_PASS_CLOCK_SAR1,
@@ -115,10 +125,12 @@ static const en_clk_dst_t _cyhal_adc_clock[] =
 
 static const cyhal_source_t _cyhal_adc_tr_out[] =
 {
-#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+#if defined(_CYHAL_ADC_SINGLE_UNSUFFIXED)
     CYHAL_TRIGGER_PASS_TR_SAR_OUT,
 #elif (CY_IP_M0S8PASS4A_INSTANCES == 1)
     CYHAL_TRIGGER_PASS0_TR_SAR_OUT,
+#elif (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+    CYHAL_TRIGGER_PASS_TR_SAR_OUT0,
 #elif (CY_IP_MXS40PASS_SAR_INSTANCES == 2)
     CYHAL_TRIGGER_PASS_TR_SAR_OUT0,
     CYHAL_TRIGGER_PASS_TR_SAR_OUT1,
@@ -132,10 +144,12 @@ static const cyhal_source_t _cyhal_adc_tr_out[] =
 
 static const cyhal_dest_t _cyhal_adc_tr_in[] =
 {
-#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+#if defined(_CYHAL_ADC_SINGLE_UNSUFFIXED)
     CYHAL_TRIGGER_PASS_TR_SAR_IN,
 #elif (CY_IP_M0S8PASS4A_INSTANCES == 1)
     CYHAL_TRIGGER_PASS0_TR_SAR_IN,
+#elif (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+    CYHAL_TRIGGER_PASS_TR_SAR_IN0,
 #elif (CY_IP_MXS40PASS_SAR_INSTANCES == 2)
     CYHAL_TRIGGER_PASS_TR_SAR_IN0,
     CYHAL_TRIGGER_PASS_TR_SAR_IN1,
@@ -151,10 +165,12 @@ static cyhal_adc_t* _cyhal_adc_config_structs[_CYHAL_ADC_SAR_INSTANCES];
 
 static const IRQn_Type _cyhal_adc_irq_n[] =
 {
-#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+#if defined(_CYHAL_ADC_SINGLE_UNSUFFIXED)
     pass_interrupt_sar_IRQn,
 #elif (CY_IP_M0S8PASS4A_INSTANCES == 1)
     pass_0_interrupt_sar_IRQn,
+#elif (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+    pass_interrupt_sar_0_IRQn,
 #elif (CY_IP_MXS40PASS_SAR_INSTANCES == 2)
     pass_interrupt_sar_0_IRQn,
     pass_interrupt_sar_1_IRQn,
@@ -171,11 +187,14 @@ static uint8_t _cyhal_adc_get_block_from_irqn(IRQn_Type irqn)
     switch (irqn)
     {
 #if (CY_CPU_CORTEX_M4 || CY_IP_M0S8PASS4A_INSTANCES) // M0S8 only has one processor, a CM0 variant
-#if (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+#if defined(_CYHAL_ADC_SINGLE_UNSUFFIXED)
     case pass_interrupt_sar_IRQn:
         return 0;
 #elif (CY_IP_M0S8PASS4A_INSTANCES == 1)
     case pass_0_interrupt_sar_IRQn:
+        return 0;
+#elif (CY_IP_MXS40PASS_SAR_INSTANCES == 1)
+    case pass_interrupt_sar_0_IRQn:
         return 0;
 #elif (CY_IP_MXS40PASS_SAR_INSTANCES == 2)
     case pass_interrupt_sar_0_IRQn:
@@ -589,6 +608,10 @@ static void _cyhal_adc_irq_handler(void)
     cyhal_adc_t* obj = _cyhal_adc_config_structs[block];
     Cy_SAR_ClearInterrupt(obj->base, CY_SAR_INTR_EOS);
     obj->conversion_complete = true;
+    if(obj->stop_after_scan)
+    {
+        Cy_SAR_StopConvert(obj->base);
+    }
 
     uint8_t num_channels = _cyhal_adc_max_configured_channel(obj) + 1;
     if(obj->async_scans_remaining > 0)
@@ -743,7 +766,7 @@ cy_rslt_t cyhal_adc_init(cyhal_adc_t *obj, cyhal_gpio_t pin, const cyhal_clock_t
         obj->resource = adc_inst;
 
         obj->base = _cyhal_adc_base[adc_inst.block_num];
-        pclk = (en_clk_dst_t)(_cyhal_adc_clock[adc_inst.block_num]);
+        pclk = _cyhal_adc_clock[adc_inst.block_num];
         if (NULL != clk)
         {
             obj->clock = *clk;
@@ -758,7 +781,7 @@ cy_rslt_t cyhal_adc_init(cyhal_adc_t *obj, cyhal_gpio_t pin, const cyhal_clock_t
 
     if (CY_RSLT_SUCCESS == result)
     {
-        if (CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)obj->clock.block, obj->clock.channel))
+        if (CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_assign_divider(pclk, &(obj->clock)))
             result = CYHAL_ADC_RSLT_FAILED_CLOCK;
     }
 
@@ -766,15 +789,11 @@ cy_rslt_t cyhal_adc_init(cyhal_adc_t *obj, cyhal_gpio_t pin, const cyhal_clock_t
     {
         if(obj->dedicated_clock)
         {
-    #if defined(CY_IP_M0S8PASS4A_INSTANCES)
-            uint32_t source_hz = Cy_SysClk_ClkSysGetFrequency();
-    #else
-            uint32_t source_hz = Cy_SysClk_ClkPeriGetFrequency();
-    #endif
+            uint32_t source_hz = _cyhal_utils_get_peripheral_clock_frequency(&(obj->resource));
             uint32_t div = source_hz / DESIRED_DIVIDER;
             if (0 == div ||
-                CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphSetDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel, div - 1) ||
-                CY_SYSCLK_SUCCESS != Cy_SysClk_PeriphEnableDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel))
+                CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_set_divider(pclk, &(obj->clock), div - 1) ||
+                CY_SYSCLK_SUCCESS != _cyhal_utils_peri_pclk_enable_divider(pclk, &(obj->clock)))
             {
                 result = CYHAL_ADC_RSLT_FAILED_CLOCK;
             }
@@ -849,7 +868,7 @@ void cyhal_adc_free(cyhal_adc_t *obj)
 
         if(obj->dedicated_clock)
         {
-            Cy_SysClk_PeriphDisableDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel);
+            _cyhal_utils_peri_pclk_disable_divider(_cyhal_adc_clock[obj->resource.block_num], &(obj->clock));
             cyhal_clock_free(&obj->clock);
         }
 
@@ -1523,9 +1542,11 @@ int32_t cyhal_adc_read(const cyhal_adc_channel_t *obj)
     {
         /* Enable the selected channel only, then perform an on-demand conversion.
          * Save the old enabled channel set to restore after we're done */
+        bool isChannelInterleaved = (isInterleaved && isChannelAveraging);
         old_en_mask = SAR_CHAN_EN(obj->adc->base);
         Cy_SAR_SetChanMask(obj->adc->base, 1U << obj->channel_idx);
         obj->adc->conversion_complete = false;
+        obj->adc->stop_after_scan = isChannelInterleaved;
 
         // If interleaved averaging and average is enabled for this channel, set for
         // continuous scanning and then stop the scan once we get a result. This is
@@ -1535,7 +1556,7 @@ int32_t cyhal_adc_read(const cyhal_adc_channel_t *obj)
         // scans there will be no interrupt, therefore conversion_complete will never
         // be set true, and therefore the loop below would be stuck waiting forever,
         // never able to trigger a subsequent scan.
-        Cy_SAR_StartConvert(obj->adc->base, (isInterleaved && isChannelAveraging) ? CY_SAR_START_CONVERT_CONTINUOUS : CY_SAR_START_CONVERT_SINGLE_SHOT);
+        Cy_SAR_StartConvert(obj->adc->base, (isChannelInterleaved) ? CY_SAR_START_CONVERT_CONTINUOUS : CY_SAR_START_CONVERT_SINGLE_SHOT);
     }
 
     /* Cy_SAR_IsEndConversion relies on and clears the EOS interrupt status bit.
@@ -1548,10 +1569,6 @@ int32_t cyhal_adc_read(const cyhal_adc_channel_t *obj)
 
     if(!obj->adc->continuous_scanning)
     {
-        if(isInterleaved && isChannelAveraging)
-        {
-            Cy_SAR_StopConvert(obj->adc->base);
-        }
         Cy_SAR_SetChanMask(obj->adc->base, old_en_mask);
     }
 

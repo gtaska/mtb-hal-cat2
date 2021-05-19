@@ -168,7 +168,7 @@ cy_rslt_t cyhal_ezi2c_init(cyhal_ezi2c_t *obj, cyhal_gpio_t sda, cyhal_gpio_t sc
         obj->is_shared_clock = (clk != NULL);
         if (clk == NULL)
         {
-            result = cyhal_clock_allocate(&(obj->clock), CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT);
+            result = _cyhal_utils_allocate_clock(&(obj->clock), scl_map->inst, CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT, true);
         }
         else
         {

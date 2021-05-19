@@ -93,13 +93,9 @@ static cy_rslt_t _cyhal_spi_int_frequency(cyhal_spi_t *obj, uint32_t hz, uint8_t
     uint32_t divided_freq = 0;
     uint32_t diff = 0;
 
-    Cy_SysClk_PeriphDisableDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel);
+    _cyhal_utils_peri_pclk_disable_divider(_cyhal_scb_get_clock_index(obj->resource.block_num), &(obj->clock));
 
-#if defined(COMPONENT_CAT1A) || defined(COMPONENT_CAT1B)
-    uint32_t peri_freq = Cy_SysClk_ClkPeriGetFrequency();
-#elif defined(COMPONENT_CAT2)
-    uint32_t peri_freq = Cy_SysClk_ClkSysGetFrequency();
-#endif
+    uint32_t peri_freq = _cyhal_utils_get_peripheral_clock_frequency(&(obj->resource));
     if (!obj->is_slave)
     {
         for (oversample_value = _CYHAL_SPI_OVERSAMPLE_MIN; oversample_value <= _CYHAL_SPI_OVERSAMPLE_MAX; oversample_value++)
@@ -114,7 +110,7 @@ static cy_rslt_t _cyhal_spi_int_frequency(cyhal_spi_t *obj, uint32_t hz, uint8_t
                 continue;
             }
 
-            divider_value = _cyhal_utils_divider_value(hz * oversample_value, 0);
+            divider_value = _cyhal_utils_divider_value(&(obj->resource), hz * oversample_value, 0);
             divided_freq = peri_freq /divider_value;
             diff = (oversampled_freq > divided_freq)
                 ? oversampled_freq - divided_freq
@@ -152,11 +148,11 @@ static cy_rslt_t _cyhal_spi_int_frequency(cyhal_spi_t *obj, uint32_t hz, uint8_t
         last_dvdr_val = 1;
     }
 
-    result = Cy_SysClk_PeriphSetDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel, last_dvdr_val - 1);
+    result = _cyhal_utils_peri_pclk_set_divider(_cyhal_scb_get_clock_index(obj->resource.block_num), &(obj->clock), last_dvdr_val - 1);
 
     if (CY_RSLT_SUCCESS == result)
     {
-        Cy_SysClk_PeriphEnableDivider((cy_en_divider_types_t)obj->clock.block, obj->clock.channel);
+        _cyhal_utils_peri_pclk_enable_divider(_cyhal_scb_get_clock_index(obj->resource.block_num), &(obj->clock));
     }
 
     return result;
@@ -467,7 +463,7 @@ cy_rslt_t cyhal_spi_init(cyhal_spi_t *obj, cyhal_gpio_t mosi, cyhal_gpio_t miso,
     {
         if (clk == NULL)
         {
-            result = cyhal_clock_allocate(&(obj->clock), CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT);
+            result = _cyhal_utils_allocate_clock(&(obj->clock), &(obj->resource), CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT, true);
             obj->alloc_clock = true;
         }
         else
@@ -487,9 +483,7 @@ cy_rslt_t cyhal_spi_init(cyhal_spi_t *obj, cyhal_gpio_t mosi, cyhal_gpio_t miso,
     }
     if (result == CY_RSLT_SUCCESS)
     {
-        result = (cy_rslt_t)Cy_SysClk_PeriphAssignDivider(
-                _cyhal_scb_get_clock_index(obj->resource.block_num),
-                (cy_en_divider_types_t)obj->clock.block, obj->clock.channel);
+        result = _cyhal_utils_peri_pclk_assign_divider(_cyhal_scb_get_clock_index(obj->resource.block_num), &(obj->clock));
 
         if (result == CY_RSLT_SUCCESS)
         {

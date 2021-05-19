@@ -29,7 +29,7 @@
 
 #include "cyhal_system.h"
 
-#if defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT)
+#if defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT) || defined(CY_IP_MXS28SRSS) || defined(CY_IP_MXS40SSRSS)
 
 #define cyhal_system_critical_section_enter()   Cy_SysLib_EnterCriticalSection()
 
@@ -39,4 +39,4 @@
 
 #define cyhal_system_clear_reset_reason()       Cy_SysLib_ClearResetReason()
 
-#endif /* defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT) */
+#endif /* defined(CY_IP_MXS40SRSS) || defined(CY_IP_S8SRSSLT) || defined(CY_IP_MXS28SRSS) || defined(CY_IP_MXS40SSRSS) */

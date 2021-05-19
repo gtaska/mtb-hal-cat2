@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['block',['block',['../group__group__hal__impl__hw__types.html#a60762f348f4de6260d4eee35a6cd6560',1,'cyhal_clock_t']]],
   ['block_5fcount',['block_count',['../group__group__hal__flash.html#a4084c53e5f07ca60c8fb3bcbb2af11a4',1,'cyhal_flash_info_t']]],
   ['block_5fnum',['block_num',['../group__group__hal__impl__hw__types.html#a91895766b5f5efe1dfffac2d7537e73a',1,'cyhal_resource_inst_t']]],
   ['blocks',['blocks',['../group__group__hal__flash.html#abf8824c2c183140e0904dec90cffe877',1,'cyhal_flash_info_t']]],

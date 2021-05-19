@@ -92,27 +92,6 @@ extern "C" {
 * \cond INTERNAL
 */
 
-// ILO Frequency = 40000 Hz
-// ILO Period = 1 / 40000 Hz = .025 ms
-// WDT Reset Period (timeout_ms) = .025 ms * (2 * 2^(16 - ignore_bits) + match)
-// ignore_bits range: 0 - 16 (only need up to 12)
-// match range: 0 - 2^(16 - ignore_bits)
-static const _cyhal_wdt_ignore_bits_data_t _cyhal_wdt_ignore_data[] = {
-    {3277, 2458}, //  0 bit(s): min period: 3277ms, max period: 4915ms, round up from 2458+ms
-    {1639, 1229}, //  1 bit(s): min period: 1639ms, max period: 2457ms, round up from 1229+ms
-    { 820,  615}, //  2 bit(s): min period:  820ms, max period: 1228ms, round up from 615+ms
-    { 410,  308}, //  3 bit(s): min period:  410ms, max period:  614ms, round up from 308+ms
-    { 205,  154}, //  4 bit(s): min period:  205ms, max period:  307ms, round up from 154+ms
-    { 103,   77}, //  5 bit(s): min period:  103ms, max period:  153ms, round up from 77+ms
-    {  52,   39}, //  6 bit(s): min period:   52ms, max period:   76ms, round up from 39+ms
-    {  26,   20}, //  7 bit(s): min period:   26ms, max period:   38ms, round up from 20+ms
-    {  13,   10}, //  8 bit(s): min period:   13ms, max period:   19ms, round up from 10+ms
-    {   7,    5}, //  9 bit(s): min period:    7ms, max period:    9ms, round up from 5+ms
-    {   4,    3}, // 10 bit(s): min period:    4ms, max period:    4ms, round up from 3+ms
-    {   2,    2}, // 11 bit(s): min period:    2ms, max period:    2ms, round up from 2+ms
-    {   1,    1}, // 12 bit(s): min period:    1ms, max period:    1ms, round up from 1+ms
-};
-
 // (2^16 * 3) * .025 ms
 /** Maximum WDT timeout in milliseconds */
 #define _CYHAL_WDT_MAX_TIMEOUT_MS 4915

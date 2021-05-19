@@ -5,7 +5,7 @@
 * PSoC4000S device GPIO HAL header for 28-SSOP-AUTO package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright

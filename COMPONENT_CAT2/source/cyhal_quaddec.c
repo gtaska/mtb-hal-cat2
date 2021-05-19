@@ -93,8 +93,7 @@ static inline cy_rslt_t _cyhal_quaddec_configure_clock(cyhal_tcpwm_t *tcpwm, en_
 
         if (cyhal_clock_set_frequency(&tcpwm->clock, frequency, &tolerance) == CY_RSLT_SUCCESS)
         {
-            if (Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)tcpwm->clock.block, tcpwm->clock.channel) ==
-                CY_SYSCLK_SUCCESS)
+            if (_cyhal_utils_peri_pclk_assign_divider(pclk, &(tcpwm->clock)) == CY_SYSCLK_SUCCESS)
             {
                 cyhal_clock_set_enabled(&tcpwm->clock, true, false);
                 return CY_RSLT_SUCCESS;
@@ -360,8 +359,7 @@ cy_rslt_t cyhal_quaddec_init(cyhal_quaddec_t *obj, cyhal_gpio_t phi_a, cyhal_gpi
                 obj->tcpwm.clock = *clk;
                 _cyhal_utils_update_clock_format(&obj->tcpwm.clock);
 
-                if (Cy_SysClk_PeriphAssignDivider(pclk, (cy_en_divider_types_t)obj->tcpwm.clock.block,
-                                                  obj->tcpwm.clock.channel) != CY_SYSCLK_SUCCESS)
+                if (_cyhal_utils_peri_pclk_assign_divider(pclk, &(obj->tcpwm.clock)) != CY_SYSCLK_SUCCESS)
                 {
                     rslt = CYHAL_QUADDEC_RSLT_ERR_CLOCK_INIT;
                 }

@@ -1,11 +1,11 @@
 /***************************************************************************//**
-* \file cyhal_pmg1s3_97_bga.c
+* \file cyhal_pmg1s3_97_bga_cypm1322.c
 *
 * \brief
-* PMG1S3 device GPIO HAL header for 97-BGA package
+* PMG1S3 device GPIO HAL header for 97-BGA-CYPM1322 package
 *
 * \note
-* Generator version: 1.6.0.464
+* Generator version: 1.6.0.512
 *
 ********************************************************************************
 * \copyright
@@ -28,8 +28,8 @@
 #include "cy_device_headers.h"
 #include "cyhal_hw_types.h"
 
-#if defined(_GPIO_PMG1S3_97_BGA_H_)
-#include "pin_packages/cyhal_pmg1s3_97_bga.h"
+#if defined(_GPIO_PMG1S3_97_BGA_CYPM1322_H_)
+#include "pin_packages/cyhal_pmg1s3_97_bga_cypm1322.h"
 
 /* Hardware Blocks */
 static const cyhal_resource_inst_t CYHAL_LPCOMP_0_0 = { CYHAL_RSC_LPCOMP, 0, 0 };
@@ -377,7 +377,7 @@ const cyhal_resource_pin_mapping_t cyhal_pin_map_usb_dp[1] = {
 
 /* Connections for: usb_vbus_det */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_usb_vbus_det[1] = {
-    {&CYHAL_USB_0, VSSD_10, (uint8_t)CY_GPIO_DM_HIGHZ, HSIOM_SEL_GPIO},
+    {&CYHAL_USB_0, VSSIO_5, (uint8_t)CY_GPIO_DM_HIGHZ, HSIOM_SEL_GPIO},
 };
 
 /* Connections for: usb_vbus_valid */

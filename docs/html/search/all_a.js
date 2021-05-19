@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['lptimer',['LPTIMER',['../group__group__hal__impl__lptimer.html',1,'']]],
-  ['lptimer_20_28low_2dpower_20timer_29',['LPTimer (Low-Power Timer)',['../group__group__hal__lptimer.html',1,'']]],
-  ['lptimer_20hal_20results',['LPTimer HAL Results',['../group__group__hal__results__lptimer.html',1,'']]],
-  ['length',['length',['../group__group__hal__dma.html#aa7fbd97e22cee8fd0079fe27479f00c1',1,'cyhal_dma_cfg_t']]]
+  ['keyscan',['Keyscan',['../group__group__hal__keyscan.html',1,'']]],
+  ['keycode',['keycode',['../group__group__hal__keyscan.html#a438d909418d2e1a393e541399cc776c6',1,'cyhal_keyscan_action_t']]]
 ];

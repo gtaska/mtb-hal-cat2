@@ -93,23 +93,6 @@ static cy_rslt_t compute_div(uint32_t input_hz, uint32_t desired_hz, uint32_t di
         : CY_RSLT_SUCCESS;
 }
 
-static uint32_t get_channel_count(cyhal_clock_block_t block)
-{
-    switch (block)
-    {
-        case CYHAL_CLOCK_BLOCK_PERIPHERAL_8BIT:
-            return PERI_PCLK_DIV_8_NR;
-        case CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT:
-            return PERI_PCLK_DIV_16_NR;
-        case CYHAL_CLOCK_BLOCK_PERIPHERAL_16_5BIT:
-            return PERI_PCLK_DIV_16_5_NR;
-        case CYHAL_CLOCK_BLOCK_PERIPHERAL_24_5BIT:
-            return PERI_PCLK_DIV_24_5_NR;
-        default:
-            return 1;
-    }
-}
-
 static void cyhal_update_system_state(bool before_change, uint32_t old_hfclk_freq_hz, uint32_t new_hfclk_freq_hz)
 {
     // If increasing the clock frequency we need to update the speeds
@@ -353,7 +336,7 @@ cy_rslt_t cyhal_clock_allocate(cyhal_clock_t *clock, cyhal_clock_block_t block)
 {
     CY_ASSERT(NULL != clock);
 
-    uint8_t maxChannels = (uint8_t)get_channel_count(block);
+    uint8_t maxChannels = (uint8_t)_cyhal_utils_get_clock_count(block);
     for (uint8_t i = 0; i < maxChannels; i++)
     {
         cyhal_resource_inst_t clock_resource = { CYHAL_RSC_CLOCK, block, i };
@@ -465,7 +448,7 @@ bool cyhal_clock_is_enabled(const cyhal_clock_t *clock)
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16_5BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_24_5BIT:
-            return Cy_SysClk_PeriphDividerIsEnabled((cy_en_divider_types_t)clock->block, clock->channel);
+            return _cyhal_utils_peri_pclk_is_divider_enabled((en_clk_dst_t)0, clock);
 #if (EXCO_PLL_PRESENT > 0)
         case CYHAL_CLOCK_BLOCK_PLLSEL:
 #endif
@@ -568,8 +551,8 @@ cy_rslt_t cyhal_clock_set_enabled(cyhal_clock_t *clock, bool enabled, bool wait_
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16_5BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_24_5BIT:
             return (enabled)
-                ? Cy_SysClk_PeriphEnableDivider((cy_en_divider_types_t)clock->block, clock->channel)
-                : Cy_SysClk_PeriphDisableDivider((cy_en_divider_types_t)clock->block, clock->channel);
+                ? _cyhal_utils_peri_pclk_enable_divider((en_clk_dst_t)0, clock)
+                : _cyhal_utils_peri_pclk_disable_divider((en_clk_dst_t)0, clock);
         default:
             CY_ASSERT(false); //Unhandled clock
             return CYHAL_CLOCK_RSLT_ERR_RESOURCE;
@@ -634,7 +617,7 @@ uint32_t cyhal_clock_get_frequency(const cyhal_clock_t *clock)
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16_5BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_24_5BIT:
-            return Cy_SysClk_PeriphGetFrequency((cy_en_sysclk_divider_types_t)clock->block, clock->channel);
+            return _cyhal_utils_peri_pclk_get_frequency((en_clk_dst_t)0, clock);
         default:
             CY_ASSERT(false); //Unhandled clock
             return 0;
@@ -676,7 +659,7 @@ cy_rslt_t cyhal_clock_set_frequency(cyhal_clock_t *clock, uint32_t hz, const cyh
             uint32_t bits = (clock->block == CYHAL_CLOCK_BLOCK_PERIPHERAL_8BIT) ? 8 : 16;
             cy_rslt_t rslt = compute_div(input_hz, hz, bits, tolerance, &div);
             return (CY_RSLT_SUCCESS == rslt)
-                ? Cy_SysClk_PeriphSetDivider((cy_en_sysclk_divider_types_t)clock->block, clock->channel, (div - 1))
+                ? _cyhal_utils_peri_pclk_set_divider((en_clk_dst_t)0, clock, div - 1)
                 : rslt;
         }
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16_5BIT:
@@ -692,7 +675,7 @@ cy_rslt_t cyhal_clock_set_frequency(cyhal_clock_t *clock, uint32_t hz, const cyh
             {
                 uint32_t div_int = (div >> 5) - 1;
                 uint32_t div_frac = div & 0x1F;
-                return Cy_SysClk_PeriphSetFracDivider((cy_en_sysclk_divider_types_t)clock->block, clock->channel, div_int, div_frac);
+                return _cyhal_utils_peri_pclk_set_frac_divider((en_clk_dst_t)0, clock, div_int, div_frac);
             }
             else
                 return rslt;
@@ -723,10 +706,10 @@ cy_rslt_t cyhal_clock_set_divider(cyhal_clock_t *clock, uint32_t divider)
         }
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_8BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16BIT:
-            return Cy_SysClk_PeriphSetDivider((cy_en_sysclk_divider_types_t)clock->block, clock->channel, divider - 1);
+            return _cyhal_utils_peri_pclk_set_divider((en_clk_dst_t)0, clock, divider - 1);
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_16_5BIT:
         case CYHAL_CLOCK_BLOCK_PERIPHERAL_24_5BIT:
-            return Cy_SysClk_PeriphSetFracDivider((cy_en_sysclk_divider_types_t)clock->block, clock->channel, divider - 1, 0);
+            return _cyhal_utils_peri_pclk_set_frac_divider((en_clk_dst_t)0, clock, divider - 1, 0);
         default:
             CY_ASSERT(false); //Unhandled clock
             return CYHAL_CLOCK_RSLT_ERR_NOT_SUPPORTED;
