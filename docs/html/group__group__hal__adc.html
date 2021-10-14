@@ -210,9 +210,12 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga7618b26a0677cb3f8cd477e3731da510"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#ga7618b26a0677cb3f8cd477e3731da510">cyhal_adc_init</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *obj, <a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a> pin, const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__clock__t">cyhal_clock_t</a> *clk)</td></tr>
+<tr class="memitem:ga7618b26a0677cb3f8cd477e3731da510"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#ga7618b26a0677cb3f8cd477e3731da510">cyhal_adc_init</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *obj, <a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a> pin, const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__clock__t">cyhal_clock_t</a> *clk)</td></tr>
 <tr class="memdesc:ga7618b26a0677cb3f8cd477e3731da510"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize ADC peripheral.  <a href="#ga7618b26a0677cb3f8cd477e3731da510">More...</a><br /></td></tr>
 <tr class="separator:ga7618b26a0677cb3f8cd477e3731da510"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga583d855a00bb1c12cbcee3b51e6e2e95"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#ga583d855a00bb1c12cbcee3b51e6e2e95">cyhal_adc_init_cfg</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *adc, <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__channel__t">cyhal_adc_channel_t</a> **channels, uint8_t *num_channels, const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__configurator__t">cyhal_adc_configurator_t</a> *cfg)</td></tr>
+<tr class="memdesc:ga583d855a00bb1c12cbcee3b51e6e2e95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the ADC peripheral and its channels using a configurator generated configuration struct.  <a href="#ga583d855a00bb1c12cbcee3b51e6e2e95">More...</a><br /></td></tr>
+<tr class="separator:ga583d855a00bb1c12cbcee3b51e6e2e95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadae8361e3e3e3d0ff96767e1e8e1d913"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#gadae8361e3e3e3d0ff96767e1e8e1d913">cyhal_adc_free</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *obj)</td></tr>
 <tr class="memdesc:gadae8361e3e3e3d0ff96767e1e8e1d913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uninitialize the ADC peripheral and <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t" title="ADC object. ">cyhal_adc_t</a> object.  <a href="#gadae8361e3e3e3d0ff96767e1e8e1d913">More...</a><br /></td></tr>
 <tr class="separator:gadae8361e3e3e3d0ff96767e1e8e1d913"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -225,7 +228,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ga15c047136b7a47d12dbafaa1e415ab59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#ga15c047136b7a47d12dbafaa1e415ab59">cyhal_adc_set_sample_rate</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *obj, uint32_t desired_sample_rate_hz, uint32_t *achieved_sample_rate_hz)</td></tr>
 <tr class="memdesc:ga15c047136b7a47d12dbafaa1e415ab59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configure the number of samples per second.  <a href="#ga15c047136b7a47d12dbafaa1e415ab59">More...</a><br /></td></tr>
 <tr class="separator:ga15c047136b7a47d12dbafaa1e415ab59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaba21a0c4d83266951823ea5d9eba39b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#gaba21a0c4d83266951823ea5d9eba39b9">cyhal_adc_channel_init_diff</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__channel__t">cyhal_adc_channel_t</a> *obj, <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *adc, <a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a> vplus, <a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a> vminus, const <a class="el" href="group__group__hal__adc.html#structcyhal__adc__channel__config__t">cyhal_adc_channel_config_t</a> *cfg)</td></tr>
+<tr class="memitem:gaba21a0c4d83266951823ea5d9eba39b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#gaba21a0c4d83266951823ea5d9eba39b9">cyhal_adc_channel_init_diff</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__channel__t">cyhal_adc_channel_t</a> *obj, <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *adc, <a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a> vplus, <a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a> vminus, const <a class="el" href="group__group__hal__adc.html#structcyhal__adc__channel__config__t">cyhal_adc_channel_config_t</a> *cfg)</td></tr>
 <tr class="memdesc:gaba21a0c4d83266951823ea5d9eba39b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a differential ADC channel.  <a href="#gaba21a0c4d83266951823ea5d9eba39b9">More...</a><br /></td></tr>
 <tr class="separator:gaba21a0c4d83266951823ea5d9eba39b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga504f26400e475a67e978fb1a75b67f1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__group__hal__adc.html#ga504f26400e475a67e978fb1a75b67f1c">cyhal_adc_channel_configure</a> (<a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__channel__t">cyhal_adc_channel_t</a> *obj, const <a class="el" href="group__group__hal__adc.html#structcyhal__adc__channel__config__t">cyhal_adc_channel_config_t</a> *config)</td></tr>
@@ -333,7 +336,7 @@ vref</td>
 <td class="fielddoc">
 ADC voltage reference. </td></tr>
 <tr><td class="fieldtype">
-<a id="a1e330ef5d05f2e0fb824f7060a398fb7"></a><a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a></td>
+<a id="a1e330ef5d05f2e0fb824f7060a398fb7"></a><a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a></td>
 <td class="fieldname">
 ext_vref</td>
 <td class="fielddoc">
@@ -347,7 +350,7 @@ is_bypassed</td>
 Whether an external bypass capacitor should be used. <p>Depending on the platform this may be required to reduce noise at sufficiently high sample rates. See the implementation specific documentation for details. </p>
 </td></tr>
 <tr><td class="fieldtype">
-<a id="afce79b08ba62854d108ca34fe649e692"></a><a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a></td>
+<a id="afce79b08ba62854d108ca34fe649e692"></a><a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a></td>
 <td class="fieldname">
 bypass_pin</td>
 <td class="fielddoc">
@@ -533,7 +536,7 @@ Minimum time that this channel should be sampled, in nanoseconds. <p>The actual 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a>&#160;</td>
           <td class="paramname"><em>pin</em>, </td>
         </tr>
         <tr>
@@ -573,6 +576,58 @@ Minimum time that this channel should be sampled, in nanoseconds. <p>The actual 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The status of the init request. <a class="el" href="group__group__result.html#gaf58fac450d9fff4472f03ad68f6e546e">CY_RSLT_SUCCESS</a> is returned on success. On failure, a problem specific error code will be returned. This error could be from the HAL or lower level driver.<br />
  For all other return codes, please refer to device driver documentation available in the BSP landing page </dd></dl>
+
+</div>
+</div>
+<a id="ga583d855a00bb1c12cbcee3b51e6e2e95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga583d855a00bb1c12cbcee3b51e6e2e95">&#9670;&nbsp;</a></span>cyhal_adc_init_cfg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__group__result.html#gaca79700fcc701534ce61778a9bcf57d1">cy_rslt_t</a> cyhal_adc_init_cfg </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__t">cyhal_adc_t</a> *&#160;</td>
+          <td class="paramname"><em>adc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__channel__t">cyhal_adc_channel_t</a> **&#160;</td>
+          <td class="paramname"><em>channels</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>num_channels</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__hal__impl__hw__types.html#structcyhal__adc__configurator__t">cyhal_adc_configurator_t</a> *&#160;</td>
+          <td class="paramname"><em>cfg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize the ADC peripheral and its channels using a configurator generated configuration struct. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">adc</td><td>Pointer to an adc object. The caller must allocate the memory for this object but the init function will initialize its contents. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">channels</td><td>Array of pointers to ADC channel objects. This array must contain a minimum of one (non-null) entry per channel that is enabled by the configurator </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">num_channels</td><td>Length of the <code>channels</code> array. If this value is too small for all of the channels enabled by the configurator an error will be returned. Will be updated with the number of channels that were enabled by the configurator. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">cfg</td><td>Configuration structure generated by the configurator. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The status of the init request </dd></dl>
 
 </div>
 </div>
@@ -751,13 +806,13 @@ Minimum time that this channel should be sampled, in nanoseconds. <p>The actual 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a>&#160;</td>
           <td class="paramname"><em>vplus</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html#gae376433f9cd6120d701a36bea7b9c875">cyhal_gpio_t</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__group__hal__impl__pin__package__ccg7d__68__qfn.html#ga304a565dc0d34e417918b505c5f70cb3">cyhal_gpio_t</a>&#160;</td>
           <td class="paramname"><em>vminus</em>, </td>
         </tr>
         <tr>

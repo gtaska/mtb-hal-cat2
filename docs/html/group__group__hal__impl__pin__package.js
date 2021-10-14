@@ -1,5 +1,7 @@
 var group__group__hal__impl__pin__package =
 [
+    [ "CCG7D 68-QFN", "group__group__hal__impl__pin__package__ccg7d__68__qfn.html", "group__group__hal__impl__pin__package__ccg7d__68__qfn" ],
+    [ "CCG7S 40-QFN", "group__group__hal__impl__pin__package__ccg7s__40__qfn.html", "group__group__hal__impl__pin__package__ccg7s__40__qfn" ],
     [ "PMG1S0 24-QFN-PMG1-S0", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0.html", "group__group__hal__impl__pin__package__pmg1s0__24__qfn__pmg1__s0" ],
     [ "PMG1S1 40-QFN-PMG1-S1", "group__group__hal__impl__pin__package__pmg1s1__40__qfn__pmg1__s1.html", "group__group__hal__impl__pin__package__pmg1s1__40__qfn__pmg1__s1" ],
     [ "PMG1S2 40-QFN-PMG1-S2", "group__group__hal__impl__pin__package__pmg1s2__40__qfn__pmg1__s2.html", "group__group__hal__impl__pin__package__pmg1s2__40__qfn__pmg1__s2" ],

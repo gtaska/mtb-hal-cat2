@@ -87,18 +87,18 @@ $(document).ready(function(){initNavTree('group__group__hal__impl__gpio.html',''
 
 <div class="header">
   <div class="headertitle">
-<div class="title">GPIO<div class="ingroups"><a class="el" href="group__group__hal__impl.html">CAT2 (PMG/PSoC 4) Implementation Specific</a></div></div>  </div>
+<div class="title">GPIO<div class="ingroups"><a class="el" href="group__group__hal__impl.html">CAT2 (PMG/PSoC™ 4) Implementation Specific</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 <h1><a class="anchor" id="group_hal_impl_gpio_interrupt"></a>
 Interrupt Priorities</h1>
-<p>In CAT2 (PMG/PSoC 4), ports 0 through 3 have dedicated IRQ lines (ioss_interrupts_gpio_0_IRQn - ioss_interrupts_gpio_3_IRQn) and other ports are required to use the All-Port IRQ line (ioss_interrupt_gpio_IRQn). If multiple pins on the same port are set at different priorities, the priority that the last pin is set to will be applied to all pins used on that port. When using the pin that does not have a dedicated IRQ line (port 4 and higher) following are the implications,</p><ol type="1">
+<p>In CAT2 (PMG/PSoC™ 4), ports 0 through 3 have dedicated IRQ lines (ioss_interrupts_gpio_0_IRQn - ioss_interrupts_gpio_3_IRQn) and other ports are required to use the All-Port IRQ line (ioss_interrupt_gpio_IRQn). If multiple pins on the same port are set at different priorities, the priority that the last pin is set to will be applied to all pins used on that port. When using the pin that does not have a dedicated IRQ line (port 4 and higher) following are the implications,</p><ol type="1">
 <li>The priority set through <a class="el" href="group__group__hal__gpio.html#ga0e0346810451d9940d31bb6111153593">cyhal_gpio_enable_event</a> for the specific pin will apply to all pins on port 4 and higher.</li>
 <li>The interrupts will not be proccessed in the same order as they were received because the same All-Port IRQ line will be used for all GPIOs.</li>
 </ol>
 <h1><a class="anchor" id="group_hal_impl_gpio_interconnect"></a>
 Interconnect</h1>
-<p>PSoC 4 does not have GPIO triggers. </p>
+<p>PSoC™ 4 does not have GPIO triggers. </p>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part

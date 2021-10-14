@@ -67,7 +67,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('group__group__hal__impl__syspm.html','');});
+$(document).ready(function(){initNavTree('group__group__hal__impl__i2s.html','');});
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -87,22 +87,22 @@ $(document).ready(function(){initNavTree('group__group__hal__impl__syspm.html','
 
 <div class="header">
   <div class="headertitle">
-<div class="title">System Power Management<div class="ingroups"><a class="el" href="group__group__hal__impl.html">CAT2 (PMG/PSoC 4) Implementation Specific</a></div></div>  </div>
+<div class="title">I2S (Inter-IC Sound)<div class="ingroups"><a class="el" href="group__group__hal__impl.html">CAT2 (PMG/PSoC™ 4) Implementation Specific</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
-<p>The CAT1 (PSoC 6) Power Management has the following characteristics: <a class="el" href="group__group__hal__syspm.html#gga144e474d3bfb544b207f172d1d8bd633acd2a5522b6591eb77418369e464a3eb1">CYHAL_SYSPM_SYSTEM_NORMAL</a> equates to the Low Power mode<br />
- <a class="el" href="group__group__hal__syspm.html#gga144e474d3bfb544b207f172d1d8bd633af4060b98561e43a6b930576644af014f">CYHAL_SYSPM_SYSTEM_LOW</a> equates to the Ultra Low Power mode. </p>
-<h1><a class="anchor" id="group_hal_impl_syspm_ulp"></a>
-Switching the System into Ultra Low Power</h1>
-<p>Before switching into system Ultra Low Power mode, ensure that the device meets the requirements below:</p>
-<ul>
-<li>The core regulator voltage is set to <b>0.9 V (nominal)</b> and the following limitations must be meet:</li>
-<li>The maximum operating frequency for all Clk_HF paths must not exceed <b>50* MHz</b></li>
-<li>The maximum operating frequency for peripheral and slow clock must not exceed <b>25* MHz</b>.</li>
-<li>The total current consumption must be less than or equal to <b>20* mA</b></li>
-<li>Flash write operations are prohibited. Flash is Read-only in this mode.</li>
+<p>The CAT2 (PSoC™ 4) I2S only supports TX in master mode. </p>
+<p>There are no trigger connections available from the I2S peripheral to other peripherals on the CAT2 platform. Hence, the <a class="el" href="group__group__hal__i2s.html#gabdfe29741f8040cf92d99fad53195af5">cyhal_i2s_enable_output</a> and <a class="el" href="group__group__hal__i2s.html#gae9a3a32cb4292687b2ff2bca54d29b62">cyhal_i2s_disable_output</a> are not supported on this platform.</p>
+<p>It supports the following values for word lengths:</p><ul>
+<li>8 bits</li>
+<li>16 bits</li>
+<li>18 bits</li>
+<li>20 bits</li>
+<li>24 bits</li>
+<li>32 bits</li>
 </ul>
-<dl class="section note"><dt>Note</dt><dd>* - Numbers shown are approximate and real limit values may be different because they are device specific. You should refer to the device datasheet for exact values of maximum frequency and current in system ULP mode. </dd></dl>
+<p>The channel length must be greater than or equal to the word length. On CAT2 devices, the set of supported channel lengths is the same as the set of supported word lengths.</p>
+<p>The sclk signal is formed by integer division of the input clock source (either internally provided or from the mclk pin). The CAT2 I2S supports sclk divider values from 1 to 64.</p>
+<dl class="section note"><dt>Note</dt><dd>If the I2S hardware is initialized with a configurator-generated configuration via the <a class="el" href="group__group__hal__i2s.html#ga061f2ea2ce311e9f36e0a5bde2580cc6">cyhal_i2s_init_cfg</a> function, the <a class="el" href="group__group__hal__i2s.html#gga98bc78188673aae2c4e27b660a3f20feab4ce24b585402763c519a85ffa67cecf">CYHAL_I2S_TX_HALF_EMPTY</a> event will be raised at the configurator defined TX FIFO trigger level instead of the usual trigger level of half the FIFO depth. </dd></dl>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part

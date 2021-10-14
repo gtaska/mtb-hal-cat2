@@ -6,7 +6,9 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2021 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation
+*
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -134,6 +136,10 @@ typedef enum {
 #include "pin_packages/cyhal_pmg1s3_97_bga_cypd8225.h"
 #elif defined(_GPIO_PMG1S3_97_BGA_CYPM1322_H_)
 #include "pin_packages/cyhal_pmg1s3_97_bga_cypm1322.h"
+#elif defined(_GPIO_CCG7S_40_QFN_H_)
+#include "pin_packages/cyhal_ccg7s_40_qfn.h"
+#elif defined(_GPIO_CCG7D_68_QFN_H_)
+#include "pin_packages/cyhal_ccg7d_68_qfn.h"
 #else
 #error "Unhandled Device/PinPackage combination"
 #endif

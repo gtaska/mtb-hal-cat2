@@ -1,5 +1,6 @@
 var group__group__hal__impl__triggers =
 [
+    [ "CCG7S", "group__group__hal__impl__triggers__ccg7s.html", "group__group__hal__impl__triggers__ccg7s" ],
     [ "PMG1S3", "group__group__hal__impl__triggers__pmg1s3.html", "group__group__hal__impl__triggers__pmg1s3" ],
     [ "PSOC4000S", "group__group__hal__impl__triggers__psoc4000s.html", "group__group__hal__impl__triggers__psoc4000s" ],
     [ "PSOC4100S", "group__group__hal__impl__triggers__psoc4100s.html", "group__group__hal__impl__triggers__psoc4100s" ],

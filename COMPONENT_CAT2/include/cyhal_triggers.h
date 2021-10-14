@@ -6,7 +6,9 @@
 *
 ********************************************************************************
 * \copyright
-* Copyright 2018-2021 Cypress Semiconductor Corporation
+* Copyright 2018-2021 Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation
+*
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,6 +51,8 @@ extern "C" {
 #include "triggers/cyhal_triggers_psoc4100sp256kb.h"
 #elif defined(CY_DEVICE_PMG1S3)
 #include "triggers/cyhal_triggers_pmg1s3.h"
+#elif defined(CY_DEVICE_CCG7S)
+#include "triggers/cyhal_triggers_ccg7s.h"
 #else
     /** Generic trigger source defined for devices that do not support trigger mux. */
     typedef uint32_t cyhal_source_t;

@@ -4,12 +4,11 @@
 * \brief
 * PSoC4000S device GPIO HAL header for 32-TQFP package
 *
-* \note
-* Generator version: 1.6.0.512
-*
 ********************************************************************************
 * \copyright
-* Copyright 2016-2021 Cypress Semiconductor Corporation
+* (c) (2016-2021), Cypress Semiconductor Corporation (an Infineon company) or
+* an affiliate of Cypress Semiconductor Corporation.
+*
 * SPDX-License-Identifier: Apache-2.0
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,223 +30,213 @@
 #if defined(_GPIO_PSOC4000S_32_TQFP_H_)
 #include "pin_packages/cyhal_psoc4000s_32_tqfp.h"
 
-/* Hardware Blocks */
-static const cyhal_resource_inst_t CYHAL_LPCOMP_0_0 = { CYHAL_RSC_LPCOMP, 0, 0 };
-static const cyhal_resource_inst_t CYHAL_LPCOMP_1_0 = { CYHAL_RSC_LPCOMP, 1, 0 };
-static const cyhal_resource_inst_t CYHAL_SCB_0 = { CYHAL_RSC_SCB, 0, 0 };
-static const cyhal_resource_inst_t CYHAL_SCB_1 = { CYHAL_RSC_SCB, 1, 0 };
-static const cyhal_resource_inst_t CYHAL_TCPWM_0_0 = { CYHAL_RSC_TCPWM, 0, 0 };
-static const cyhal_resource_inst_t CYHAL_TCPWM_0_1 = { CYHAL_RSC_TCPWM, 0, 1 };
-static const cyhal_resource_inst_t CYHAL_TCPWM_0_2 = { CYHAL_RSC_TCPWM, 0, 2 };
-static const cyhal_resource_inst_t CYHAL_TCPWM_0_3 = { CYHAL_RSC_TCPWM, 0, 3 };
-static const cyhal_resource_inst_t CYHAL_TCPWM_0_4 = { CYHAL_RSC_TCPWM, 0, 4 };
-
 /* Pin connections */
-/* Connections for: lpcomp_comp */
-const cyhal_resource_pin_mapping_t cyhal_pin_map_lpcomp_comp[3] = {
-    {&CYHAL_LPCOMP_0_0, P2_7, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
-    {&CYHAL_LPCOMP_0_0, P4_2, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
-    {&CYHAL_LPCOMP_1_0, P4_3, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
+/* Connections for: lpcomp_dsi_comp */
+const cyhal_resource_pin_mapping_t cyhal_pin_map_lpcomp_dsi_comp[3] = {
+    {0u, 0u, P2_7, P2_7_LPCOMP_COMP0},
+    {0u, 0u, P4_2, P4_2_LPCOMP_COMP0},
+    {0u, 1u, P4_3, P4_3_LPCOMP_COMP1},
 };
 
-/* Connections for: lpcomp_in_n */
-const cyhal_resource_pin_mapping_t cyhal_pin_map_lpcomp_in_n[2] = {
-    {&CYHAL_LPCOMP_0_0, P0_1, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
-    {&CYHAL_LPCOMP_1_0, P0_3, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
+/* Connections for: lpcomp_inn_comp */
+const cyhal_resource_pin_mapping_t cyhal_pin_map_lpcomp_inn_comp[2] = {
+    {0u, 0u, P0_1, HSIOM_SEL_GPIO},
+    {0u, 1u, P0_3, HSIOM_SEL_GPIO},
 };
 
-/* Connections for: lpcomp_in_p */
-const cyhal_resource_pin_mapping_t cyhal_pin_map_lpcomp_in_p[2] = {
-    {&CYHAL_LPCOMP_0_0, P0_0, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
-    {&CYHAL_LPCOMP_1_0, P0_2, (uint8_t)CY_GPIO_DM_ANALOG, HSIOM_SEL_GPIO},
+/* Connections for: lpcomp_inp_comp */
+const cyhal_resource_pin_mapping_t cyhal_pin_map_lpcomp_inp_comp[2] = {
+    {0u, 0u, P0_0, HSIOM_SEL_GPIO},
+    {0u, 1u, P0_2, HSIOM_SEL_GPIO},
 };
 
 /* Connections for: scb_i2c_scl */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_i2c_scl[5] = {
-    {&CYHAL_SCB_1, P0_4, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P0_4_SCB1_I2C_SCL},
-    {&CYHAL_SCB_0, P1_0, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P1_0_SCB0_I2C_SCL},
-    {&CYHAL_SCB_1, P2_0, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P2_0_SCB1_I2C_SCL},
-    {&CYHAL_SCB_1, P3_0, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P3_0_SCB1_I2C_SCL},
-    {&CYHAL_SCB_0, P4_0, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P4_0_SCB0_I2C_SCL},
+    {1u, 0u, P0_4, P0_4_SCB1_I2C_SCL},
+    {0u, 0u, P1_0, P1_0_SCB0_I2C_SCL},
+    {1u, 0u, P2_0, P2_0_SCB1_I2C_SCL},
+    {1u, 0u, P3_0, P3_0_SCB1_I2C_SCL},
+    {0u, 0u, P4_0, P4_0_SCB0_I2C_SCL},
 };
 
 /* Connections for: scb_i2c_sda */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_i2c_sda[5] = {
-    {&CYHAL_SCB_1, P0_5, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P0_5_SCB1_I2C_SDA},
-    {&CYHAL_SCB_0, P1_1, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P1_1_SCB0_I2C_SDA},
-    {&CYHAL_SCB_1, P2_1, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P2_1_SCB1_I2C_SDA},
-    {&CYHAL_SCB_1, P3_1, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P3_1_SCB1_I2C_SDA},
-    {&CYHAL_SCB_0, P4_1, (uint8_t)CY_GPIO_DM_OD_DRIVESLOW, P4_1_SCB0_I2C_SDA},
+    {1u, 0u, P0_5, P0_5_SCB1_I2C_SDA},
+    {0u, 0u, P1_1, P1_1_SCB0_I2C_SDA},
+    {1u, 0u, P2_1, P2_1_SCB1_I2C_SDA},
+    {1u, 0u, P3_1, P3_1_SCB1_I2C_SDA},
+    {0u, 0u, P4_1, P4_1_SCB0_I2C_SDA},
 };
 
 /* Connections for: scb_spi_m_clk */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_clk[5] = {
-    {&CYHAL_SCB_1, P0_6, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_6_SCB1_SPI_CLK},
-    {&CYHAL_SCB_0, P1_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_2_SCB0_SPI_CLK},
-    {&CYHAL_SCB_1, P2_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_2_SCB1_SPI_CLK},
-    {&CYHAL_SCB_1, P3_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_2_SCB1_SPI_CLK},
-    {&CYHAL_SCB_0, P4_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P4_2_SCB0_SPI_CLK},
+    {1u, 0u, P0_6, P0_6_SCB1_SPI_CLK},
+    {0u, 0u, P1_2, P1_2_SCB0_SPI_CLK},
+    {1u, 0u, P2_2, P2_2_SCB1_SPI_CLK},
+    {1u, 0u, P3_2, P3_2_SCB1_SPI_CLK},
+    {0u, 0u, P4_2, P4_2_SCB0_SPI_CLK},
 };
 
 /* Connections for: scb_spi_m_miso */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_miso[5] = {
-    {&CYHAL_SCB_1, P0_5, (uint8_t)CY_GPIO_DM_HIGHZ, P0_5_SCB1_SPI_MISO},
-    {&CYHAL_SCB_0, P1_1, (uint8_t)CY_GPIO_DM_HIGHZ, P1_1_SCB0_SPI_MISO},
-    {&CYHAL_SCB_1, P2_1, (uint8_t)CY_GPIO_DM_HIGHZ, P2_1_SCB1_SPI_MISO},
-    {&CYHAL_SCB_1, P3_1, (uint8_t)CY_GPIO_DM_HIGHZ, P3_1_SCB1_SPI_MISO},
-    {&CYHAL_SCB_0, P4_1, (uint8_t)CY_GPIO_DM_HIGHZ, P4_1_SCB0_SPI_MISO},
+    {1u, 0u, P0_5, P0_5_SCB1_SPI_MISO},
+    {0u, 0u, P1_1, P1_1_SCB0_SPI_MISO},
+    {1u, 0u, P2_1, P2_1_SCB1_SPI_MISO},
+    {1u, 0u, P3_1, P3_1_SCB1_SPI_MISO},
+    {0u, 0u, P4_1, P4_1_SCB0_SPI_MISO},
 };
 
 /* Connections for: scb_spi_m_mosi */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_mosi[5] = {
-    {&CYHAL_SCB_1, P0_4, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_4_SCB1_SPI_MOSI},
-    {&CYHAL_SCB_0, P1_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_0_SCB0_SPI_MOSI},
-    {&CYHAL_SCB_1, P2_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_0_SCB1_SPI_MOSI},
-    {&CYHAL_SCB_1, P3_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_0_SCB1_SPI_MOSI},
-    {&CYHAL_SCB_0, P4_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P4_0_SCB0_SPI_MOSI},
+    {1u, 0u, P0_4, P0_4_SCB1_SPI_MOSI},
+    {0u, 0u, P1_0, P1_0_SCB0_SPI_MOSI},
+    {1u, 0u, P2_0, P2_0_SCB1_SPI_MOSI},
+    {1u, 0u, P3_0, P3_0_SCB1_SPI_MOSI},
+    {0u, 0u, P4_0, P4_0_SCB0_SPI_MOSI},
 };
 
 /* Connections for: scb_spi_m_select0 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_select0[4] = {
-    {&CYHAL_SCB_0, P1_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_3_SCB0_SPI_SELECT0},
-    {&CYHAL_SCB_1, P2_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_3_SCB1_SPI_SELECT0},
-    {&CYHAL_SCB_1, P3_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_3_SCB1_SPI_SELECT0},
-    {&CYHAL_SCB_0, P4_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P4_3_SCB0_SPI_SELECT0},
+    {0u, 0u, P1_3, P1_3_SCB0_SPI_SELECT0},
+    {1u, 0u, P2_3, P2_3_SCB1_SPI_SELECT0},
+    {1u, 0u, P3_3, P3_3_SCB1_SPI_SELECT0},
+    {0u, 0u, P4_3, P4_3_SCB0_SPI_SELECT0},
 };
 
 /* Connections for: scb_spi_m_select1 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_select1[1] = {
-    {&CYHAL_SCB_0, P0_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_0_SCB0_SPI_SELECT1},
+    {0u, 0u, P0_0, P0_0_SCB0_SPI_SELECT1},
 };
 
 /* Connections for: scb_spi_m_select2 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_select2[2] = {
-    {&CYHAL_SCB_0, P0_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_1_SCB0_SPI_SELECT2},
-    {&CYHAL_SCB_1, P2_5, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_5_SCB1_SPI_SELECT2},
+    {0u, 0u, P0_1, P0_1_SCB0_SPI_SELECT2},
+    {1u, 0u, P2_5, P2_5_SCB1_SPI_SELECT2},
 };
 
 /* Connections for: scb_spi_m_select3 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_m_select3[2] = {
-    {&CYHAL_SCB_0, P0_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_2_SCB0_SPI_SELECT3},
-    {&CYHAL_SCB_1, P2_6, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_6_SCB1_SPI_SELECT3},
+    {0u, 0u, P0_2, P0_2_SCB0_SPI_SELECT3},
+    {1u, 0u, P2_6, P2_6_SCB1_SPI_SELECT3},
 };
 
 /* Connections for: scb_spi_s_clk */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_clk[5] = {
-    {&CYHAL_SCB_1, P0_6, (uint8_t)CY_GPIO_DM_HIGHZ, P0_6_SCB1_SPI_CLK},
-    {&CYHAL_SCB_0, P1_2, (uint8_t)CY_GPIO_DM_HIGHZ, P1_2_SCB0_SPI_CLK},
-    {&CYHAL_SCB_1, P2_2, (uint8_t)CY_GPIO_DM_HIGHZ, P2_2_SCB1_SPI_CLK},
-    {&CYHAL_SCB_1, P3_2, (uint8_t)CY_GPIO_DM_HIGHZ, P3_2_SCB1_SPI_CLK},
-    {&CYHAL_SCB_0, P4_2, (uint8_t)CY_GPIO_DM_HIGHZ, P4_2_SCB0_SPI_CLK},
+    {1u, 0u, P0_6, P0_6_SCB1_SPI_CLK},
+    {0u, 0u, P1_2, P1_2_SCB0_SPI_CLK},
+    {1u, 0u, P2_2, P2_2_SCB1_SPI_CLK},
+    {1u, 0u, P3_2, P3_2_SCB1_SPI_CLK},
+    {0u, 0u, P4_2, P4_2_SCB0_SPI_CLK},
 };
 
 /* Connections for: scb_spi_s_miso */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_miso[5] = {
-    {&CYHAL_SCB_1, P0_5, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_5_SCB1_SPI_MISO},
-    {&CYHAL_SCB_0, P1_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_1_SCB0_SPI_MISO},
-    {&CYHAL_SCB_1, P2_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_1_SCB1_SPI_MISO},
-    {&CYHAL_SCB_1, P3_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_1_SCB1_SPI_MISO},
-    {&CYHAL_SCB_0, P4_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P4_1_SCB0_SPI_MISO},
+    {1u, 0u, P0_5, P0_5_SCB1_SPI_MISO},
+    {0u, 0u, P1_1, P1_1_SCB0_SPI_MISO},
+    {1u, 0u, P2_1, P2_1_SCB1_SPI_MISO},
+    {1u, 0u, P3_1, P3_1_SCB1_SPI_MISO},
+    {0u, 0u, P4_1, P4_1_SCB0_SPI_MISO},
 };
 
 /* Connections for: scb_spi_s_mosi */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_mosi[5] = {
-    {&CYHAL_SCB_1, P0_4, (uint8_t)CY_GPIO_DM_HIGHZ, P0_4_SCB1_SPI_MOSI},
-    {&CYHAL_SCB_0, P1_0, (uint8_t)CY_GPIO_DM_HIGHZ, P1_0_SCB0_SPI_MOSI},
-    {&CYHAL_SCB_1, P2_0, (uint8_t)CY_GPIO_DM_HIGHZ, P2_0_SCB1_SPI_MOSI},
-    {&CYHAL_SCB_1, P3_0, (uint8_t)CY_GPIO_DM_HIGHZ, P3_0_SCB1_SPI_MOSI},
-    {&CYHAL_SCB_0, P4_0, (uint8_t)CY_GPIO_DM_HIGHZ, P4_0_SCB0_SPI_MOSI},
+    {1u, 0u, P0_4, P0_4_SCB1_SPI_MOSI},
+    {0u, 0u, P1_0, P1_0_SCB0_SPI_MOSI},
+    {1u, 0u, P2_0, P2_0_SCB1_SPI_MOSI},
+    {1u, 0u, P3_0, P3_0_SCB1_SPI_MOSI},
+    {0u, 0u, P4_0, P4_0_SCB0_SPI_MOSI},
 };
 
 /* Connections for: scb_spi_s_select0 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_select0[4] = {
-    {&CYHAL_SCB_0, P1_3, (uint8_t)CY_GPIO_DM_HIGHZ, P1_3_SCB0_SPI_SELECT0},
-    {&CYHAL_SCB_1, P2_3, (uint8_t)CY_GPIO_DM_HIGHZ, P2_3_SCB1_SPI_SELECT0},
-    {&CYHAL_SCB_1, P3_3, (uint8_t)CY_GPIO_DM_HIGHZ, P3_3_SCB1_SPI_SELECT0},
-    {&CYHAL_SCB_0, P4_3, (uint8_t)CY_GPIO_DM_HIGHZ, P4_3_SCB0_SPI_SELECT0},
+    {0u, 0u, P1_3, P1_3_SCB0_SPI_SELECT0},
+    {1u, 0u, P2_3, P2_3_SCB1_SPI_SELECT0},
+    {1u, 0u, P3_3, P3_3_SCB1_SPI_SELECT0},
+    {0u, 0u, P4_3, P4_3_SCB0_SPI_SELECT0},
 };
 
 /* Connections for: scb_spi_s_select1 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_select1[1] = {
-    {&CYHAL_SCB_0, P0_0, (uint8_t)CY_GPIO_DM_HIGHZ, P0_0_SCB0_SPI_SELECT1},
+    {0u, 0u, P0_0, P0_0_SCB0_SPI_SELECT1},
 };
 
 /* Connections for: scb_spi_s_select2 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_select2[2] = {
-    {&CYHAL_SCB_0, P0_1, (uint8_t)CY_GPIO_DM_HIGHZ, P0_1_SCB0_SPI_SELECT2},
-    {&CYHAL_SCB_1, P2_5, (uint8_t)CY_GPIO_DM_HIGHZ, P2_5_SCB1_SPI_SELECT2},
+    {0u, 0u, P0_1, P0_1_SCB0_SPI_SELECT2},
+    {1u, 0u, P2_5, P2_5_SCB1_SPI_SELECT2},
 };
 
 /* Connections for: scb_spi_s_select3 */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_spi_s_select3[2] = {
-    {&CYHAL_SCB_0, P0_2, (uint8_t)CY_GPIO_DM_HIGHZ, P0_2_SCB0_SPI_SELECT3},
-    {&CYHAL_SCB_1, P2_6, (uint8_t)CY_GPIO_DM_HIGHZ, P2_6_SCB1_SPI_SELECT3},
+    {0u, 0u, P0_2, P0_2_SCB0_SPI_SELECT3},
+    {1u, 0u, P2_6, P2_6_SCB1_SPI_SELECT3},
 };
 
 /* Connections for: scb_uart_cts */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_uart_cts[4] = {
-    {&CYHAL_SCB_1, P0_6, (uint8_t)CY_GPIO_DM_HIGHZ, P0_6_SCB1_UART_CTS},
-    {&CYHAL_SCB_0, P1_2, (uint8_t)CY_GPIO_DM_HIGHZ, P1_2_SCB0_UART_CTS},
-    {&CYHAL_SCB_1, P3_2, (uint8_t)CY_GPIO_DM_HIGHZ, P3_2_SCB1_UART_CTS},
-    {&CYHAL_SCB_0, P4_2, (uint8_t)CY_GPIO_DM_HIGHZ, P4_2_SCB0_UART_CTS},
+    {1u, 0u, P0_6, P0_6_SCB1_UART_CTS},
+    {0u, 0u, P1_2, P1_2_SCB0_UART_CTS},
+    {1u, 0u, P3_2, P3_2_SCB1_UART_CTS},
+    {0u, 0u, P4_2, P4_2_SCB0_UART_CTS},
 };
 
 /* Connections for: scb_uart_rts */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_uart_rts[3] = {
-    {&CYHAL_SCB_0, P1_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_3_SCB0_UART_RTS},
-    {&CYHAL_SCB_1, P3_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_3_SCB1_UART_RTS},
-    {&CYHAL_SCB_0, P4_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P4_3_SCB0_UART_RTS},
+    {0u, 0u, P1_3, P1_3_SCB0_UART_RTS},
+    {1u, 0u, P3_3, P3_3_SCB1_UART_RTS},
+    {0u, 0u, P4_3, P4_3_SCB0_UART_RTS},
 };
 
 /* Connections for: scb_uart_rx */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_uart_rx[4] = {
-    {&CYHAL_SCB_1, P0_4, (uint8_t)CY_GPIO_DM_HIGHZ, P0_4_SCB1_UART_RX},
-    {&CYHAL_SCB_0, P1_0, (uint8_t)CY_GPIO_DM_HIGHZ, P1_0_SCB0_UART_RX},
-    {&CYHAL_SCB_1, P3_0, (uint8_t)CY_GPIO_DM_HIGHZ, P3_0_SCB1_UART_RX},
-    {&CYHAL_SCB_0, P4_0, (uint8_t)CY_GPIO_DM_HIGHZ, P4_0_SCB0_UART_RX},
+    {1u, 0u, P0_4, P0_4_SCB1_UART_RX},
+    {0u, 0u, P1_0, P1_0_SCB0_UART_RX},
+    {1u, 0u, P3_0, P3_0_SCB1_UART_RX},
+    {0u, 0u, P4_0, P4_0_SCB0_UART_RX},
 };
 
 /* Connections for: scb_uart_tx */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_scb_uart_tx[4] = {
-    {&CYHAL_SCB_1, P0_5, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P0_5_SCB1_UART_TX},
-    {&CYHAL_SCB_0, P1_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_1_SCB0_UART_TX},
-    {&CYHAL_SCB_1, P3_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_1_SCB1_UART_TX},
-    {&CYHAL_SCB_0, P4_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P4_1_SCB0_UART_TX},
+    {1u, 0u, P0_5, P0_5_SCB1_UART_TX},
+    {0u, 0u, P1_1, P1_1_SCB0_UART_TX},
+    {1u, 0u, P3_1, P3_1_SCB1_UART_TX},
+    {0u, 0u, P4_1, P4_1_SCB0_UART_TX},
 };
 
 /* Connections for: tcpwm_line */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_tcpwm_line[6] = {
-    {&CYHAL_TCPWM_0_2, P1_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_0_TCPWM_LINE2},
-    {&CYHAL_TCPWM_0_3, P1_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_2_TCPWM_LINE3},
-    {&CYHAL_TCPWM_0_4, P2_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_0_TCPWM_LINE4},
-    {&CYHAL_TCPWM_0_1, P2_6, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_6_TCPWM_LINE1},
-    {&CYHAL_TCPWM_0_0, P3_0, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_0_TCPWM_LINE0},
-    {&CYHAL_TCPWM_0_1, P3_2, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_2_TCPWM_LINE1},
+    {0u, 2u, P1_0, P1_0_TCPWM_LINE2},
+    {0u, 3u, P1_2, P1_2_TCPWM_LINE3},
+    {0u, 4u, P2_0, P2_0_TCPWM_LINE4},
+    {0u, 1u, P2_6, P2_6_TCPWM_LINE1},
+    {0u, 0u, P3_0, P3_0_TCPWM_LINE0},
+    {0u, 1u, P3_2, P3_2_TCPWM_LINE1},
 };
 
 /* Connections for: tcpwm_line_compl */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_tcpwm_line_compl[7] = {
-    {&CYHAL_TCPWM_0_2, P1_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_1_TCPWM_LINE_COMPL2},
-    {&CYHAL_TCPWM_0_3, P1_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P1_3_TCPWM_LINE_COMPL3},
-    {&CYHAL_TCPWM_0_4, P2_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_1_TCPWM_LINE_COMPL4},
-    {&CYHAL_TCPWM_0_0, P2_5, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_5_TCPWM_LINE_COMPL0},
-    {&CYHAL_TCPWM_0_1, P2_7, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P2_7_TCPWM_LINE_COMPL1},
-    {&CYHAL_TCPWM_0_0, P3_1, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_1_TCPWM_LINE_COMPL0},
-    {&CYHAL_TCPWM_0_1, P3_3, (uint8_t)CY_GPIO_DM_STRONG_IN_OFF, P3_3_TCPWM_LINE_COMPL1},
+    {0u, 2u, P1_1, P1_1_TCPWM_LINE_COMPL2},
+    {0u, 3u, P1_3, P1_3_TCPWM_LINE_COMPL3},
+    {0u, 4u, P2_1, P2_1_TCPWM_LINE_COMPL4},
+    {0u, 0u, P2_5, P2_5_TCPWM_LINE_COMPL0},
+    {0u, 1u, P2_7, P2_7_TCPWM_LINE_COMPL1},
+    {0u, 0u, P3_1, P3_1_TCPWM_LINE_COMPL0},
+    {0u, 1u, P3_3, P3_3_TCPWM_LINE_COMPL1},
 };
 
 /* Connections for: tcpwm_tr_in */
-/* Since the GPIO pin is not tied to a particular TCPWM resource reuse the
-   resource_inst field as the index of the tcpwm input line */
+/* Since the GPIO pin is not tied to a particular TCPWM resource the channel_num has no value to
+   how the connection works. However, the HAL driver needs to know the index of the tcpwm input
+   line. Store that in the channel_num field instead. */
 const cyhal_resource_pin_mapping_t cyhal_pin_map_tcpwm_tr_in[8] = {
-    {(cyhal_resource_inst_t*)0, P0_0, (uint8_t)CY_GPIO_DM_HIGHZ, P0_0_TCPWM_TR_IN0},
-    {(cyhal_resource_inst_t*)1, P0_1, (uint8_t)CY_GPIO_DM_HIGHZ, P0_1_TCPWM_TR_IN1},
-    {(cyhal_resource_inst_t*)2, P1_2, (uint8_t)CY_GPIO_DM_HIGHZ, P1_2_TCPWM_TR_IN2},
-    {(cyhal_resource_inst_t*)3, P1_3, (uint8_t)CY_GPIO_DM_HIGHZ, P1_3_TCPWM_TR_IN3},
-    {(cyhal_resource_inst_t*)4, P2_0, (uint8_t)CY_GPIO_DM_HIGHZ, P2_0_TCPWM_TR_IN4},
-    {(cyhal_resource_inst_t*)5, P2_1, (uint8_t)CY_GPIO_DM_HIGHZ, P2_1_TCPWM_TR_IN5},
-    {(cyhal_resource_inst_t*)10, P4_0, (uint8_t)CY_GPIO_DM_HIGHZ, P4_0_TCPWM_TR_IN10},
-    {(cyhal_resource_inst_t*)11, P4_1, (uint8_t)CY_GPIO_DM_HIGHZ, P4_1_TCPWM_TR_IN11},
+    {0u, 0u, P0_0, P0_0_TCPWM_TR_IN0},
+    {0u, 1u, P0_1, P0_1_TCPWM_TR_IN1},
+    {0u, 2u, P1_2, P1_2_TCPWM_TR_IN2},
+    {0u, 3u, P1_3, P1_3_TCPWM_TR_IN3},
+    {0u, 4u, P2_0, P2_0_TCPWM_TR_IN4},
+    {0u, 5u, P2_1, P2_1_TCPWM_TR_IN5},
+    {0u, 10u, P4_0, P4_0_TCPWM_TR_IN10},
+    {0u, 11u, P4_1, P4_1_TCPWM_TR_IN11},
 };
 
 #endif
