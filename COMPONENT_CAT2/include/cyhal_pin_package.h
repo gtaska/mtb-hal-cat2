@@ -85,7 +85,7 @@ typedef enum {
 #elif defined(_GPIO_PSOC4100S_28_SSOP_AUTO_H_)
 #include "pin_packages/cyhal_psoc4100s_28_ssop_auto.h"
 #elif defined(_GPIO_PSOC4100S_32_QFN_H_)
-#include "pin_packages/cyhal_psoc4100s_24_qfn.h"
+#include "pin_packages/cyhal_psoc4100s_32_qfn.h"
 #elif defined(_GPIO_PSOC4100S_35_WLCSP_H_)
 #include "pin_packages/cyhal_psoc4100s_35_wlcsp.h"
 #elif defined(_GPIO_PSOC4100S_35_WLCSP_2_H_)
